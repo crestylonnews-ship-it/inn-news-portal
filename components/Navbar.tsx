@@ -27,9 +27,6 @@ export default function Navbar() {
           <Link href="/about" className="text-gray-300 hover:text-cyan-400 text-sm font-medium transition-colors">
             關於本網
           </Link>
-          <Link href="/admin" className="px-4 py-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-sm font-medium hover:bg-cyan-500/20 hover:border-cyan-400 transition-all">
-            發布後台
-          </Link>
         </nav>
       </div>
     </header>

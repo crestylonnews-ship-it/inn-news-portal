@@ -39,6 +39,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         <div className="flex items-center gap-2 text-sm text-gray-400">
           <Link href="/" className="hover:text-cyan-400 transition-colors">首頁</Link>
           <span>/</span>
+          <Link href="/tags" className="hover:text-cyan-400 transition-colors">標籤分類</Link>
+          <span>/</span>
           <span className="text-cyan-400">{categoryLabels[article.category] || '新聞報導'}</span>
         </div>
 
@@ -55,6 +57,21 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <span>•</span>
             <span className="text-cyan-400">特派記者：{article.author}</span>
           </div>
+
+          {/* Tags */}
+          {article.tags && article.tags.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-2 pt-2">
+              {article.tags.map(tag => (
+                <Link
+                  key={tag}
+                  href={`/tags?tag=${encodeURIComponent(tag)}`}
+                  className="text-xs px-3 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400 transition-all font-mono"
+                >
+                  #{tag}
+                </Link>
+              ))}
+            </div>
+          )}
         </header>
 
         {/* Article Body Content */}

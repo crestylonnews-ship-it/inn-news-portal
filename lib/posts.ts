@@ -54,3 +54,23 @@ export function getArticleBySlug(slug: string): Article | null {
     return null;
   }
 }
+
+export function getAllTags(): string[] {
+  const articles = getAllArticles();
+  const tagSet = new Set<string>();
+  articles.forEach(article => {
+    article.tags.forEach(tag => tagSet.add(tag));
+  });
+  return Array.from(tagSet);
+}
+
+export function searchArticles(query: string): Article[] {
+  const articles = getAllArticles();
+  const q = query.toLowerCase();
+  return articles.filter(article => 
+    article.title.toLowerCase().includes(q) ||
+    article.content.toLowerCase().includes(q) ||
+    article.tags.some(tag => tag.toLowerCase().includes(q)) ||
+    article.author.toLowerCase().includes(q)
+  );
+}

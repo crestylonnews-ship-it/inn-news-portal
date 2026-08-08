@@ -5,26 +5,37 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 export default function Home() {
-  const articles = getAllArticles();
+  const articles = getAllArticles(); // 已自動依照日期時間由新到舊排序
+
+  // 動態自動化區塊分配
+  const breakingNews = articles.filter(a => a.category === 'breaking');
   const featured = articles[0];
   const tickerArticle = articles[1] || articles[0];
-  const latestArticles = articles.slice(2, 8);
+  
+  // 多區塊自動填充
+  const subFeatured = articles.slice(1, 3);
+  const techFrontier = articles.filter(a => a.category === 'review').slice(0, 4);
+  const deepDives = articles.filter(a => a.category === 'deep-dive' || a.category === 'opinion').slice(0, 4);
+  const latestFeed = articles.slice(3, 9); // 更多最新報導
 
   return (
     <div className="min-h-screen bg-[#0a0b0f] text-white flex flex-col font-sans selection:bg-cyan-500 selection:text-black">
       <Navbar />
 
-      <main className="flex-grow max-w-7xl mx-auto px-6 w-full space-y-16 py-12">
-        {/* Hero Banner */}
-        <section className="text-center space-y-4 py-8">
-          <div className="inline-block px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono tracking-widest uppercase mb-2">
-            ✦ GALAXY TERMINAL ✦
+      <main className="flex-grow max-w-7xl mx-auto px-4 md:px-6 w-full space-y-16 py-12">
+        {/* Hero Banner with Sci-Fi Glow & Bilingual */}
+        <section className="text-center space-y-4 py-6 relative">
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="w-[500px] h-[150px] bg-cyan-500/10 rounded-full blur-[100px]"></div>
           </div>
-          <h1 className="text-4xl md:text-6xl font-extrabold font-orbitron tracking-tight text-glow">
-            星際聯邦新聞終端
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/40 text-cyan-400 text-xs font-mono tracking-widest uppercase shadow-[0_0_15px_rgba(0,191,255,0.3)]">
+            <span>✦ INTERSTELLAR FEDERATION TERMINAL ✦</span>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-extrabold font-orbitron tracking-tight text-glow neon-title-glow">
+            星際聯邦新聞終端 <span className="text-cyan-400 text-2xl md:text-4xl block mt-1">INN NEWS PORTAL // Y/3</span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto font-serif">
-            掌握第四象限最新脈動、政策解讀與前沿科技情報
+          <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto font-serif">
+            第四象限即時情報網 • 全自動量子同步與多維區塊新聞串流
           </p>
         </section>
 
@@ -32,70 +43,133 @@ export default function Home() {
         {tickerArticle && (
           <section>
             <Link href={`/articles/${tickerArticle.slug}`} className="block group">
-              <div className="bg-[#121520]/90 backdrop-blur-xl border border-red-500/30 rounded-xl p-4 md:px-6 flex items-center justify-between shadow-[0_0_20px_rgba(255,0,110,0.1)] group-hover:border-red-400 group-hover:shadow-[0_0_25px_rgba(255,0,110,0.25)] transition-all">
+              <div className="bg-[#121520]/95 backdrop-blur-xl border border-red-500/40 rounded-xl p-4 md:px-6 flex items-center justify-between shadow-[0_0_25px_rgba(255,0,80,0.2)] group-hover:border-red-400 group-hover:shadow-[0_0_35px_rgba(255,0,80,0.4)] transition-all">
                 <div className="flex items-center gap-4 overflow-hidden">
-                  <span className="flex-shrink-0 bg-red-500/20 border border-red-500/40 text-red-400 text-xs font-bold px-3 py-1 rounded-md animate-pulse">
-                    ⚡ 即時快訊
+                  <span className="flex-shrink-0 bg-red-500/20 border border-red-500/50 text-red-400 text-xs font-mono font-bold px-3 py-1 rounded-md animate-pulse">
+                    ⚡ 總署即時快訊 // BREAKING NEWS
                   </span>
-                  <span className="text-white font-medium text-sm md:text-base truncate group-hover:text-red-300 transition-colors">
+                  <span className="text-white font-bold text-sm md:text-base truncate group-hover:text-red-300 transition-colors font-orbitron">
                     {tickerArticle.title}
                   </span>
                 </div>
-                <span className="text-red-400 font-bold text-sm flex-shrink-0 pl-4 group-hover:translate-x-1 transition-transform">
-                  查看詳情 →
+                <span className="text-red-400 font-mono font-bold text-sm flex-shrink-0 pl-4 group-hover:translate-x-1 transition-transform">
+                  ACCESS →
                 </span>
               </div>
             </Link>
           </section>
         )}
 
-        {/* Featured Headline Section */}
+        {/* Top Grid: Featured Headline + Side Quick Feeds */}
         {featured && (
-          <section className="space-y-6">
-            <div className="flex items-center justify-between border-b border-cyan-500/20 pb-4">
-              <h2 className="text-2xl font-bold font-orbitron text-cyan-400 tracking-wider flex items-center gap-2">
-                <span>◆</span> 頭條要聞
-              </h2>
-              <span className="text-xs text-gray-400 font-mono">TOP HEADLINE</span>
+          <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <div className="lg:col-span-2 space-y-4">
+              <div className="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+                <h2 className="text-xl font-bold font-orbitron text-cyan-400 tracking-wider flex items-center gap-2 neon-title-glow">
+                  <span>◆</span> 核心頭條要聞 <span className="text-xs font-mono text-gray-400">// PRIME HEADLINE</span>
+                </h2>
+                <span className="text-xs text-cyan-300 font-mono">AUTO-SYNCED</span>
+              </div>
+              <ArticleCard article={featured} featured={true} />
             </div>
-            <ArticleCard article={featured} featured={true} />
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+                <h2 className="text-xl font-bold font-orbitron text-cyan-400 tracking-wider flex items-center gap-2 neon-title-glow">
+                  <span>◆</span> 次要焦點 <span className="text-xs font-mono text-gray-400">// SUB-FEEDS</span>
+                </h2>
+                <span className="text-xs text-gray-400 font-mono">LIVE STREAM</span>
+              </div>
+              <div className="space-y-4">
+                {subFeatured.length > 0 ? (
+                  subFeatured.map(article => (
+                    <ArticleCard key={article.slug} article={article} compact={true} />
+                  ))
+                ) : (
+                  <div className="p-6 bg-[#121520]/40 border border-cyan-500/20 rounded-xl text-center text-gray-500 text-sm">
+                    暫無更多焦點
+                  </div>
+                )}
+              </div>
+            </div>
           </section>
         )}
 
-        {/* Latest Articles Grid Section */}
-        <section className="space-y-6">
-          <div className="flex items-center justify-between border-b border-cyan-500/20 pb-4">
-            <h2 className="text-2xl font-bold font-orbitron text-cyan-400 tracking-wider flex items-center gap-2">
-              <span>◆</span> 最新報導
-            </h2>
-            <span className="text-xs text-gray-400 font-mono">LATEST FEED</span>
+        {/* Multi-Column High Density Blocks: Tech Frontier & Deep Dives */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Tech Frontier Block */}
+          <div className="space-y-6 bg-[#121520]/50 border border-cyan-500/20 rounded-2xl p-6 md:p-8 backdrop-blur-md">
+            <div className="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+              <h2 className="text-xl font-bold font-orbitron text-cyan-400 tracking-wider flex items-center gap-2 neon-title-glow">
+                <span>◆</span> 科技前沿專區 <span className="text-xs font-mono text-gray-400">// TECH FRONTIER</span>
+              </h2>
+              <Link href="/tags?tag=AI" className="text-xs text-cyan-400 hover:underline font-mono">查看全部 →</Link>
+            </div>
+            <div className="grid grid-cols-1 gap-4">
+              {techFrontier.length > 0 ? (
+                techFrontier.map(article => (
+                  <ArticleCard key={article.slug} article={article} compact={true} />
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500 text-sm">此區塊自動抓取最新科技文章</div>
+              )}
+            </div>
           </div>
-          {latestArticles.length > 0 ? (
+
+          {/* Editorial & Deep Dive Block */}
+          <div className="space-y-6 bg-[#121520]/50 border border-cyan-500/20 rounded-2xl p-6 md:p-8 backdrop-blur-md">
+            <div className="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+              <h2 className="text-xl font-bold font-orbitron text-cyan-400 tracking-wider flex items-center gap-2 neon-title-glow">
+                <span>◆</span> 深度社論評論 <span className="text-xs font-mono text-gray-400">// EDITORIAL & DIVE</span>
+              </h2>
+              <Link href="/opinion" className="text-xs text-cyan-400 hover:underline font-mono">查看全部 →</Link>
+            </div>
+            <div className="grid grid-cols-1 gap-4">
+              {deepDives.length > 0 ? (
+                deepDives.map(article => (
+                  <ArticleCard key={article.slug} article={article} compact={true} />
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500 text-sm">此區塊自動抓取最新社論文章</div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* Latest Feed Full Grid Section (Auto Sorted by Date) */}
+        <section className="space-y-6">
+          <div className="flex items-center justify-between border-b border-cyan-500/30 pb-4">
+            <h2 className="text-2xl font-bold font-orbitron text-cyan-400 tracking-wider flex items-center gap-2 neon-title-glow">
+              <span>◆</span> 全站最新報導串流 <span className="text-xs font-mono text-gray-400">// GLOBAL LATEST FEED (AUTO-SORTED)</span>
+            </h2>
+            <span className="text-xs text-gray-400 font-mono">TOTAL: {articles.length} ARTICLES</span>
+          </div>
+          {latestFeed.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {latestArticles.map(article => (
+              {latestFeed.map(article => (
                 <ArticleCard key={article.slug} article={article} />
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 text-gray-500 bg-[#121520]/40 rounded-xl border border-cyan-500/10">
-              目前尚無更多報導
+            <div className="text-center py-12 text-gray-500 bg-[#121520]/40 rounded-xl border border-cyan-500/10 font-mono">
+              [SYSTEM] 正在等待更多自動發布文章推送至 content/articles...
             </div>
           )}
         </section>
 
-        {/* Quick Navigation Section */}
+        {/* Quick Navigation Footer Blocks */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
-          <Link href="/timeline" className="group bg-[#121520]/60 border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-400 transition-all">
-            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">📅 時間線歸檔</h3>
-            <p className="text-sm text-gray-400">依據星曆順序檢視所有歷史新聞與事件發展脈絡。</p>
+          <Link href="/tags" className="group bg-[#121520]/60 border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-400 transition-all">
+            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors font-orbitron">🏷️ 標籤分類雲 // TAG CLOUD</h3>
+            <p className="text-sm text-gray-400 font-serif">依據發文自動生成的多元標籤矩陣與即時檢索。</p>
           </Link>
-          <Link href="/opinion" className="group bg-[#121520]/60 border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-400 transition-all">
-            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">✒️ 社論與評論</h3>
-            <p className="text-sm text-gray-400">深度剖析聯邦政策走向與銀河地緣政治局勢。</p>
+          <Link href="/timeline" className="group bg-[#121520]/60 border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-400 transition-all">
+            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors font-orbitron">📅 時間線歸檔 // TIMELINE</h3>
+            <p className="text-sm text-gray-400 font-serif">嚴格依照星曆順序串聯的歷史檔案與事件脈絡。</p>
           </Link>
           <Link href="/about" className="group bg-[#121520]/60 border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-400 transition-all">
-            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">🏛️ 關於星際新聞</h3>
-            <p className="text-sm text-gray-400">了解 INN 媒體使命、編輯規範與聯邦廣播權限。</p>
+            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors font-orbitron">🏛️ 關於本網 // ABOUT INN</h3>
+            <p className="text-sm text-gray-400 font-serif">了解星際聯邦總署新聞網使命、編輯規範與廣播授權。</p>
           </Link>
         </section>
       </main>

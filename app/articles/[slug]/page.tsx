@@ -1,16 +1,15 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getArticleBySlug, getRelatedArticles, getAllArticles } from '@/lib/posts';
-import { Article } from '@/lib/types';
-import ArticleCard from '@/components/ArticleCard';
-import '@/app/Article.css';
+import { getArticleBySlug, getAllArticles } from '@/lib/posts';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 interface ArticlePageProps {
   params: { slug: string };
 }
 
 export async function generateStaticParams() {
-  const articles = await getAllArticles();
+  const articles = getAllArticles();
   return articles.map((article) => ({
     slug: article.slug,
   }));
@@ -18,108 +17,76 @@ export async function generateStaticParams() {
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = params;
-  const article = await getArticleBySlug(slug);
+  const article = getArticleBySlug(slug);
 
   if (!article) {
     notFound();
   }
 
-  const categoryLabels: Record<Article['category'], string> = {
-    'breaking': '即時快訊',
+  const categoryLabels: Record<string, string> = {
+    breaking: '即時快訊',
     'deep-dive': '深度報導',
-    'opinion-expansion': '擴張派',
-    'opinion-stability': '穩定派',
-    'galactic-review': '銀河銳評',
-    'cycle-report': '循環郵報',
-    'cold-eye': '冷眼',
+    opinion: '社論專欄',
+    review: '科技前沿',
   };
-
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-  };
-
-  const relatedArticles = await getRelatedArticles(slug);
 
   return (
-    <div className="article-page">
-      <article className="article-content">
-        <div className="container">
-          {/* Breadcrumb */}
-          <div className="breadcrumb">
-            <Link href="/">首頁</Link>
-            <span> / </span>
-            <span>{categoryLabels[article.category]}</span>
-          </div>
+    <div className="min-h-screen bg-[#0a0b0f] text-white flex flex-col font-sans selection:bg-cyan-500 selection:text-black">
+      <Navbar />
 
-          {/* Article Header */}
-          <div className="article-header-section">
-            <span className="article-category-badge">{categoryLabels[article.category]}</span>
-            <h1 className="article-title">{article.title}</h1>
-            
-            <div className="article-meta glass-panel">
-              <div className="meta-item">
-                <span className="meta-label">發布日期</span>
-                <span className="meta-value">{formatDate(article.date)}</span>
-              </div>
-              <div className="meta-item">
-                <span className="meta-label">作者</span>
-                <span className="meta-value">{article.author}</span>
-              </div>
-              <div className="meta-item">
-                <span className="meta-label">分類</span>
-                <span className="meta-value">{categoryLabels[article.category]}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Article Body */}
-          <div className="article-body glass-panel glow-border">
-            {article.content.split('\n\n').map((paragraph, idx) => (
-              <p key={idx}>{paragraph}</p>
-            ))}
-          </div>
-
-          {/* Tags */}
-          <div className="article-tags">
-            {article.tags.map(tag => (
-              <span key={tag} className="tag">{tag}</span>
-            ))}
-          </div>
-
-          {/* Sources */}
-          {article.sources.length > 0 && (
-            <div className="article-sources glass-panel">
-              <h3>資料來源</h3>
-              <ul>
-                {article.sources.map((source, idx) => (
-                  <li key={idx}>{source}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Related Articles */}
-          {relatedArticles.length > 0 && (
-            <section className="related-articles">
-              <h2>相關文章</h2>
-              <div className="grid grid-3">
-                {relatedArticles.map(related => (
-                  <ArticleCard 
-                    key={related.slug} 
-                    article={related}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Navigation */}
-          <div className="article-nav">
-            <Link href="/" className="nav-link">← 返回首頁</Link>
-          </div>
+      <main className="flex-grow max-w-4xl mx-auto px-6 w-full py-12 space-y-10">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-sm text-gray-400">
+          <Link href="/" className="hover:text-cyan-400 transition-colors">首頁</Link>
+          <span>/</span>
+          <span className="text-cyan-400">{categoryLabels[article.category] || '新聞報導'}</span>
         </div>
-      </article>
+
+        {/* Article Header */}
+        <header className="space-y-6 text-center border-b border-cyan-500/20 pb-10">
+          <div className="inline-block px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold tracking-wider uppercase">
+            {categoryLabels[article.category] || '報導'}
+          </div>
+          <h1 className="text-3xl md:text-5xl font-extrabold font-orbitron tracking-tight text-white leading-tight">
+            {article.title}
+          </h1>
+          <div className="flex items-center justify-center gap-6 text-sm text-gray-400 font-mono pt-2">
+            <span>發布日期：{article.date}</span>
+            <span>•</span>
+            <span className="text-cyan-400">特派記者：{article.author}</span>
+          </div>
+        </header>
+
+        {/* Article Body Content */}
+        <article className="bg-[#121520]/80 backdrop-blur-xl border border-cyan-500/20 rounded-2xl p-8 md:p-12 shadow-[0_0_30px_rgba(0,191,255,0.05)] space-y-6 text-lg text-gray-200 leading-relaxed font-serif">
+          {article.content.split('\n\n').map((paragraph, idx) => (
+            <p key={idx} className="text-justify indent-8">
+              {paragraph}
+            </p>
+          ))}
+        </article>
+
+        {/* Sources Section */}
+        {article.sources && article.sources.length > 0 && (
+          <div className="bg-[#121520]/40 border-l-4 border-cyan-400 p-6 rounded-r-xl space-y-2">
+            <h3 className="text-sm font-orbitron font-bold text-cyan-400 uppercase tracking-widest">資料來源與引用</h3>
+            <ul className="list-disc list-inside text-sm text-gray-400 space-y-1">
+              {article.sources.map((src, idx) => (
+                <li key={idx}>{src}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Back Navigation */}
+        <div className="pt-6 text-center">
+          <Link href="/" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-semibold hover:bg-cyan-500/20 transition-all">
+            ← 返回星際首頁
+          </Link>
+        </div>
+      </main>
+
+      <Footer />
     </div>
   );
 }

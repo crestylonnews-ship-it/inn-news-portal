@@ -1,40 +1,18 @@
-import Link from 'next/link';
-import '@/app/About.css';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export default function AboutPage() {
   return (
-    <div className="about-page">
-      <div className="container">
-        <h1 className="about-title">關於 INN 星際新聞網</h1>
-        <section className="about-section glass-panel glow-border">
-          <h2>我們的使命</h2>
-          <p>
-            INN 星際新聞網致力於為星際聯邦的公民提供最即時、最深入、最客觀的新聞報導。在浩瀚的宇宙中，資訊的流通是文明進步的基石。我們相信，透過公正的報導，能夠促進各星系之間的理解與合作，共同面對未來的挑戰。
-          </p>
-        </section>
-
-        <section className="about-section glass-panel glow-border">
-          <h2>我們的願景</h2>
-          <p>
-            成為星際聯邦最具影響力與公信力的新聞媒體。我們將持續探索新的報導形式與技術，將新聞傳遞到每一個角落，讓每一位公民都能夠掌握世界的脈動。
-          </p>
-        </section>
-
-        <section className="about-section glass-panel glow-border">
-          <h2>聯絡我們</h2>
-          <p>
-            如果您有任何疑問、建議或爆料，歡迎隨時與我們聯繫：
-          </p>
-          <ul>
-            <li>**郵箱**：contact@inn-news.space</li>
-            <li>**地址**：中立站，聯邦新聞大樓 42 層</li>
-          </ul>
-        </section>
-
-        <div className="back-to-home">
-          <Link href="/" className="nav-link">← 返回首頁</Link>
+    <div className="min-h-screen bg-[#0a0b0f] text-white flex flex-col font-sans">
+      <Navbar />
+      <main className="flex-grow max-w-4xl mx-auto px-6 w-full py-16 space-y-8">
+        <h1 className="text-4xl font-extrabold font-orbitron text-cyan-400">關於 INN 星際新聞網</h1>
+        <div className="bg-[#121520]/80 border border-cyan-500/20 rounded-2xl p-8 space-y-6 text-gray-300 leading-relaxed">
+          <p>INN（Interstellar News Network）星際新聞網是聯邦最高委員會授權之官方權威新聞機構，致力於向第四象限及各大星域提供即時、客觀、深度之宇宙時政與科技報導。</p>
+          <p>我們擁有遍布銀河系各個航道的特派記者網絡與量子通訊終端，確保每一位聯邦公民與星際旅客都能第一時間掌握宇宙脈動。</p>
         </div>
-      </div>
+      </main>
+      <Footer />
     </div>
   );
 }

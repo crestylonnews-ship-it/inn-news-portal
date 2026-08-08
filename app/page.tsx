@@ -1,117 +1,106 @@
 import Link from 'next/link';
+import { getAllArticles } from '@/lib/posts';
 import ArticleCard from '@/components/ArticleCard';
-import { getLatestArticles, getArticlesByCategory } from '@/lib/posts';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
-export default async function Home() {
-  const articles = await getLatestArticles();
-  const deepDives = await getArticlesByCategory('deep-dive');
+export default function Home() {
+  const articles = getAllArticles();
   const featured = articles[0];
-  // 即時快訊直接連結最新新聞，並從首頁替換下來
-  const replacedHeadline = articles[1]; // 最新被從頭版替換下來的新聞
-  const breakingNews = articles.filter(a => a.category === 'breaking');
-  // 優先顯示最新文章作為快訊，如果沒有則顯示最新的即時快訊
-  const tickerArticle = replacedHeadline || (breakingNews.length > 0 ? breakingNews[0] : articles[1]);
+  const tickerArticle = articles[1] || articles[0];
+  const latestArticles = articles.slice(2, 8);
 
   return (
-    <div className="home">
-      {/* Hero Section */}
-      <section className="hero">
-        <div className="container">
-          <div className="hero-content">
-            <h1 className="hero-title">⬢ INN ⬢</h1>
-            <p className="hero-subtitle">星際聯邦官方新聞網</p>
-            <p className="hero-desc">銀河系最炫技的新聞終端</p>
-          </div>
-        </div>
-      </section>
+    <div className="min-h-screen bg-[#0a0b0f] text-white flex flex-col font-sans selection:bg-cyan-500 selection:text-black">
+      <Navbar />
 
-      {/* Breaking News Ticker - 直接連結最新新聞 */}
-      <section className="ticker-section">
-        <div className="container">
-          <div className="glass-panel glow-border ticker">
-            <span className="ticker-label">● 即時快訊</span>
-            <div className="ticker-content">
-              {tickerArticle ? (
-                <Link href={`/articles/${tickerArticle.slug}`} className="ticker-item">
-                  <span className="ticker-prefix">⚡ 最新</span> {tickerArticle.title}
-                </Link>
-              ) : null}
-            </div>
+      <main className="flex-grow max-w-7xl mx-auto px-6 w-full space-y-16 py-12">
+        {/* Hero Banner */}
+        <section className="text-center space-y-4 py-8">
+          <div className="inline-block px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono tracking-widest uppercase mb-2">
+            ✦ GALAXY TERMINAL ✦
           </div>
-        </div>
-      </section>
-
-
-      {/* Featured Article */}
-      {featured && (
-        <section className="featured-section">
-          <div className="container">
-            <h2 className="section-title">頭條新聞</h2>
-            <ArticleCard 
-              article={featured} 
-              featured 
-            />
-          </div>
+          <h1 className="text-4xl md:text-6xl font-extrabold font-orbitron tracking-tight text-glow">
+            星際聯邦新聞終端
+          </h1>
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto font-serif">
+            掌握第四象限最新脈動、政策解讀與前沿科技情報
+          </p>
         </section>
-      )}
 
-      {/* Latest Articles Grid */}
-      <section className="articles-section">
-        <div className="container">
-          <h2 className="section-title">最新報導</h2>
-          <div className="grid grid-3">
-            {articles.slice(2, 8).map(article => (
-              <ArticleCard 
-                key={article.slug} 
-                article={article}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Categories */}
-      <section className="categories-section">
-        <div className="container">
-          <div className="grid grid-2">
-            {/* Deep Dives */}
-            <div>
-              <h3 className="category-title">深度報導</h3>
-              <div className="category-list">
-                {deepDives.slice(0, 3).map(article => (
-                  <div key={article.slug} className="category-item glass-panel">
-                    <p className="category-item-title">{article.title}</p>
-                    <p className="category-item-author">by {article.author}</p>
-                  </div>
-                ))}
+        {/* Breaking News Ticker */}
+        {tickerArticle && (
+          <section>
+            <Link href={`/articles/${tickerArticle.slug}`} className="block group">
+              <div className="bg-[#121520]/90 backdrop-blur-xl border border-red-500/30 rounded-xl p-4 md:px-6 flex items-center justify-between shadow-[0_0_20px_rgba(255,0,110,0.1)] group-hover:border-red-400 group-hover:shadow-[0_0_25px_rgba(255,0,110,0.25)] transition-all">
+                <div className="flex items-center gap-4 overflow-hidden">
+                  <span className="flex-shrink-0 bg-red-500/20 border border-red-500/40 text-red-400 text-xs font-bold px-3 py-1 rounded-md animate-pulse">
+                    ⚡ 即時快訊
+                  </span>
+                  <span className="text-white font-medium text-sm md:text-base truncate group-hover:text-red-300 transition-colors">
+                    {tickerArticle.title}
+                  </span>
+                </div>
+                <span className="text-red-400 font-bold text-sm flex-shrink-0 pl-4 group-hover:translate-x-1 transition-transform">
+                  查看詳情 →
+                </span>
               </div>
-            </div>
+            </Link>
+          </section>
+        )}
 
-            {/* Quick Links */}
-            <div>
-              <h3 className="category-title">快速導航</h3>
-              <div className="category-list">
-                <a href="/timeline" className="category-item glass-panel">
-                  <span className="link-arrow">→</span> 時間線歸檔
-                </a>
-                <a href="/opinion" className="category-item glass-panel">
-                  <span className="link-arrow">→</span> 社論與評論
-                </a>
-                <a href="/about" className="category-item glass-panel">
-                  <span className="link-arrow">→</span> 關於本網
-                </a>
-              </div>
+        {/* Featured Headline Section */}
+        {featured && (
+          <section className="space-y-6">
+            <div className="flex items-center justify-between border-b border-cyan-500/20 pb-4">
+              <h2 className="text-2xl font-bold font-orbitron text-cyan-400 tracking-wider flex items-center gap-2">
+                <span>◆</span> 頭條要聞
+              </h2>
+              <span className="text-xs text-gray-400 font-mono">TOP HEADLINE</span>
             </div>
+            <ArticleCard article={featured} featured={true} />
+          </section>
+        )}
+
+        {/* Latest Articles Grid Section */}
+        <section className="space-y-6">
+          <div className="flex items-center justify-between border-b border-cyan-500/20 pb-4">
+            <h2 className="text-2xl font-bold font-orbitron text-cyan-400 tracking-wider flex items-center gap-2">
+              <span>◆</span> 最新報導
+            </h2>
+            <span className="text-xs text-gray-400 font-mono">LATEST FEED</span>
           </div>
-        </div>
-      </section>
+          {latestArticles.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {latestArticles.map(article => (
+                <ArticleCard key={article.slug} article={article} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 text-gray-500 bg-[#121520]/40 rounded-xl border border-cyan-500/10">
+              目前尚無更多報導
+            </div>
+          )}
+        </section>
 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="container">
-          <p>INN 星際新聞網 © 2026 | 星際聯邦官方媒體</p>
-        </div>
-      </footer>
+        {/* Quick Navigation Section */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+          <Link href="/timeline" className="group bg-[#121520]/60 border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-400 transition-all">
+            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">📅 時間線歸檔</h3>
+            <p className="text-sm text-gray-400">依據星曆順序檢視所有歷史新聞與事件發展脈絡。</p>
+          </Link>
+          <Link href="/opinion" className="group bg-[#121520]/60 border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-400 transition-all">
+            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">✒️ 社論與評論</h3>
+            <p className="text-sm text-gray-400">深度剖析聯邦政策走向與銀河地緣政治局勢。</p>
+          </Link>
+          <Link href="/about" className="group bg-[#121520]/60 border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-400 transition-all">
+            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">🏛️ 關於星際新聞</h3>
+            <p className="text-sm text-gray-400">了解 INN 媒體使命、編輯規範與聯邦廣播權限。</p>
+          </Link>
+        </section>
+      </main>
+
+      <Footer />
     </div>
   );
 }

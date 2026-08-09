@@ -27,9 +27,6 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 border-b border-cyan-500/20 bg-[#0a0b0f]/95 backdrop-blur-xl">
       <div className="mx-auto flex min-h-[4.5rem] max-w-7xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6 lg:flex-nowrap lg:gap-5 lg:py-2">
         <Link href="/" className="group flex shrink-0 items-center gap-2.5" aria-label="INN NEWS 首頁">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-500/40 bg-cyan-500/10 transition-all group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(0,191,255,0.4)]">
-            <span className="text-lg font-bold text-cyan-400">⬢</span>
-          </div>
           <div>
             <span className="font-orbitron text-base font-extrabold tracking-wider text-white text-glow sm:text-xl">INN NEWS</span>
             <span className="block text-[9px] tracking-[0.16em] text-cyan-400 sm:text-[10px]">星際聯邦官方新聞網</span>
@@ -48,7 +45,7 @@ export default function Navbar() {
               className="h-10 w-full rounded-xl border border-cyan-500/30 bg-[#121520] px-4 pr-11 text-sm text-white placeholder-gray-500 outline-none transition-all focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
             />
             <button type="submit" aria-label="搜尋" className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1.5 text-cyan-400 transition-colors hover:bg-cyan-400/10 hover:text-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-400/50">
-              🔍
+              搜尋
             </button>
           </div>
         </form>
@@ -60,8 +57,7 @@ export default function Navbar() {
           aria-controls="mobile-navigation"
           onClick={() => setMenuOpen(open => !open)}
         >
-          <span className="mr-2">{menuOpen ? '✕' : '☰'}</span>
-          選單
+          選單{menuOpen ? '（關閉）' : ''}
         </button>
 
         <nav className="hidden shrink-0 items-center gap-4 xl:gap-6 lg:flex" aria-label="主選單">

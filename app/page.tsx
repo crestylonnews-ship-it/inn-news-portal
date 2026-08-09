@@ -17,7 +17,7 @@ export default function Home() {
   const tickerArticle = articles[1] || articles[0];
   
   // 多區塊自動填充
-  const subFeatured = articles.slice(1, 4);
+  const subFeatured = articles.slice(1, 5);
   const techFrontier = articles.filter(a => a.category === 'review').slice(0, 4);
   const deepDives = articles.filter(a => a.category === 'deep-dive' || a.category === 'opinion').slice(0, 4);
   const latestFeed = articles.slice(3, 9); // 更多最新報導
@@ -96,7 +96,7 @@ export default function Home() {
                 </h2>
                 <span className="text-xs text-gray-400 font-mono"><BilingualText zh="即時串流" en="LIVE STREAM" /></span>
               </div>
-              <div className="headline-stack" aria-label="三篇次要焦點標題">
+              <div className="headline-stack" aria-label="四篇次要焦點標題">
                 {subFeatured.length > 0 ? (
                   subFeatured.map((article, index) => (
                     <Link

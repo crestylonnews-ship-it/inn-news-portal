@@ -2,6 +2,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { getAllArticles } from '@/lib/posts';
 import Link from 'next/link';
+import BilingualText from '@/components/BilingualText';
+import { tagToEnglish } from '@/lib/i18n';
 
 export default function TimelinePage() {
   const articles = getAllArticles();
@@ -18,18 +20,19 @@ export default function TimelinePage() {
             <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
               <div className="space-y-3">
                 <p className="eyebrow-label">FEDERATION NEWS MEMORY</p>
-                <h1 className="page-title font-orbitron text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">星曆時間線歸檔</h1>
-                <p className="max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">依照發布日期整理的新聞脈絡，從最新訊號回溯每一則重要紀錄。</p>
+                <h1 className="page-title font-orbitron text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl"><BilingualText zh="星曆時間線歸檔" en="STAR-DATE TIMELINE ARCHIVE" /></h1>
+                <p className="max-w-2xl text-sm leading-7 text-slate-400 sm:text-base"><BilingualText zh="依照發布日期整理的新聞脈絡，從最新訊號回溯每一則重要紀錄。" en="A chronological news stream that traces every important record from the latest signal backward." block /></p>
               </div>
               <div className="page-stat-grid">
-                <div className="page-stat"><span className="page-stat-label">RECORDS</span><strong>{articles.length.toString().padStart(2, '0')}</strong></div>
-                <div className="page-stat"><span className="page-stat-label">SECTORS</span><strong>{categories.toString().padStart(2, '0')}</strong></div>
+                <div className="page-stat"><BilingualText zh="紀錄" en="RECORDS" /><strong>{articles.length.toString().padStart(2, '0')}</strong></div>
+                <div className="page-stat"><BilingualText zh="區域" en="SECTORS" /><strong>{categories.toString().padStart(2, '0')}</strong></div>
               </div>
             </div>
             <div className="page-hero-line" aria-hidden="true" />
           </header>
 
-          <section className="timeline-panel" aria-label="新聞時間線">
+                      <section className="timeline-panel" aria-label="新聞時間線 / News timeline">
+
             <div className="timeline-panel-header">
               <span className="section-code">CHRONOLOGY STREAM // LIVE ARCHIVE</span>
               <span className="section-note">LATEST SYNC: {latestDate}</span>
@@ -40,17 +43,17 @@ export default function TimelinePage() {
                   <div className="timeline-node" aria-hidden="true"><span>{String(index + 1).padStart(2, '0')}</span></div>
                   <div className="timeline-entry-meta">
                     <span className="timeline-date">{article.date}</span>
-                    <span className="timeline-category">{article.category}</span>
+                    <span className="timeline-category"><BilingualText zh={article.category} en={article.category.toUpperCase()} /></span>
                   </div>
                   <div className="timeline-entry-body">
                     <h2 className="font-orbitron text-lg font-bold leading-7 text-slate-100 sm:text-xl">
                       <Link href={`/articles/${article.slug}`} className="timeline-title transition-colors hover:text-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-400/60">
-                        {article.title}
+                        <BilingualText zh={article.title} en={article.titleEn} block />
                       </Link>
                     </h2>
-                    <p className="mt-2 line-clamp-2 text-sm leading-7 text-slate-400">{article.excerpt}</p>
+                    <p className="mt-2 line-clamp-2 text-sm leading-7 text-slate-400"><BilingualText zh={article.excerpt || ''} en={article.excerptEn || article.excerpt || ''} block /></p>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      {article.tags.slice(0, 3).map(tag => <span key={tag} className="timeline-tag">#{tag}</span>)}
+                      {article.tags.slice(0, 3).map(tag => <span key={tag} className="timeline-tag"><BilingualText zh={`#${tag}`} en={`#${tagToEnglish(tag)}`} /></span>)}
                     </div>
                   </div>
                 </article>

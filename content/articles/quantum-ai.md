@@ -5,7 +5,18 @@ category: "review"
 author: "科技前沿主筆"
 tags: ["AI", "量子計算", "導航"]
 sources: ["聯邦科學院技術通訊"]
+titleEn: "Breakthrough Application of Next-Generation Quantum Neural Networks in Interstellar Navigation"
+authorEn: "Lead Writer, Tech Frontiers"
+excerptEn: "With superconducting quantum computers' surge in computing power, a new-generation \"Neural Leap Navigation System\" has successfully passed stress tests in extreme dark-matter regions. Traditional faster-than-light jumps often require hours for complex gravitational-field trajectory calculations. The new quantum neural-network model can simulate hundreds of millions of gravitational-perturbation paths in microseconds, boosting jump precision by nearly 300-fold. This means future deep-space travel will be unprecedentedly safe and efficient. The Federal Defense Force and the Civilian Merchant Shipping Association are planning to fully replace their systems with this revolutionary navigation system within the next two years."
+contentEn: |
+  With the leap in computational power of superconducting quantum computers, a new-generation "Neural Leap Navigation System" has successfully passed stress tests in extreme dark-matter regions.
+
+  Traditional faster-than-light jumps often require hours to compute complex gravitational-field trajectories. The new quantum neural-network model can simulate hundreds of millions of gravitational-perturbation paths in microseconds, boosting jump precision by nearly 300-fold.
+
+  This means future deep-space voyages will become unprecedentedly safe and efficient. The Federal Defense Force and the Civilian Merchant Shipping Association are planning to fully replace their systems with this revolutionary navigation system within the next two years.
+
 ---
+
 隨著超導量子計算機的算力躍升，新一代「神經躍遷導航系統」已成功通過極端暗物質區的壓力測試。
 
 傳統超光速跳躍往往需要耗費數小時進行複雜的引力場軌跡計算。而全新的量子神經網路模型能夠在微秒內模擬上億種引力干擾路徑，將跳躍精度提升了近 300 倍。

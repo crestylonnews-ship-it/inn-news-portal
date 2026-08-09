@@ -65,21 +65,27 @@ function toArticle(filename: string): Article {
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const { data, content } = matter(fileContents) as { data: ArticleFrontmatter; content: string };
   const title = String(data.title || '無標題新聞');
+  const titleEn = String(data.titleEn || title);
   const date = String(data.date || new Date().toISOString().split('T')[0]);
   const category = String(data.category || 'breaking');
   const plainText = markdownToText(content);
   const excerpt = String(data.excerpt || `${plainText.substring(0, 140)}${plainText.length > 140 ? '…' : ''}`);
+  const excerptEn = String(data.excerptEn || excerpt);
 
   return {
     slug,
     title,
+    titleEn,
     date,
     category,
     author: String(data.author || '星際特派員'),
+    authorEn: String(data.authorEn || 'AI Editorial Desk'),
     tags: inferTags(title, plainText, category, normalizeArray(data.tags)),
     sources: normalizeArray(data.sources),
     content,
+    contentEn: String(data.contentEn || content),
     excerpt,
+    excerptEn,
   };
 }
 
@@ -123,6 +129,6 @@ export function searchArticles(query: string): Article[] {
   const q = query.trim().toLowerCase();
   if (!q) return getAllArticles();
   return getAllArticles().filter(article =>
-    [article.title, article.content, article.author, ...article.tags].some(value => value.toLowerCase().includes(q)),
+    [article.title, article.titleEn, article.content, article.contentEn, article.author, article.authorEn, article.excerpt || '', article.excerptEn || '', ...article.tags].some(value => value.toLowerCase().includes(q)),
   );
 }

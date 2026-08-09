@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { LanguageProvider } from '@/components/BilingualText';
 
 export const metadata: Metadata = {
-  title: 'INN 星際聯邦官方新聞網',
-  description: '銀河系最炫技的高科技新聞終端',
+  title: 'INN 星際聯邦官方新聞網 | Stellar Federation Official News Network',
+  description: 'INN 星際聯邦官方新聞網。Stellar Federation Official News Network.',
 };
 
 export default function RootLayout({
@@ -14,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="zh-TW">
       <body className="bg-[#0a0b0f] text-white antialiased">
-        {children}
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );

@@ -7,6 +7,8 @@ import ArticleCard from '@/components/ArticleCard';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import { Article } from '@/lib/types';
+import BilingualText from '@/components/BilingualText';
+import { tagToEnglish } from '@/lib/i18n';
 
 function TagsContent() {
   const searchParams = useSearchParams();
@@ -51,27 +53,27 @@ function TagsContent() {
     <div className="space-y-8 sm:space-y-10">
       <header className="max-w-3xl space-y-4">
         <div className="inline-flex rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-semibold tracking-wider text-cyan-400 uppercase">✦ TAG ARCHIVE ✦</div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl font-orbitron">新聞標籤自動化分類</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl font-orbitron"><BilingualText zh="新聞標籤自動化分類" en="AUTOMATED NEWS TAG ARCHIVE" /></h1>
               </header>
 
       <section aria-labelledby="tag-cloud-title" className="rounded-2xl border border-cyan-500/20 bg-[#121520]/80 p-4 shadow-[0_0_20px_rgba(0,191,255,0.05)] sm:p-6">
         <div className="mb-4 flex items-center justify-between gap-3 border-b border-cyan-500/15 pb-3">
-          <h2 id="tag-cloud-title" className="font-orbitron text-sm font-bold tracking-wider text-cyan-400 sm:text-base">TAG CLOUD // 動態標籤</h2>
+          <h2 id="tag-cloud-title" className="font-orbitron text-sm font-bold tracking-wider text-cyan-400 sm:text-base"><BilingualText zh="動態標籤" en="TAG CLOUD" /></h2>
           <span className="text-xs text-gray-500 font-mono">{tagStats.length} TAGS</span>
         </div>
         {loading ? (
-          <div className="py-8 text-center text-sm text-cyan-300">正在同步標籤矩陣…</div>
+          <div className="py-8 text-center text-sm text-cyan-300"><BilingualText zh="正在同步標籤矩陣…" en="SYNCING TAG MATRIX…" /></div>
         ) : (
           <div className="flex flex-wrap items-center gap-2.5">
             <Link href="/tags" className={`rounded-xl border px-3 py-2 text-sm transition-all sm:px-4 ${!selectedTag ? 'border-cyan-300 bg-cyan-400 text-black shadow-[0_0_15px_rgba(0,191,255,0.4)] font-bold' : 'border-cyan-500/30 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20'}`}>
-              全部新聞 <span className="ml-1 opacity-70">({articles.length})</span>
+              <BilingualText zh="全部新聞" en="ALL REPORTS" /> <span className="ml-1 opacity-70">({articles.length})</span>
             </Link>
             {tagStats.map(({ tag, count }) => {
               const isSelected = selectedTag === tag;
               const scale = count >= maxCount * 0.75 ? 'text-base' : count >= maxCount * 0.4 ? 'text-sm' : 'text-xs';
               return (
                 <Link key={tag} href={`/tags?tag=${encodeURIComponent(tag)}`} className={`rounded-xl border px-3 py-2 transition-all sm:px-4 ${scale} ${isSelected ? 'border-cyan-300 bg-cyan-400 text-black shadow-[0_0_15px_rgba(0,191,255,0.4)] font-bold' : 'border-cyan-500/30 bg-cyan-500/10 text-cyan-300 hover:border-cyan-300 hover:bg-cyan-500/20'}`}>
-                  #{tag} <span className="ml-1 opacity-60">{count}</span>
+                  <BilingualText zh={`#${tag}`} en={`#${tagToEnglish(tag)}`} /> <span className="ml-1 opacity-60">{count}</span>
                 </Link>
               );
             })}
@@ -81,15 +83,15 @@ function TagsContent() {
 
       <section className="space-y-6" aria-labelledby="filtered-title">
         <div className="flex flex-col gap-2 border-b border-cyan-500/20 pb-4 sm:flex-row sm:items-center sm:justify-between">
-          <h2 id="filtered-title" className="text-xl font-bold text-cyan-400 sm:text-2xl font-orbitron">{selectedTag ? `包含標籤 #${selectedTag} 的報導` : '所有星際報導'}</h2>
-          <span className="text-xs text-gray-400 font-mono">共 {filteredArticles.length} 篇</span>
+          <h2 id="filtered-title" className="text-xl font-bold text-cyan-400 sm:text-2xl font-orbitron">{selectedTag ? <BilingualText zh={`包含標籤 #${selectedTag} 的報導`} en={`REPORTS WITH TAG #${selectedTag}`} /> : <BilingualText zh="所有星際報導" en="ALL INTERSTELLAR REPORTS" />}</h2>
+          <span className="text-xs text-gray-400 font-mono"><BilingualText zh={`共 ${filteredArticles.length} 篇`} en={`${filteredArticles.length} REPORTS`} /></span>
         </div>
         {filteredArticles.length > 0 ? (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6">
             {filteredArticles.map(article => <ArticleCard key={article.slug} article={article} />)}
           </div>
         ) : (
-          <div className="rounded-2xl border border-cyan-500/10 bg-[#121520]/40 py-16 text-center text-gray-400">{loading ? '正在讀取文章…' : '沒有找到符合此標籤的文章。'}</div>
+          <div className="rounded-2xl border border-cyan-500/10 bg-[#121520]/40 py-16 text-center text-gray-400">{loading ? <BilingualText zh="正在讀取文章…" en="LOADING REPORTS…" /> : <BilingualText zh="沒有找到符合此標籤的文章。" en="NO REPORTS MATCH THIS TAG." />}</div>
         )}
       </section>
     </div>
@@ -101,7 +103,7 @@ export default function TagsPage() {
     <div className="min-h-screen bg-[#0a0b0f] text-white flex flex-col font-sans">
       <Navbar />
       <main className="flex-grow w-full max-w-7xl mx-auto px-4 py-8 sm:px-6 sm:py-12">
-        <Suspense fallback={<div className="py-20 text-center text-cyan-400">正在載入標籤分類...</div>}><TagsContent /></Suspense>
+        <Suspense fallback={<div className="py-20 text-center text-cyan-400"><BilingualText zh="正在載入標籤分類..." en="LOADING TAG ARCHIVE..." /></div>}><TagsContent /></Suspense>
       </main>
       <Footer />
     </div>

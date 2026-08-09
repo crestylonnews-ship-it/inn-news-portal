@@ -87,8 +87,14 @@ export function getAllArticles(): Article[] {
   if (!fs.existsSync(articlesDirectory)) return [];
   return fs.readdirSync(articlesDirectory)
     .filter(filename => filename.endsWith('.md'))
-    .map(toArticle)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    .map(filename => ({ filename, article: toArticle(filename) }))
+    .sort((a, b) => {
+      const dateDiff = new Date(b.article.date).getTime() - new Date(a.article.date).getTime();
+      if (dateDiff !== 0) return dateDiff;
+      // 同一天的文章以檔名時間戳降冪排列，確保最新發布內容位於首頁第一篇。
+      return b.filename.localeCompare(a.filename);
+    })
+    .map(({ article }) => article);
 }
 
 export function getArticleBySlug(slug: string): Article | null {

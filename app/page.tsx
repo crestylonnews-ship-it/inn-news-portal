@@ -4,6 +4,7 @@ import ArticleCard from '@/components/ArticleCard';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import OpeningAnimation from '@/components/OpeningAnimation';
+import LiveClock from '@/components/LiveClock';
 
 export default function Home() {
   const articles = getAllArticles(); // 已自動依照日期時間由新到舊排序
@@ -34,7 +35,7 @@ export default function Home() {
             <span>INTERSTELLAR FEDERATION TERMINAL</span>
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold font-orbitron tracking-tight text-glow neon-title-glow">
-            星際聯邦新聞終端 <span className="text-cyan-400 text-2xl md:text-4xl block mt-1">INN NEWS PORTAL // Y/3</span>
+            星際聯邦新聞終端 <span className="text-cyan-400 text-2xl md:text-4xl block mt-1">INN NEWS PORTAL // <LiveClock /></span>
           </h1>
           <p className="text-gray-400 text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-serif">
             第四象限即時情報網 • 全自動量子同步與多維區塊新聞串流

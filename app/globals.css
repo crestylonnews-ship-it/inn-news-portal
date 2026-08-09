@@ -2108,10 +2108,24 @@ body {
 .tag-matrix-chip .bilingual-secondary { font-size: .6em; }
 .tag-matrix-chip > span:last-child { color: rgba(103, 232, 249, .72); }
 .tag-matrix-chip:hover, .tag-matrix-chip.is-selected { border-color: rgba(103, 232, 249, .52); background: rgba(34, 211, 238, .12); color: #ecfeff; }
+.tags-filter-results { scroll-margin-top: 5.5rem; }
 @media (max-width: 620px) {
-  .tag-signal-grid { grid-template-columns: 1fr; }
-  .tag-signal-card { min-height: 4.2rem; }
+  .tag-signal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45rem; }
+  .tag-signal-card {
+    grid-template-columns: 1.15rem minmax(0, 1fr) auto;
+    min-height: 3.35rem;
+    gap: .4rem;
+    padding: .55rem .58rem;
+    border-radius: .68rem;
+  }
+  .tag-signal-index { font-size: .56rem; }
+  .tag-signal-copy { font-size: .7rem; line-height: 1.15; }
+  .tag-signal-copy .bilingual-secondary { font-size: .58em; }
+  .tag-signal-count { min-width: 1.35rem; font-size: .72rem; }
   .tag-cloud-console-header { align-items: flex-start; flex-direction: column; }
+}
+@media (max-width: 380px) {
+  .tag-signal-grid { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) {
   .tag-signal-card, .tag-matrix-toggle, .tag-matrix-chip { transition: none; }

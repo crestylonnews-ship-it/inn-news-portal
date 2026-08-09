@@ -60,6 +60,18 @@ function TagsContent() {
   const visibleTagStats = showAllTags ? tagStats : compactTagStats;
   const hiddenTagCount = Math.max(tagStats.length - compactTagStats.length, 0);
 
+  useEffect(() => {
+    if (!selectedTag || loading) return;
+    const timer = window.setTimeout(() => {
+      const target = document.getElementById('filtered-results');
+      if (!target) return;
+      const offset = window.innerWidth <= 620 ? 76 : 96;
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    }, 180);
+    return () => window.clearTimeout(timer);
+  }, [selectedTag, loading]);
+
   return (
     <div className="space-y-8 sm:space-y-10">
       <header className="max-w-3xl space-y-4">
@@ -120,7 +132,7 @@ function TagsContent() {
         )}
       </section>
 
-      <section className="space-y-6" aria-labelledby="filtered-title">
+      <section id="filtered-results" className="tags-filter-results space-y-6" aria-labelledby="filtered-title">
         <div className="flex flex-col gap-2 border-b border-cyan-500/20 pb-4 sm:flex-row sm:items-center sm:justify-between">
           <h2 id="filtered-title" className="text-xl font-bold text-cyan-400 sm:text-2xl font-orbitron">{selectedTag ? <BilingualText zh={`包含標籤 #${selectedTag} 的報導`} en={`REPORTS WITH TAG #${selectedTag}`} /> : <BilingualText zh="所有星際報導" en="ALL INTERSTELLAR REPORTS" />}</h2>
           <span className="text-xs text-gray-400 font-mono"><BilingualText zh={`共 ${filteredArticles.length} 篇`} en={`${filteredArticles.length} REPORTS`} /></span>

@@ -33,6 +33,12 @@ function TagsContent() {
   const tagStats = useMemo(() => {
     const counts = new Map<string, number>();
     articles.forEach(article => article.tags?.forEach(tag => counts.set(tag, (counts.get(tag) || 0) + 1)));
+
+    // Keep the three editorial education topics visible as permanent entry points.
+    ['國際教育議題', '國內教育議題', '青少年議題'].forEach(tag => {
+      if (!counts.has(tag)) counts.set(tag, 0);
+    });
+
     return Array.from(counts, ([tag, count]) => ({ tag, count })).sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag, 'zh-Hant'));
   }, [articles]);
 
@@ -46,8 +52,7 @@ function TagsContent() {
       <header className="max-w-3xl space-y-4">
         <div className="inline-flex rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-semibold tracking-wider text-cyan-400 uppercase">✦ TAG ARCHIVE ✦</div>
         <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl font-orbitron">新聞標籤自動化分類</h1>
-        <p className="text-base leading-relaxed text-gray-400 sm:text-lg">標籤會從 Markdown frontmatter 讀取；若文章未填寫，系統會依標題與正文關鍵字自動補上，並按使用頻率調整顯示權重。</p>
-      </header>
+              </header>
 
       <section aria-labelledby="tag-cloud-title" className="rounded-2xl border border-cyan-500/20 bg-[#121520]/80 p-4 shadow-[0_0_20px_rgba(0,191,255,0.05)] sm:p-6">
         <div className="mb-4 flex items-center justify-between gap-3 border-b border-cyan-500/15 pb-3">

@@ -21,8 +21,6 @@ export default function Home() {
   const techFrontier = articles.filter(a => a.category === 'review').slice(0, 4);
   const deepDives = articles.filter(a => a.category === 'deep-dive' || a.category === 'opinion').slice(0, 4);
   const latestFeed = articles.slice(3, 9); // 更多最新報導
-  const tagCount = new Set(articles.flatMap(article => article.tags)).size;
-  const latestDate = articles[0]?.date || '—';
   const categoryEnglish: Record<string, string> = { breaking: 'BREAKING', review: 'TECH FRONTIER', 'deep-dive': 'DEEP DIVE', opinion: 'EDITORIAL' };
 
   return (
@@ -44,15 +42,6 @@ export default function Home() {
               <div className="terminal-system-line"><span><BilingualText zh="INN 新聞入口 //" en="INN NEWS PORTAL //" /></span><LiveClock /></div>
               <p className="terminal-lede"><BilingualText zh="星際軌道觀測站 • 以同等信息重力收攏地表文明的每一道訊號" en="An orbital observation station gathering every signal from surface civilization under equal informational gravity." block /></p>
             </div>
-            <aside className="terminal-readout" aria-label="INN 系統狀態 / System status">
-              <div className="terminal-readout-heading"><BilingualText zh="觀測站狀態讀出" en="STATION READOUT" /> <span>01</span></div>
-              <div className="readout-row"><BilingualText zh="檔案頻道" en="ARCHIVE CHANNEL" /><strong><BilingualText zh="連線中" en="ONLINE" /></strong></div>
-              <div className="readout-row"><BilingualText zh="事件索引" en="EVENT INDEX" /><strong>{articles.length.toString().padStart(2, '0')}</strong></div>
-              <div className="readout-row"><BilingualText zh="標籤矩陣" en="TAG MATRIX" /><strong>{tagCount.toString().padStart(2, '0')}</strong></div>
-              <div className="readout-row"><BilingualText zh="最後同步" en="LAST SYNC" /><strong>{latestDate}</strong></div>
-              <div className="readout-meter"><span /><span /><span /><span /><span /><span /><span /><span /></div>
-              <p className="terminal-readout-note"><BilingualText zh={<>雜訊濾波 / 啟用<br />轉譯層 / 就緒</>} en={<>NOISE FILTER / ACTIVE<br />TRANSLATION LAYER / READY</>} block /></p>
-            </aside>
           </div>
           <div className="terminal-hero-footer"><span><BilingualText zh="觀測站識別：INN-Q4-001" en="STATION ID: INN-Q4-001" /></span><span><BilingualText zh="紀錄模式：持續" en="RECORD MODE: CONTINUOUS" /></span><span><BilingualText zh="上行鏈路：穩定" en="UPLINK: STABLE" /></span></div>
         </section>

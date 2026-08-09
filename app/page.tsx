@@ -25,17 +25,21 @@ export default function Home() {
       <Navbar />
       <OpeningAnimation />
 
-      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 w-full space-y-10 sm:space-y-16 py-8 sm:py-12">
+      <main className="content-shell flex-grow max-w-7xl mx-auto px-4 sm:px-6 w-full space-y-10 sm:space-y-16 py-8 sm:py-12">
         {/* Hero Banner with Sci-Fi Glow & Bilingual */}
-        <section className="hero-scene animate-rise-in text-center space-y-4 py-3 sm:py-6 relative">
+        <section className="hero-scene animate-rise-in text-center space-y-4 py-5 sm:py-9 relative">
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="w-[500px] h-[150px] bg-cyan-500/10 rounded-full blur-[100px]"></div>
           </div>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/40 text-cyan-400 text-xs font-mono tracking-widest uppercase shadow-[0_0_15px_rgba(0,191,255,0.3)]">
             <span>INTERSTELLAR FEDERATION TERMINAL</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold font-orbitron tracking-tight text-glow neon-title-glow">
-            星際聯邦新聞終端 <span className="text-cyan-400 text-2xl md:text-4xl block mt-1">INN NEWS PORTAL // <LiveClock /></span>
+          <h1 className="hero-title text-3xl sm:text-4xl md:text-6xl font-extrabold font-orbitron tracking-tight text-glow neon-title-glow">
+            星際聯邦新聞終端
+            <span className="hero-system-line text-cyan-400 text-xl sm:text-2xl md:text-4xl block mt-2">
+              <span>INN NEWS PORTAL //</span>
+              <LiveClock />
+            </span>
           </h1>
           <p className="text-gray-400 text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-serif">
             第四象限即時情報網 • 全自動量子同步與多維區塊新聞串流
@@ -68,7 +72,7 @@ export default function Home() {
           <section className="animate-rise-in delay-2 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-start">
             <div className="lg:col-span-2 space-y-4">
               <div className="flex items-center justify-between border-b border-cyan-500/30 pb-3">
-                <h2 className="text-xl font-bold font-orbitron text-cyan-400 tracking-wider flex items-center gap-2 neon-title-glow">
+                <h2 className="section-title text-xl font-bold font-orbitron text-cyan-400 tracking-wider flex flex-wrap items-center gap-x-2 gap-y-1 neon-title-glow">
                   核心頭條要聞 <span className="text-xs font-mono text-gray-400">// PRIME HEADLINE</span>
                 </h2>
                 <span className="text-xs text-cyan-300 font-mono">AUTO-SYNCED</span>
@@ -78,7 +82,7 @@ export default function Home() {
 
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-cyan-500/30 pb-3">
-                <h2 className="text-xl font-bold font-orbitron text-cyan-400 tracking-wider flex items-center gap-2 neon-title-glow">
+                <h2 className="section-title text-xl font-bold font-orbitron text-cyan-400 tracking-wider flex flex-wrap items-center gap-x-2 gap-y-1 neon-title-glow">
                   次要焦點 <span className="text-xs font-mono text-gray-400">// SUB-FEEDS</span>
                 </h2>
                 <span className="text-xs text-gray-400 font-mono">LIVE STREAM</span>
@@ -117,7 +121,7 @@ export default function Home() {
           {/* Tech Frontier Block */}
           <div className="space-y-6 bg-[#121520]/50 border border-cyan-500/20 rounded-2xl p-5 sm:p-6 md:p-8 backdrop-blur-md">
             <div className="flex items-center justify-between border-b border-cyan-500/30 pb-3">
-              <h2 className="text-xl font-bold font-orbitron text-cyan-400 tracking-wider flex items-center gap-2 neon-title-glow">
+              <h2 className="section-title text-xl font-bold font-orbitron text-cyan-400 tracking-wider flex flex-wrap items-center gap-x-2 gap-y-1 neon-title-glow">
                 科技前沿專區 <span className="text-xs font-mono text-gray-400">// TECH FRONTIER</span>
               </h2>
               <Link href="/tags?tag=AI" className="text-xs text-cyan-400 hover:underline font-mono">查看全部 →</Link>
@@ -136,7 +140,7 @@ export default function Home() {
           {/* Editorial & Deep Dive Block */}
           <div className="space-y-6 bg-[#121520]/50 border border-cyan-500/20 rounded-2xl p-5 sm:p-6 md:p-8 backdrop-blur-md">
             <div className="flex items-center justify-between border-b border-cyan-500/30 pb-3">
-              <h2 className="text-xl font-bold font-orbitron text-cyan-400 tracking-wider flex items-center gap-2 neon-title-glow">
+              <h2 className="section-title text-xl font-bold font-orbitron text-cyan-400 tracking-wider flex flex-wrap items-center gap-x-2 gap-y-1 neon-title-glow">
                 深度社論評論 <span className="text-xs font-mono text-gray-400">// EDITORIAL & DIVE</span>
               </h2>
               <Link href="/opinion" className="text-xs text-cyan-400 hover:underline font-mono">查看全部 →</Link>
@@ -156,7 +160,7 @@ export default function Home() {
         {/* Latest Feed Full Grid Section (Auto Sorted by Date) */}
         <section className="space-y-6">
           <div className="flex items-center justify-between border-b border-cyan-500/30 pb-4">
-            <h2 className="text-xl sm:text-2xl font-bold font-orbitron text-cyan-400 tracking-wider flex items-center gap-2 neon-title-glow">
+            <h2 className="section-title text-xl sm:text-2xl font-bold font-orbitron text-cyan-400 tracking-wider flex flex-wrap items-center gap-x-2 gap-y-1 neon-title-glow">
               全站最新報導串流 <span className="text-xs font-mono text-gray-400">// GLOBAL LATEST FEED (AUTO-SORTED)</span>
             </h2>
             <span className="text-xs text-gray-400 font-mono">TOTAL: {articles.length} ARTICLES</span>

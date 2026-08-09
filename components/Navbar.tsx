@@ -24,9 +24,9 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-cyan-500/20 bg-[#0a0b0f]/95 backdrop-blur-xl">
+    <header className="site-nav sticky top-0 z-50 border-b border-cyan-500/20 bg-[#0a0b0f]/95 backdrop-blur-xl">
       <div className="mx-auto flex min-h-[4.5rem] max-w-7xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6 lg:flex-nowrap lg:gap-5 lg:py-2">
-        <Link href="/" className="group flex shrink-0 items-center gap-2.5" aria-label="INN NEWS 首頁">
+        <Link href="/" className="nav-brand group flex shrink-0 items-center gap-2.5" aria-label="INN NEWS 首頁">
           <div>
             <span className="font-orbitron text-base font-extrabold tracking-wider text-white text-glow sm:text-xl">INN NEWS</span>
             <span className="block text-[9px] tracking-[0.16em] text-cyan-400 sm:text-[10px]">星際聯邦官方新聞網</span>
@@ -62,7 +62,7 @@ export default function Navbar() {
 
         <nav className="hidden shrink-0 items-center gap-4 xl:gap-6 lg:flex" aria-label="主選單">
           {navItems.map(item => (
-            <Link key={item.href} href={item.href} className="whitespace-nowrap text-sm font-medium text-gray-300 transition-colors hover:text-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 rounded-sm">
+            <Link key={item.href} href={item.href} className="nav-link whitespace-nowrap rounded-sm text-sm font-medium text-gray-300 transition-colors hover:text-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50">
               {item.label}
             </Link>
           ))}

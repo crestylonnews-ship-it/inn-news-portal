@@ -40,8 +40,8 @@ export default function ArticleCard({ article, featured = false, compact = false
 
   if (featured) {
     return (
-      <Link href={`/articles/${article.slug}`} className="block h-full group">
-        <div className="news-card featured-card relative h-full overflow-hidden rounded-2xl border border-cyan-500/40 bg-[#121520]/90 p-5 shadow-[0_0_40px_rgba(0,191,255,0.12)] backdrop-blur-2xl transition-all duration-300 group-hover:border-cyan-400 group-hover:shadow-[0_0_60px_rgba(0,191,255,0.3)] sm:p-8 lg:p-10">
+      <Link href={`/articles/${article.slug}`} aria-label={`閱讀：${article.title}`} className="block h-full group">
+        <div data-card="article" data-category={article.category} className="news-card featured-card relative h-full overflow-hidden rounded-2xl border border-cyan-500/40 bg-[#121520]/90 p-5 shadow-[0_0_40px_rgba(0,191,255,0.12)] backdrop-blur-2xl transition-all duration-300 group-hover:border-cyan-400 group-hover:shadow-[0_0_60px_rgba(0,191,255,0.3)] sm:p-8 lg:p-10">
           <div className="pointer-events-none absolute right-0 top-0 h-32 w-32 rounded-full bg-cyan-500/5 blur-3xl" />
           <div className="mb-4 flex flex-wrap items-center gap-2.5">
             <span className={`rounded-full border px-3 py-1 text-[10px] font-mono tracking-widest uppercase sm:text-xs ${meta.color}`}>
@@ -65,8 +65,8 @@ export default function ArticleCard({ article, featured = false, compact = false
 
   if (compact) {
     return (
-      <Link href={`/articles/${article.slug}`} className="block group">
-        <div className="news-card compact-card rounded-xl border border-cyan-500/20 bg-[#121520]/60 p-4 backdrop-blur-xl transition-all duration-300 hover:border-cyan-400/80 hover:shadow-[0_0_20px_rgba(0,191,255,0.2)]">
+      <Link href={`/articles/${article.slug}`} aria-label={`閱讀：${article.title}`} className="block group">
+        <div data-card="article" data-category={article.category} className="news-card compact-card rounded-xl border border-cyan-500/20 bg-[#121520]/60 p-4 backdrop-blur-xl transition-all duration-300 hover:border-cyan-400/80 hover:shadow-[0_0_20px_rgba(0,191,255,0.2)]">
           <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
             <span className={`rounded border px-2 py-0.5 text-[10px] font-mono uppercase ${meta.color}`}>{meta.label}</span>
             <span className="text-[11px] text-gray-400 font-mono">{article.date}</span>
@@ -79,8 +79,8 @@ export default function ArticleCard({ article, featured = false, compact = false
   }
 
   return (
-    <Link href={`/articles/${article.slug}`} className="block h-full group">
-      <div className="news-card flex h-full flex-col justify-between rounded-xl border border-cyan-500/30 bg-[#121520]/80 p-5 shadow-[0_0_25px_rgba(0,191,255,0.06)] backdrop-blur-xl transition-all duration-300 hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(0,191,255,0.2)] sm:p-6">
+    <Link href={`/articles/${article.slug}`} aria-label={`閱讀：${article.title}`} className="block h-full group">
+      <div data-card="article" data-category={article.category} className="news-card flex h-full flex-col justify-between rounded-xl border border-cyan-500/30 bg-[#121520]/80 p-5 shadow-[0_0_25px_rgba(0,191,255,0.06)] backdrop-blur-xl transition-all duration-300 hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(0,191,255,0.2)] sm:p-6">
         <div>
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-mono tracking-wider uppercase sm:text-[11px] ${meta.color}`}>{meta.label} // {meta.en}</span>

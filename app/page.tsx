@@ -19,6 +19,8 @@ export default function Home() {
   const techFrontier = articles.filter(a => a.category === 'review').slice(0, 4);
   const deepDives = articles.filter(a => a.category === 'deep-dive' || a.category === 'opinion').slice(0, 4);
   const latestFeed = articles.slice(3, 9); // 更多最新報導
+  const tagCount = new Set(articles.flatMap(article => article.tags)).size;
+  const latestDate = articles[0]?.date || '—';
 
   return (
     <div className="site-shell min-h-screen bg-[#0a0b0f] text-white flex flex-col font-sans selection:bg-cyan-500 selection:text-black">
@@ -26,24 +28,30 @@ export default function Home() {
       <OpeningAnimation />
 
       <main className="content-shell flex-grow max-w-7xl mx-auto px-4 sm:px-6 w-full space-y-10 sm:space-y-16 py-8 sm:py-12">
-        {/* Hero Banner with Sci-Fi Glow & Bilingual */}
-        <section className="hero-scene animate-rise-in text-center space-y-4 py-5 sm:py-9 relative">
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-[500px] h-[150px] bg-cyan-500/10 rounded-full blur-[100px]"></div>
+        {/* Orbital News Terminal Cockpit */}
+        <section className="hero-scene terminal-hero animate-rise-in">
+          <div className="terminal-hero-topline">
+            <span>INN // ORBITAL NEWS ARRAY</span>
+            <span className="terminal-live"><i /> LIVE FEED / Q4</span>
           </div>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/40 text-cyan-400 text-xs font-mono tracking-widest uppercase shadow-[0_0_15px_rgba(0,191,255,0.3)]">
-            <span>INTERSTELLAR FEDERATION TERMINAL</span>
+          <div className="terminal-hero-grid">
+            <div className="terminal-hero-main">
+              <div className="terminal-kicker"><span className="terminal-kicker-mark" />INTERSTELLAR FEDERATION TERMINAL</div>
+              <h1 className="terminal-title">星際聯邦<br /><span>新聞終端</span></h1>
+              <div className="terminal-system-line"><span>INN NEWS PORTAL //</span><LiveClock /></div>
+              <p className="terminal-lede">星際軌道觀測站 • 以同等信息重力收攏地表文明的每一道訊號</p>
+            </div>
+            <aside className="terminal-readout" aria-label="INN 系統狀態">
+              <div className="terminal-readout-heading">STATION READOUT <span>01</span></div>
+              <div className="readout-row"><span>ARCHIVE CHANNEL</span><strong>ONLINE</strong></div>
+              <div className="readout-row"><span>EVENT INDEX</span><strong>{articles.length.toString().padStart(2, '0')}</strong></div>
+              <div className="readout-row"><span>TAG MATRIX</span><strong>{tagCount.toString().padStart(2, '0')}</strong></div>
+              <div className="readout-row"><span>LAST SYNC</span><strong>{latestDate}</strong></div>
+              <div className="readout-meter"><span /><span /><span /><span /><span /><span /><span /><span /></div>
+              <p className="terminal-readout-note">NOISE FILTER / ACTIVE<br />TRANSLATION LAYER / READY</p>
+            </aside>
           </div>
-          <h1 className="hero-title text-3xl sm:text-4xl md:text-6xl font-extrabold font-orbitron tracking-tight text-glow neon-title-glow">
-            星際聯邦新聞終端
-            <span className="hero-system-line text-cyan-400 text-xl sm:text-2xl md:text-4xl block mt-2">
-              <span>INN NEWS PORTAL //</span>
-              <LiveClock />
-            </span>
-          </h1>
-          <p className="text-gray-400 text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-serif">
-            星際軌道觀測站 • 以同等信息重力收攏地表文明的每一道訊號
-          </p>
+          <div className="terminal-hero-footer"><span>STATION ID: INN-Q4-001</span><span>RECORD MODE: CONTINUOUS</span><span>UPLINK: STABLE</span></div>
         </section>
 
         <section className="mission-strip animate-rise-in delay-1" aria-label="INN 品牌宗旨">

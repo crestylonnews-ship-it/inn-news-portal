@@ -64,7 +64,7 @@ export default function AboutPage() {
           <div className="section-heading-line">
             <div>
               <p className="eyebrow-label">ARCHIVE PRINCIPLES</p>
-              <h2>不是喧囂，而是完整的檔案</h2>
+              <h2>完整檔案，乾淨訊號</h2>
             </div>
             <span className="section-code">INN / PROTOCOL</span>
           </div>

@@ -1860,3 +1860,76 @@ body {
     line-height: 1.72;
   }
 }
+
+/* Centered terminal hero: the station signal stays focused in the visual axis. */
+.terminal-hero-grid {
+  justify-items: center;
+}
+
+.terminal-hero-main {
+  width: min(100%, 58rem);
+  align-items: center;
+  text-align: center;
+}
+
+.terminal-kicker,
+.terminal-system-line {
+  justify-content: center;
+}
+
+.terminal-lede {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Opening animation follows the same bilingual hierarchy as the rest of INN. */
+.opening-kicker .bilingual-text,
+.opening-status .bilingual-text {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .18rem;
+}
+
+.opening-kicker .bilingual-primary,
+.opening-status .bilingual-primary {
+  font-size: 1em;
+  line-height: 1.25;
+}
+
+.opening-kicker .bilingual-secondary,
+.opening-status .bilingual-secondary {
+  margin-top: 0;
+  font-size: .72em;
+  line-height: 1.25;
+  letter-spacing: .12em;
+  color: rgba(103, 232, 249, .68);
+}
+
+.opening-title .bilingual-primary {
+  display: block;
+  font-size: 1em;
+  line-height: 1.15;
+}
+
+.opening-title .bilingual-secondary {
+  display: block;
+  margin-top: .36rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: .42em;
+  line-height: 1.25;
+  letter-spacing: .12em;
+  color: rgba(103, 232, 249, .72);
+}
+
+@media (max-width: 760px) {
+  .terminal-hero-topline,
+  .terminal-hero-footer {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .terminal-hero-topline {
+    flex-wrap: wrap;
+  }
+}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import BilingualText from '@/components/BilingualText';
 
 export default function OpeningAnimation() {
   const [visible, setVisible] = useState(true);
@@ -17,9 +18,9 @@ export default function OpeningAnimation() {
       <div className="opening-grid" aria-hidden="true" />
       <div className="opening-scanline" aria-hidden="true" />
       <div className="opening-content">
-        <p className="opening-kicker">INN NEWS / SYSTEM BOOT</p>
-        <h2 className="opening-title">星際聯邦新聞終端</h2>
-        <p className="opening-status">正在同步多維新聞串流<span className="opening-dots">...</span></p>
+        <p className="opening-kicker"><BilingualText zh="INN NEWS / 系統啟動" en="INN NEWS / SYSTEM BOOT" /></p>
+        <h2 className="opening-title"><BilingualText zh="星際聯邦新聞終端" en="STELLAR FEDERATION NEWS TERMINAL" block /></h2>
+        <p className="opening-status"><BilingualText zh="正在同步多維新聞串流" en="SYNCING MULTI-DIMENSIONAL NEWS FEEDS" /><span className="opening-dots">...</span></p>
         <div className="opening-progress" aria-hidden="true"><span /></div>
       </div>
     </div>

@@ -5,25 +5,58 @@ import Link from 'next/link';
 
 export default function TimelinePage() {
   const articles = getAllArticles();
+  const latestDate = articles[0]?.date || 'NO DATA';
+  const categories = new Set(articles.map(article => article.category)).size;
 
   return (
-    <div className="min-h-screen bg-[#0a0b0f] text-white flex flex-col font-sans">
+    <div className="site-shell min-h-screen bg-[#0a0b0f] text-white flex flex-col font-sans">
       <Navbar />
-      <main className="flex-grow max-w-4xl mx-auto px-6 w-full py-16 space-y-8">
-        <h1 className="text-4xl font-extrabold font-orbitron text-cyan-400">星曆時間線歸檔</h1>
-        <div className="space-y-6 border-l-2 border-cyan-500/30 pl-6 ml-4">
-          {articles.map((article) => (
-            <div key={article.slug} className="relative group">
-              <div className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-[#0a0b0f] border-2 border-cyan-400 group-hover:bg-cyan-400 transition-colors"></div>
-              <span className="text-xs font-mono text-cyan-400">{article.date}</span>
-              <h3 className="text-xl font-bold mt-1">
-                <Link href={`/articles/${article.slug}`} className="hover:text-cyan-300 transition-colors">
-                  {article.title}
-                </Link>
-              </h3>
-              <p className="text-sm text-gray-400 mt-1">{article.excerpt}</p>
+      <main className="content-shell flex-grow max-w-5xl mx-auto px-4 sm:px-6 w-full py-8 sm:py-12 lg:py-16">
+        <div className="page-flow timeline-page space-y-8 sm:space-y-10">
+          <header className="page-hero timeline-hero space-y-5">
+            <div className="page-kicker">ARCHIVE CHANNEL // CHRONOLOGY INDEX</div>
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+              <div className="space-y-3">
+                <p className="eyebrow-label">FEDERATION NEWS MEMORY</p>
+                <h1 className="page-title font-orbitron text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">星曆時間線歸檔</h1>
+                <p className="max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">依照發布日期整理的新聞脈絡，從最新訊號回溯每一則重要紀錄。</p>
+              </div>
+              <div className="page-stat-grid">
+                <div className="page-stat"><span className="page-stat-label">RECORDS</span><strong>{articles.length.toString().padStart(2, '0')}</strong></div>
+                <div className="page-stat"><span className="page-stat-label">SECTORS</span><strong>{categories.toString().padStart(2, '0')}</strong></div>
+              </div>
             </div>
-          ))}
+            <div className="page-hero-line" aria-hidden="true" />
+          </header>
+
+          <section className="timeline-panel" aria-label="新聞時間線">
+            <div className="timeline-panel-header">
+              <span className="section-code">CHRONOLOGY STREAM // LIVE ARCHIVE</span>
+              <span className="section-note">LATEST SYNC: {latestDate}</span>
+            </div>
+            <div className="timeline-rail">
+              {articles.map((article, index) => (
+                <article key={article.slug} className="timeline-entry group">
+                  <div className="timeline-node" aria-hidden="true"><span>{String(index + 1).padStart(2, '0')}</span></div>
+                  <div className="timeline-entry-meta">
+                    <span className="timeline-date">{article.date}</span>
+                    <span className="timeline-category">{article.category}</span>
+                  </div>
+                  <div className="timeline-entry-body">
+                    <h2 className="font-orbitron text-lg font-bold leading-7 text-slate-100 sm:text-xl">
+                      <Link href={`/articles/${article.slug}`} className="timeline-title transition-colors hover:text-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-400/60">
+                        {article.title}
+                      </Link>
+                    </h2>
+                    <p className="mt-2 line-clamp-2 text-sm leading-7 text-slate-400">{article.excerpt}</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {article.tags.slice(0, 3).map(tag => <span key={tag} className="timeline-tag">#{tag}</span>)}
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
         </div>
       </main>
       <Footer />

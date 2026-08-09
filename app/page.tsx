@@ -42,8 +42,17 @@ export default function Home() {
             </span>
           </h1>
           <p className="text-gray-400 text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-serif">
-            第四象限即時情報網 • 全自動量子同步與多維區塊新聞串流
+            星際軌道觀測站 • 以同等信息重力收攏地表文明的每一道訊號
           </p>
+        </section>
+
+        <section className="mission-strip animate-rise-in delay-1" aria-label="INN 品牌宗旨">
+          <div className="mission-strip-code">MISSION / 0001</div>
+          <div className="mission-strip-copy">
+            <p className="eyebrow-label">OFFICIAL OBSERVATION STATION</p>
+            <p>將地表文明的權力更迭、社會事件與科技進展，悉數收攏進星聯的歸檔系統。</p>
+          </div>
+          <Link href="/about" className="mission-strip-link">讀取完整宗旨 <span>→</span></Link>
         </section>
 
         {/* Breaking News Ticker */}
@@ -190,7 +199,7 @@ export default function Home() {
           </Link>
           <Link href="/about" className="portal-card group bg-[#121520]/60 border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-400 transition-all">
             <h3 className="text-lg font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors font-orbitron">關於本網 // ABOUT INN</h3>
-            <p className="text-sm text-gray-400 font-serif">了解星際聯邦總署新聞網使命、編輯規範與廣播授權。</p>
+            <p className="text-sm text-gray-400 font-serif">一座運行於星際軌道的觀測站，將事件轉譯成可追溯、可理解的乾淨波形。</p>
           </Link>
         </section>
       </main>

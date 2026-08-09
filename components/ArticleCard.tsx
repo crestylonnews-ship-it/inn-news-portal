@@ -7,38 +7,56 @@ interface ArticleCardProps {
   compact?: boolean;
 }
 
-const categoryMeta: Record<Article['category'], { label: string; en: string; color: string }> = {
+const categoryMeta: Record<string, { label: string; en: string; color: string }> = {
   breaking: { label: '即時快訊', en: 'BREAKING NEWS', color: 'bg-red-500/10 text-red-400 border-red-500/40 shadow-[0_0_10px_rgba(255,0,80,0.2)]' },
   'deep-dive': { label: '深度報導', en: 'DEEP DIVE', color: 'bg-blue-500/10 text-blue-400 border-blue-500/40 shadow-[0_0_10px_rgba(0,191,255,0.2)]' },
   opinion: { label: '社論專欄', en: 'EDITORIAL', color: 'bg-purple-500/10 text-purple-400 border-purple-500/40 shadow-[0_0_10px_rgba(168,85,247,0.2)]' },
   review: { label: '科技前沿', en: 'TECH FRONTIER', color: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/40 shadow-[0_0_10px_rgba(0,255,255,0.2)]' },
 };
 
+function getMeta(category: string) {
+  return categoryMeta[category] || {
+    label: category || '新聞報導',
+    en: 'NEWS REPORT',
+    color: 'bg-slate-500/10 text-slate-300 border-slate-500/40',
+  };
+}
+
+function Tags({ article, compact = false }: { article: Article; compact?: boolean }) {
+  if (!article.tags?.length) return null;
+  return (
+    <div className="flex flex-wrap gap-1.5" aria-label="文章標籤">
+      {article.tags.slice(0, compact ? 2 : 3).map(tag => (
+        <span key={tag} className="rounded-md border border-cyan-500/20 bg-cyan-500/5 px-1.5 py-0.5 text-[10px] text-cyan-300/80">
+          #{tag}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export default function ArticleCard({ article, featured = false, compact = false }: ArticleCardProps) {
-  const meta = categoryMeta[article.category] || categoryMeta.breaking;
+  const meta = getMeta(article.category);
 
   if (featured) {
     return (
-      <Link href={`/articles/${article.slug}`} className="block group">
-        <div className="bg-[#121520]/90 backdrop-blur-2xl border border-cyan-500/40 rounded-2xl p-8 md:p-10 shadow-[0_0_40px_rgba(0,191,255,0.12)] group-hover:border-cyan-400 group-hover:shadow-[0_0_60px_rgba(0,191,255,0.3)] transition-all duration-300 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="flex items-center gap-3 mb-4">
-            <span className={`text-xs px-3.5 py-1 rounded-full border font-mono tracking-widest uppercase ${meta.color}`}>
+      <Link href={`/articles/${article.slug}`} className="block h-full group">
+        <div className="relative h-full overflow-hidden rounded-2xl border border-cyan-500/40 bg-[#121520]/90 p-5 shadow-[0_0_40px_rgba(0,191,255,0.12)] backdrop-blur-2xl transition-all duration-300 group-hover:border-cyan-400 group-hover:shadow-[0_0_60px_rgba(0,191,255,0.3)] sm:p-8 lg:p-10">
+          <div className="pointer-events-none absolute right-0 top-0 h-32 w-32 rounded-full bg-cyan-500/5 blur-3xl" />
+          <div className="mb-4 flex flex-wrap items-center gap-2.5">
+            <span className={`rounded-full border px-3 py-1 text-[10px] font-mono tracking-widest uppercase sm:text-xs ${meta.color}`}>
               {meta.label} // {meta.en}
             </span>
-            <span className="text-xs text-cyan-300/70 font-mono">STAR-DATE: {article.date}</span>
+            <span className="text-[11px] text-cyan-300/70 font-mono">STAR-DATE: {article.date}</span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4 group-hover:text-cyan-300 transition-colors leading-tight font-orbitron neon-title-glow">
+          <h2 className="mb-4 text-2xl font-extrabold leading-tight text-white transition-colors group-hover:text-cyan-300 sm:text-3xl lg:text-5xl font-orbitron neon-title-glow">
             {article.title}
           </h2>
-          <p className="text-gray-300 text-base md:text-lg mb-6 line-clamp-3 leading-relaxed font-serif">
-            {article.excerpt}
-          </p>
-          <div className="flex items-center justify-between pt-6 border-t border-cyan-500/20 text-sm font-mono">
+          <p className="mb-5 line-clamp-4 text-base leading-relaxed text-gray-300 sm:text-lg">{article.excerpt}</p>
+          <Tags article={article} />
+          <div className="mt-6 flex flex-col gap-3 border-t border-cyan-500/20 pt-5 text-xs font-mono sm:flex-row sm:items-center sm:justify-between sm:text-sm">
             <span className="text-cyan-400">AUTHOR / 記者: {article.author}</span>
-            <span className="text-cyan-400 group-hover:translate-x-2 transition-transform font-bold tracking-wider flex items-center gap-1">
-              READ REPORT / 閱讀全文 →
-            </span>
+            <span className="font-bold tracking-wider text-cyan-400 transition-transform group-hover:translate-x-1">READ REPORT / 閱讀全文 →</span>
           </div>
         </div>
       </Link>
@@ -48,41 +66,33 @@ export default function ArticleCard({ article, featured = false, compact = false
   if (compact) {
     return (
       <Link href={`/articles/${article.slug}`} className="block group">
-        <div className="bg-[#121520]/60 backdrop-blur-xl border border-cyan-500/20 rounded-xl p-4 hover:border-cyan-400/80 hover:shadow-[0_0_20px_rgba(0,191,255,0.2)] transition-all duration-300">
-          <div className="flex items-center justify-between mb-2">
-            <span className={`text-[10px] px-2 py-0.5 rounded border font-mono uppercase ${meta.color}`}>
-              {meta.label}
-            </span>
+        <div className="rounded-xl border border-cyan-500/20 bg-[#121520]/60 p-4 backdrop-blur-xl transition-all duration-300 hover:border-cyan-400/80 hover:shadow-[0_0_20px_rgba(0,191,255,0.2)]">
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+            <span className={`rounded border px-2 py-0.5 text-[10px] font-mono uppercase ${meta.color}`}>{meta.label}</span>
             <span className="text-[11px] text-gray-400 font-mono">{article.date}</span>
           </div>
-          <h4 className="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors line-clamp-2 leading-snug">
-            {article.title}
-          </h4>
+          <h4 className="line-clamp-2 text-sm font-bold leading-snug text-white transition-colors group-hover:text-cyan-300">{article.title}</h4>
+          <div className="mt-3"><Tags article={article} compact /></div>
         </div>
       </Link>
     );
   }
 
   return (
-    <Link href={`/articles/${article.slug}`} className="block group h-full">
-      <div className="bg-[#121520]/80 backdrop-blur-xl border border-cyan-500/30 rounded-xl p-6 h-full flex flex-col justify-between shadow-[0_0_25px_rgba(0,191,255,0.06)] group-hover:border-cyan-400 group-hover:shadow-[0_0_35px_rgba(0,191,255,0.2)] transition-all duration-300">
+    <Link href={`/articles/${article.slug}`} className="block h-full group">
+      <div className="flex h-full flex-col justify-between rounded-xl border border-cyan-500/30 bg-[#121520]/80 p-5 shadow-[0_0_25px_rgba(0,191,255,0.06)] backdrop-blur-xl transition-all duration-300 hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(0,191,255,0.2)] sm:p-6">
         <div>
-          <div className="flex items-center justify-between mb-3">
-            <span className={`text-[11px] px-2.5 py-0.5 rounded-full border font-mono tracking-wider uppercase ${meta.color}`}>
-              {meta.label} // {meta.en}
-            </span>
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-mono tracking-wider uppercase sm:text-[11px] ${meta.color}`}>{meta.label} // {meta.en}</span>
             <span className="text-xs text-gray-400 font-mono">{article.date}</span>
           </div>
-          <h3 className="text-lg font-bold text-white mb-2.5 group-hover:text-cyan-300 transition-colors line-clamp-2 leading-snug font-orbitron">
-            {article.title}
-          </h3>
-          <p className="text-gray-300 text-sm mb-4 line-clamp-3 leading-relaxed font-serif">
-            {article.excerpt}
-          </p>
+          <h3 className="mb-2.5 line-clamp-2 text-lg font-bold leading-snug text-white transition-colors group-hover:text-cyan-300 font-orbitron">{article.title}</h3>
+          <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-300">{article.excerpt}</p>
+          <Tags article={article} />
         </div>
-        <div className="flex items-center justify-between pt-4 border-t border-cyan-500/15 text-xs font-mono">
+        <div className="mt-5 flex items-center justify-between border-t border-cyan-500/15 pt-4 text-xs font-mono">
           <span className="text-gray-400">By {article.author}</span>
-          <span className="text-cyan-400 group-hover:translate-x-1 transition-transform font-bold">ACCESS →</span>
+          <span className="font-bold text-cyan-400 transition-transform group-hover:translate-x-1">ACCESS →</span>
         </div>
       </div>
     </Link>

@@ -38,7 +38,7 @@ export default function Home() {
           <div className="terminal-hero-grid">
             <div className="terminal-hero-main">
               <div className="terminal-kicker"><span className="terminal-kicker-mark" /><BilingualText zh="星際聯邦新聞終端" en="INTERSTELLAR FEDERATION TERMINAL" /></div>
-              <h1 className="terminal-title"><BilingualText zh={<>星際聯邦<br /><span>新聞終端</span></>} en={<>INTERSTELLAR<br /><span>NEWS TERMINAL</span></>} block /></h1>
+              <h1 className="terminal-title"><BilingualText zh="星際聯邦新聞終端" en="INTERSTELLAR NEWS TERMINAL" block /></h1>
               <div className="terminal-system-line"><span><BilingualText zh="INN 新聞入口 //" en="INN NEWS PORTAL //" /></span><LiveClock /></div>
               <p className="terminal-lede"><BilingualText zh="星際軌道觀測站 • 以同等信息重力收攏地表文明的每一道訊號" en="An orbital observation station gathering every signal from surface civilization under equal informational gravity." block /></p>
             </div>

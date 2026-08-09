@@ -1933,3 +1933,49 @@ body {
     flex-wrap: wrap;
   }
 }
+
+/* Hero title language lines: one complete Chinese line and one complete English line. */
+.terminal-title {
+  width: 100%;
+  font-size: clamp(1.7rem, 5.2vw, 3.8rem);
+  letter-spacing: -.055em;
+}
+
+.terminal-title .bilingual-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .42rem;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.terminal-title .bilingual-primary {
+  display: block;
+  white-space: nowrap;
+}
+
+.terminal-title .bilingual-secondary {
+  display: block;
+  margin-top: 0;
+  font-size: .34em;
+  line-height: 1.2;
+  letter-spacing: .1em;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .terminal-title {
+    font-size: clamp(1.3rem, 6.5vw, 2.6rem);
+    letter-spacing: -.045em;
+  }
+
+  .terminal-title .bilingual-text {
+    gap: .3rem;
+  }
+
+  .terminal-title .bilingual-secondary {
+    font-size: .38em;
+    letter-spacing: .06em;
+  }
+}

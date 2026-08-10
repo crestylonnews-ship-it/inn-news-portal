@@ -11,15 +11,16 @@ import { tagToEnglish } from '@/lib/i18n';
 export default function Home() {
   const articles = getAllArticles(); // 已自動依照日期時間由新到舊排序
 
-  // 動態自動化區塊分配
-  const breakingNews = articles.filter(a => a.category === 'breaking');
+  // 動態自動化區塊分配：首頁模組依文章標籤抓取最新內容，不再只依賴固定 category。
   const featured = articles[0];
   const tickerArticle = articles[1] || articles[0];
-  
-  // 多區塊自動填充
   const subFeatured = articles.slice(1, 5);
-  const techFrontier = articles.filter(a => a.category === 'review').slice(0, 4);
-  const deepDives = articles.filter(a => a.category === 'deep-dive' || a.category === 'opinion').slice(0, 4);
+  const hasAnyTag = (article: typeof articles[number], tags: string[]) =>
+    article.tags.some(tag => tags.some(target => tag.toLowerCase() === target.toLowerCase()));
+  const techFrontierTags = ['AI', '人工智慧', '科技', '科技前沿', '量子科技', '資安'];
+  const editorialTags = ['社論評論', '深度報導', '政策', '國際', '教育'];
+  const techFrontier = articles.filter(article => hasAnyTag(article, techFrontierTags)).slice(0, 4);
+  const deepDives = articles.filter(article => hasAnyTag(article, editorialTags)).slice(0, 4);
   const latestFeed = articles.slice(3, 9); // 更多最新報導
   const categoryEnglish: Record<string, string> = { breaking: 'BREAKING', review: 'TECH FRONTIER', 'deep-dive': 'DEEP DIVE', opinion: 'EDITORIAL' };
 
@@ -134,7 +135,7 @@ export default function Home() {
               <h2 className="section-title text-xl font-bold font-orbitron text-cyan-400 tracking-wider flex flex-wrap items-center gap-x-2 gap-y-1 neon-title-glow">
                 <BilingualText zh="科技前沿專區" en="TECH FRONTIER" />
               </h2>
-              <Link href="/tags?tag=AI" className="text-xs text-cyan-400 hover:underline font-mono"><BilingualText zh="查看全部 →" en="VIEW ALL →" /></Link>
+              <Link href="/tags?tag=科技" className="text-xs text-cyan-400 hover:underline font-mono"><BilingualText zh="查看全部 →" en="VIEW ALL →" /></Link>
             </div>
             <div className="grid grid-cols-1 gap-4">
               {techFrontier.length > 0 ? (

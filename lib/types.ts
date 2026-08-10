@@ -3,6 +3,7 @@ export interface Article {
   title: string;
   titleEn: string;
   date: string;
+  publishedAt?: string;
   category: string;
   author: string;
   authorEn: string;
@@ -13,11 +14,11 @@ export interface Article {
   excerpt?: string;
   excerptEn?: string;
 }
-
 export interface ArticleFrontmatter {
   title?: string;
   titleEn?: string;
   date?: string;
+  publishedAt?: string;
   category?: string;
   author?: string;
   authorEn?: string;

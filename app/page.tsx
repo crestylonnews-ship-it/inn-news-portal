@@ -12,16 +12,22 @@ export default function Home() {
   const articles = getAllArticles(); // 已自動依照日期時間由新到舊排序
 
   // 動態自動化區塊分配：首頁模組依文章標籤抓取最新內容，不再只依賴固定 category。
-  const featured = articles[0];
-  const tickerArticle = articles[1] || articles[0];
-  const subFeatured = articles.slice(1, 5);
+  // 國際新聞優先：台灣／國內文章仍保留在全站串流，但不會在有全球新聞時搶占核心頭條。
+  const isDomestic = (article: typeof articles[number]) =>
+    article.category.startsWith('台灣') || article.category.startsWith('國內');
+  const internationalArticles = articles.filter(article => !isDomestic(article));
+  const domesticArticles = articles.filter(article => isDomestic(article));
+  const prioritizedArticles = [...internationalArticles, ...domesticArticles];
+  const featured = prioritizedArticles[0];
+  const tickerArticle = prioritizedArticles[1] || prioritizedArticles[0];
+  const subFeatured = prioritizedArticles.slice(1, 5);
   const hasAnyTag = (article: typeof articles[number], tags: string[]) =>
     article.tags.some(tag => tags.some(target => tag.toLowerCase() === target.toLowerCase()));
   const techFrontierTags = ['AI', '人工智慧', '科技', '科技前沿', '量子科技', '資安'];
   const editorialTags = ['社論評論', '深度報導', '政策', '國際', '教育'];
   const techFrontier = articles.filter(article => hasAnyTag(article, techFrontierTags)).slice(0, 4);
   const deepDives = articles.filter(article => hasAnyTag(article, editorialTags)).slice(0, 4);
-  const latestFeed = articles.slice(3, 9); // 更多最新報導
+  const latestFeed = prioritizedArticles.slice(3, 9); // 國際優先的最新報導
   const categoryEnglish: Record<string, string> = { breaking: 'BREAKING', review: 'TECH FRONTIER', 'deep-dive': 'DEEP DIVE', opinion: 'EDITORIAL' };
 
   return (

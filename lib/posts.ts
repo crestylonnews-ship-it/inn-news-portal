@@ -77,6 +77,7 @@ function toArticle(filename: string): Article {
     title,
     titleEn,
     date,
+    publishedAt: data.publishedAt ? String(data.publishedAt) : undefined,
     category,
     author: String(data.author || '星際特派員'),
     authorEn: String(data.authorEn || 'AI Editorial Desk'),
@@ -97,7 +98,15 @@ export function getAllArticles(): Article[] {
     .sort((a, b) => {
       const dateDiff = new Date(b.article.date).getTime() - new Date(a.article.date).getTime();
       if (dateDiff !== 0) return dateDiff;
-      // 同一天的文章以檔名時間戳降冪排列，確保最新發布內容位於首頁第一篇。
+      // 優先使用發布時間；舊文章沒有 publishedAt 時，從自動發布檔名的 YYYYMMDDHHMMSS 取時間。
+      const publishedDiff = (Date.parse(b.article.publishedAt || '') || 0) - (Date.parse(a.article.publishedAt || '') || 0);
+      if (publishedDiff !== 0) return publishedDiff;
+      const fileTime = (filename: string) => {
+        const match = filename.match(/(\d{8})[-_]?(\d{6})/);
+        return match ? Number(`${match[1]}${match[2]}`) : -1;
+      };
+      const filenameTimeDiff = fileTime(b.filename) - fileTime(a.filename);
+      if (filenameTimeDiff !== 0) return filenameTimeDiff;
       return b.filename.localeCompare(a.filename);
     })
     .map(({ article }) => article);

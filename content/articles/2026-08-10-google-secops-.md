@@ -37,6 +37,7 @@ sources: ["Techbang.com", "Technews.tw", "Ithome.com.tw", "Womany.net", "Yahoo E
 min_word_count: 800
 ---
 
+
 # Google SecOps在臺啟用 黑帽大會推AI安全指引
 
 > 臺灣雲端區域啟用Google SecOps強化資安治理，同時開放安全AI聯盟於黑帽大會提出SAFE指引，應對AI失控風險。

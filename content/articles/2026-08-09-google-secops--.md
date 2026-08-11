@@ -19,6 +19,7 @@ sources: ["Techbang.com", "Technews.tw", "Ithome.com.tw", "Womany.net", "Yahoo E
 word_limit: 800
 ---
 
+
 # Google SecOps 進駐臺灣 全球 AI 安全治理同步推進
 
 > Google Security Operations 於臺灣雲端區域啟用，應對全球第五高網路威脅；同期美國黑帽大會聚焦 AI 安全指引，反映數位治理趨勢。

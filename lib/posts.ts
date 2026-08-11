@@ -1,10 +1,13 @@
-import fs from 'fs';
-import path from 'path';
 import matter from 'gray-matter';
 import { Article, ArticleFrontmatter } from './types';
 import { markdownToText } from './markdown';
 
-const articlesDirectory = path.join(process.cwd(), 'content/articles');
+// 配置資訊
+const GITHUB_OWNER = 'crestylonnews-ship-it';
+const GITHUB_REPO = 'inn-news-portal';
+const ARTICLES_PATH = 'content/articles';
+// 在 Cloudflare Pages 環境中，應透過環境變數提供 Token 以提高 Rate Limit
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN_INN || process.env.GITHUB_TOKEN;
 
 const keywordTags: Array<[string, string[]]> = [
   ['人工智慧', ['AI', '人工智慧', '科技']],
@@ -19,7 +22,7 @@ const keywordTags: Array<[string, string[]]> = [
   ['房價', ['居住正義', '住房', '經濟']],
   ['勞工', ['勞動', '經濟']],
   ['工資', ['勞動', '經濟']],
-  ['律師', ['法律', '職業'],],
+  ['律師', ['法律', '職業']],
   ['法律', ['法律']],
   ['教育', ['教育', '社會']],
   ['青年', ['青年', '社會']],
@@ -59,11 +62,11 @@ function inferTags(title: string, content: string, category: string, explicitTag
   return Array.from(new Set([...explicitTags, ...inferred, ...fallback])).slice(0, 8);
 }
 
-function toArticle(filename: string): Article {
+// 輔助函式：將 API 回傳的資料轉換為 Article 物件
+function parseGitHubArticle(filename: string, fileContents: string): Article {
   const slug = filename.replace(/\.md$/, '');
-  const fullPath = path.join(articlesDirectory, filename);
-  const fileContents = fs.readFileSync(fullPath, 'utf8');
   const { data, content } = matter(fileContents) as { data: ArticleFrontmatter; content: string };
+
   const title = String(data.title || '無標題新聞');
   const titleEn = String(data.titleEn || title);
   const date = String(data.date || new Date().toISOString().split('T')[0]);
@@ -90,54 +93,100 @@ function toArticle(filename: string): Article {
   };
 }
 
-export function getAllArticles(): Article[] {
-  if (!fs.existsSync(articlesDirectory)) return [];
-  return fs.readdirSync(articlesDirectory)
-    .filter(filename => filename.endsWith('.md'))
-    .map(filename => ({ filename, article: toArticle(filename) }))
-    .sort((a, b) => {
-      const dateDiff = new Date(b.article.date).getTime() - new Date(a.article.date).getTime();
-      if (dateDiff !== 0) return dateDiff;
-      // 優先使用發布時間；舊文章沒有 publishedAt 時，從自動發布檔名的 YYYYMMDDHHMMSS 取時間。
-      const publishedDiff = (Date.parse(b.article.publishedAt || '') || 0) - (Date.parse(a.article.publishedAt || '') || 0);
-      if (publishedDiff !== 0) return publishedDiff;
-      const fileTime = (filename: string) => {
-        const match = filename.match(/(\d{8})[-_]?(\d{6})/);
-        return match ? Number(`${match[1]}${match[2]}`) : -1;
-      };
-      const filenameTimeDiff = fileTime(b.filename) - fileTime(a.filename);
-      if (filenameTimeDiff !== 0) return filenameTimeDiff;
-      return b.filename.localeCompare(a.filename);
-    })
-    .map(({ article }) => article);
+// 封裝 GitHub API 調用
+async function fetchFromGitHub(path: string) {
+  const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`;
+  const headers: Record<string, string> = {
+    'Accept': 'application/vnd.github.v3.raw',
+  };
+  if (GITHUB_TOKEN) {
+    headers['Authorization'] = `token ${GITHUB_TOKEN}`;
+  }
+
+  const response = await fetch(url, {
+    headers,
+    next: { revalidate: 300 } // Edge 快取 5 分鐘
+  });
+
+  if (!response.ok) {
+    if (response.status === 404) return null;
+    throw new Error(`GitHub API error: ${response.statusText}`);
+  }
+
+  return response.text();
 }
 
-export function getArticleBySlug(slug: string): Article | null {
-  const safeSlug = path.basename(slug);
-  const filename = `${safeSlug}.md`;
-  const fullPath = path.join(articlesDirectory, filename);
-  if (!fs.existsSync(fullPath)) return null;
+export async function getAllArticles(): Promise<Article[]> {
+  const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${ARTICLES_PATH}`;
+  const headers: Record<string, string> = {
+    'Accept': 'application/vnd.github.v3+json',
+  };
+  if (GITHUB_TOKEN) {
+    headers['Authorization'] = `token ${GITHUB_TOKEN}`;
+  }
+
   try {
-    return toArticle(filename);
+    const response = await fetch(url, {
+      headers,
+      next: { revalidate: 300 }
+    });
+
+    if (!response.ok) return [];
+    const files = await response.json();
+    
+    if (!Array.isArray(files)) return [];
+
+    // 為了效能，我們先只抓取列表資訊，內容在進入單頁時才抓取
+    // 或者在此併發抓取前 20 篇以供首頁顯示
+    const mdFiles = files.filter(f => f.name.endsWith('.md'));
+    
+    // 這裡我們只回傳基礎資訊，或者簡單的 Mock 以相容舊介面
+    // 注意：getAllArticles 在 SSG 模式下會被頻繁調用，動態化後需謹慎處理
+    // 我們可以先實作一個簡單的版本，僅抓取前 50 篇的完整內容
+    const recentFiles = mdFiles.reverse().slice(0, 50);
+    
+    const articles = await Promise.all(recentFiles.map(async (file) => {
+        const content = await fetchFromGitHub(`${ARTICLES_PATH}/${file.name}`);
+        return content ? parseGitHubArticle(file.name, content) : null;
+    }));
+
+    return articles.filter((a): a is Article => a !== null).sort((a, b) => {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+    return [];
+  }
+}
+
+export async function getArticleBySlug(slug: string): Promise<Article | null> {
+  try {
+    const filename = `${slug}.md`;
+    const content = await fetchFromGitHub(`${ARTICLES_PATH}/${filename}`);
+    if (!content) return null;
+    return parseGitHubArticle(filename, content);
   } catch {
     return null;
   }
 }
 
-export function getAllTags(): string[] {
-  return Array.from(new Set(getAllArticles().flatMap(article => article.tags))).sort((a, b) => a.localeCompare(b, 'zh-Hant'));
+export async function getAllTags(): Promise<string[]> {
+  const articles = await getAllArticles();
+  return Array.from(new Set(articles.flatMap(article => article.tags))).sort((a, b) => a.localeCompare(b, 'zh-Hant'));
 }
 
-export function getTagStats(): Array<{ tag: string; count: number }> {
+export async function getTagStats(): Promise<Array<{ tag: string; count: number }>> {
+  const articles = await getAllArticles();
   const counts = new Map<string, number>();
-  getAllArticles().forEach(article => article.tags.forEach(tag => counts.set(tag, (counts.get(tag) || 0) + 1)));
+  articles.forEach(article => article.tags.forEach(tag => counts.set(tag, (counts.get(tag) || 0) + 1)));
   return Array.from(counts, ([tag, count]) => ({ tag, count })).sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag, 'zh-Hant'));
 }
 
-export function searchArticles(query: string): Article[] {
+export async function searchArticles(query: string): Promise<Article[]> {
+  const articles = await getAllArticles();
   const q = query.trim().toLowerCase();
-  if (!q) return getAllArticles();
-  return getAllArticles().filter(article =>
+  if (!q) return articles;
+  return articles.filter(article =>
     [article.title, article.titleEn, article.content, article.contentEn, article.author, article.authorEn, article.excerpt || '', article.excerptEn || '', ...article.tags].some(value => value.toLowerCase().includes(q)),
   );
 }

@@ -7,16 +7,22 @@ import Footer from '@/components/Footer';
 import BilingualText, { BilingualMarkup } from '@/components/BilingualText';
 import { tagToEnglish } from '@/lib/i18n';
 
+// 讓單頁也支援動態抓取與 Edge 快取
+export const dynamic = 'force-dynamic';
+export const revalidate = 300; 
+
 interface ArticlePageProps {
   params: { slug: string };
 }
 
-export function generateStaticParams() {
-  return getAllArticles().map(article => ({ slug: article.slug }));
+// 雖然是動態抓取，但我們仍可以預先生成前 100 篇以優化效能
+export async function generateStaticParams() {
+  const articles = await getAllArticles();
+  return articles.slice(0, 100).map(article => ({ slug: article.slug }));
 }
 
-export default function ArticlePage({ params }: ArticlePageProps) {
-  const article = getArticleBySlug(params.slug);
+export default async function ArticlePage({ params }: ArticlePageProps) {
+  const article = await getArticleBySlug(params.slug);
   if (!article) notFound();
 
   const categoryLabels: Record<string, string> = {
@@ -25,8 +31,15 @@ export default function ArticlePage({ params }: ArticlePageProps) {
     opinion: '社論專欄',
     review: '科技前沿',
   };
+  
   const categoryLabel = categoryLabels[article.category] || article.category || '新聞報導';
-  const categoryLabelEn: Record<string, string> = { breaking: 'BREAKING NEWS', 'deep-dive': 'DEEP DIVE', opinion: 'EDITORIAL', review: 'TECH FRONTIER' };
+  const categoryLabelEn: Record<string, string> = { 
+    breaking: 'BREAKING NEWS', 
+    'deep-dive': 'DEEP DIVE', 
+    opinion: 'EDITORIAL', 
+    review: 'TECH FRONTIER' 
+  };
+
   const articleHtml = renderMarkdown(article.content);
   const articleHtmlEn = renderMarkdown(article.contentEn || article.content);
 
@@ -50,14 +63,17 @@ export default function ArticlePage({ params }: ArticlePageProps) {
               </span>
               <span className="text-xs text-gray-500 font-mono">STAR-DATE · {article.date}</span>
             </div>
+            
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-orbitron tracking-tight text-white leading-[1.18]">
               <BilingualText zh={article.title} en={article.titleEn} block />
             </h1>
+
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-400 font-mono">
               <span><BilingualText zh={`發布日期：${article.date}`} en={`PUBLISHED: ${article.date}`} /></span>
               <span className="hidden sm:inline" aria-hidden="true">•</span>
               <span className="text-cyan-400"><BilingualText zh={`特派記者：${article.author}`} en={`CORRESPONDENT: ${article.authorEn || article.author}`} /></span>
             </div>
+
             <div className="flex flex-wrap gap-2 pt-1" aria-label="文章標籤">
               {article.tags.map(tag => (
                 <Link

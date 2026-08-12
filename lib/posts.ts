@@ -43,7 +43,15 @@ const categoryFallbackTags: Record<string, string[]> = {
 };
 
 function normalizeArray(value: unknown): string[] {
-  if (Array.isArray(value)) return value.map(item => String(item).trim()).filter(Boolean);
+  if (Array.isArray(value)) {
+    return value.map(item => {
+      if (typeof item === 'object' && item !== null) {
+        const record = item as Record<string, unknown>;
+        return String(record.name || record.url || '').trim();
+      }
+      return String(item).trim();
+    }).filter(Boolean);
+  }
   if (typeof value === 'string') return value.split(/[,，、|]/).map(item => item.trim()).filter(Boolean);
   return [];
 }
@@ -63,24 +71,57 @@ function sanitizeFrontmatter(raw: string): string {
   if (closingMarker === -1) return raw;
   const header = raw.slice(0, closingMarker);
   const body = raw.slice(closingMarker);
-  const normalizedHeader = header.replace(/^(\s*[A-Za-z_][\w-]*:\s*)"(.*)"\s*$/gm, (_, prefix: string, value: string) => {
+  const quotedHeader = header.replace(/^(\s*[A-Za-z_][\w-]*:\s*)"(.*)"\s*$/gm, (_, prefix: string, value: string) => {
     // LLM 偶爾會在 YAML 雙引號字串內留下未跳脫的引號；以 JSON 字串格式重寫。
     return `${prefix}${JSON.stringify(value.replace(/\\"/g, '"'))}`;
   });
-  return `${normalizedHeader}${body}`;
+  const lines = quotedHeader.split('\n');
+  let literalBlock = false;
+  const normalizedLines = lines.map(line => {
+    if (/^\s*[A-Za-z_][\w-]*:\s*[>|][-+]?\s*$/.test(line)) {
+      literalBlock = true;
+      return line;
+    }
+    if (literalBlock && line.trim() && !/^\s{2,}/.test(line)) {
+      // contentEn: | 後方常有未縮排的 HTML；將它收回 YAML 字串區塊。
+      return `  ${line}`;
+    }
+    return line;
+  });
+  return `${normalizedLines.join('\n')}${body}`;
+}
+
+function splitLegacyBilingualContent(content: string): { zh: string; en: string } | null {
+  const archiveStart = content.search(/\n---\s*\n(?:###\s*\n---\s*\n)?## Global Archive\s*\/\s*英文存檔/i);
+  if (archiveStart === -1) return null;
+  const zh = content.slice(0, archiveStart)
+    .replace(/^##\s+[A-Za-z][^\n]*\n/gm, '')
+    .replace(/^>\s*\*[A-Za-z][^\n]*\*\s*\n?/gm, '')
+    .trim();
+  const en = content.slice(archiveStart)
+    .replace(/^\n---\s*\n(?:###\s*\n---\s*\n)?## Global Archive\s*\/\s*英文存檔\s*\n?/i, '')
+    .replace(/<details>\s*\n?<summary>[^\n]*<\/summary>\s*\n?/i, '')
+    .replace(/<\/?div[^>]*>\s*\n?/gi, '')
+    .replace(/<\/details>\s*\n?/gi, '')
+    .replace(/^\*\*(原始來源|觀測站註記)[^\n]*\n?/gm, '')
+    .replace(/^---\s*$/gm, '')
+    .trim();
+  return { zh, en };
 }
 
 function parseArticle(filename: string, fileContents: string): Article {
   const slug = filename.replace(/\.md$/, '');
   const { data, content } = matter(sanitizeFrontmatter(fileContents)) as { data: ArticleFrontmatter; content: string };
+  const legacyContent = splitLegacyBilingualContent(content);
+  const primaryContent = legacyContent?.zh || content;
   const title = String(data.title || '無標題新聞');
   const titleEn = String(data.titleEn || 'English edition unavailable');
   const date = String(data.date || new Date().toISOString().split('T')[0]);
   const category = String(data.category || 'breaking');
-  const plainText = markdownToText(content);
+  const plainText = markdownToText(primaryContent);
   const excerpt = String(data.excerpt || `${plainText.substring(0, 140)}${plainText.length > 140 ? '…' : ''}`);
   const excerptEn = String(data.excerptEn || 'The English edition of this article is temporarily unavailable.');
-  const contentEn = String(data.contentEn || '# English edition unavailable\n\nThe English edition of this article is temporarily unavailable.');
+  const contentEn = String(data.contentEn || legacyContent?.en || '# English edition unavailable\n\nThe English edition of this article is temporarily unavailable.');
 
   return {
     slug,
@@ -93,7 +134,7 @@ function parseArticle(filename: string, fileContents: string): Article {
     authorEn: String(data.authorEn || 'AI Editorial Desk'),
     tags: inferTags(title, plainText, category, normalizeArray(data.tags)),
     sources: normalizeArray(data.sources),
-    content,
+    content: primaryContent,
     contentEn,
     excerpt,
     excerptEn,

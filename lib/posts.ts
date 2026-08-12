@@ -82,6 +82,12 @@ function sanitizeFrontmatter(raw: string): string {
       literalBlock = true;
       return line;
     }
+    if (literalBlock && /^\s*[A-Za-z_][\w-]*:\s+.+$/.test(line)) {
+      // A new top-level YAML key ends contentEn: |. Do not turn metadata such
+      // as date/category/author into English article content.
+      literalBlock = false;
+      return line;
+    }
     if (literalBlock && line.trim() && !/^\s{2,}/.test(line)) {
       // contentEn: | 後方常有未縮排的 HTML；將它收回 YAML 字串區塊。
       return `  ${line}`;

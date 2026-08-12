@@ -44,7 +44,7 @@ export default async function Home() {
               {[0, 1].map(copy => (
                 <div key={copy} className="ticker-group flex shrink-0 items-center gap-8 pr-8" aria-hidden={copy === 1}>
                   {latestArticles.map(a => (
-                    <span key={`${a.slug}-${copy}`} className="flex shrink-0 items-center">
+                    <span key={`${a.slug}-${copy}`} className="flex min-w-0 shrink-0 items-center">
                       <span className="mr-2 text-red-500">✦</span>
                       {a.title} / {a.titleEn}
                     </span>
@@ -72,12 +72,12 @@ export default async function Home() {
                     <span className="text-xs font-mono text-cyan-400/60">{primeHeadline.date}</span>
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-[#0a0b0f] via-[#0a0b0f]/80 to-transparent">
-                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black font-orbitron text-white leading-tight group-hover:text-cyan-400 transition-colors">
+                    <h2 className="prime-headline-title text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black font-orbitron text-white leading-tight group-hover:text-cyan-400 transition-colors">
                       <BilingualText zh={primeHeadline.title} en={primeHeadline.titleEn} block />
                     </h2>
                   </div>
                 </div>
-                <p className="text-gray-400 text-lg leading-relaxed line-clamp-2 pl-4 border-l-2 border-cyan-500/30 italic">
+                <p className="prime-headline-excerpt text-base sm:text-lg leading-relaxed line-clamp-3 pl-4 border-l-2 border-cyan-500/30 italic">
                   <BilingualText zh={primeHeadline.excerpt || ''} en={primeHeadline.excerptEn || ''} block />
                 </p>
               </Link>

@@ -2828,3 +2828,129 @@ main,
     transition: none;
   }
 }
+
+
+/* Responsive bilingual typography and reading rhythm */
+.bilingual-text,
+.bilingual-language-zh,
+.bilingual-language-en {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.article-title,
+.prime-headline-title,
+.headline-title,
+.news-card h2,
+.news-card h3,
+.news-card h4 {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  text-wrap: balance;
+}
+
+.article-title .bilingual-text,
+.prime-headline-title .bilingual-text,
+.headline-title .bilingual-text,
+.news-card h2 .bilingual-text,
+.news-card h3 .bilingual-text,
+.news-card h4 .bilingual-text {
+  display: block;
+  width: 100%;
+}
+
+.article-shell {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.article-title .bilingual-language-en,
+.prime-headline-title .bilingual-language-en {
+  letter-spacing: -0.015em;
+}
+
+.markdown-body {
+  max-width: 72ch;
+  font-size: clamp(1rem, 1.18vw, 1.12rem);
+  line-height: 1.92;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  text-wrap: pretty;
+}
+
+.markdown-body p {
+  max-width: 72ch;
+  text-wrap: pretty;
+}
+
+.markdown-body > p + p {
+  margin-top: 1.25em;
+}
+
+.markdown-body > h1 + p,
+.markdown-body > h2 + p,
+.markdown-body > h3 + p,
+.markdown-body > blockquote + p {
+  margin-top: 1rem;
+}
+
+.markdown-body br {
+  content: '';
+  display: block;
+  margin-top: 0.35em;
+}
+
+.ticker-track {
+  animation-duration: 72s;
+}
+
+.ticker-track > .ticker-group {
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .article-title {
+    font-size: clamp(1.65rem, 8.6vw, 2.2rem);
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+  }
+
+  .prime-headline-title {
+    font-size: clamp(1.55rem, 8vw, 2.2rem);
+    letter-spacing: -0.025em;
+  }
+
+  .article-title .bilingual-language-en,
+  .prime-headline-title .bilingual-language-en {
+    letter-spacing: -0.025em;
+  }
+
+  .markdown-body {
+    font-size: 1rem;
+    line-height: 1.86;
+  }
+
+  .markdown-body > p + p {
+    margin-top: 1.15em;
+  }
+
+  .ticker-track {
+    animation-duration: 92s;
+  }
+
+  .ticker-track > .ticker-group {
+    gap: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+@media (hover: none) {
+  .ticker-section:active .ticker-track {
+    animation-play-state: paused;
+  }
+}

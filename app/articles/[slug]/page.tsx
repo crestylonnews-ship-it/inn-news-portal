@@ -60,7 +60,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               <span className="text-xs text-gray-500 font-mono">STAR-DATE · {article.date}</span>
             </div>
             
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-orbitron tracking-tight text-white leading-[1.18]">
+            <h1 className="article-title text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold font-orbitron tracking-tight text-white leading-[1.18]">
               <BilingualText zh={article.title} en={article.titleEn} block />
             </h1>
 

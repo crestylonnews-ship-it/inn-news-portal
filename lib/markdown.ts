@@ -8,7 +8,7 @@ renderer.html = () => '';
 marked.setOptions({
   renderer,
   gfm: true,
-  breaks: false,
+  breaks: true,
 });
 
 export function renderMarkdown(markdown: string): string {

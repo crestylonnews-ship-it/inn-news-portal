@@ -115,6 +115,18 @@ function splitLegacyBilingualContent(content: string): { zh: string; en: string 
   return { zh, en };
 }
 
+function stripTrailingSourceSection(content: string): string {
+  // Every article page renders Frontmatter sources in a dedicated bilingual
+  // aside. Strip a trailing Markdown source section before BilingualMarkup so
+  // generated articles do not render the same citations twice.
+  return String(content || '')
+    .replace(
+      /\n{0,2}#{1,6}\s*(?:來源整理|資料來源(?:與引用)?|sources?(?:\s*(?:&|and)\s*citations?)?|citations?)\s*\n[\s\S]*$/i,
+      '',
+    )
+    .trim();
+}
+
 function splitLongParagraph(block: string, language: 'zh' | 'en'): string {
   const limit = language === 'zh' ? 260 : 620;
   if (block.length <= limit || /^(#{1,6}\s|>|[-*+]\s|<)/.test(block)) return block;
@@ -155,7 +167,7 @@ function parseArticle(filename: string, fileContents: string): Article {
   const slug = filename.replace(/\.md$/, '');
   const { data, content } = matter(sanitizeFrontmatter(fileContents)) as { data: ArticleFrontmatter; content: string };
   const legacyContent = splitLegacyBilingualContent(content);
-  const primaryContent = normalizeReadableContent(legacyContent?.zh || content, 'zh');
+  const primaryContent = normalizeReadableContent(stripTrailingSourceSection(legacyContent?.zh || content), 'zh');
   const title = String(data.title || '無標題新聞');
   const titleEn = String(data.titleEn || 'English edition unavailable');
   const date = String(data.date || new Date().toISOString().split('T')[0]);
@@ -163,7 +175,7 @@ function parseArticle(filename: string, fileContents: string): Article {
   const plainText = markdownToText(primaryContent);
   const excerpt = String(data.excerpt || `${plainText.substring(0, 140)}${plainText.length > 140 ? '…' : ''}`);
   const excerptEn = String(data.excerptEn || 'The English edition of this article is temporarily unavailable.');
-  const contentEn = normalizeReadableContent(String(data.contentEn || legacyContent?.en || '# English edition unavailable\n\nThe English edition of this article is temporarily unavailable.'), 'en');
+  const contentEn = normalizeReadableContent(stripTrailingSourceSection(String(data.contentEn || legacyContent?.en || '# English edition unavailable\n\nThe English edition of this article is temporarily unavailable.')), 'en');
 
   return {
     slug,

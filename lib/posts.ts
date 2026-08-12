@@ -57,9 +57,22 @@ function inferTags(title: string, content: string, category: string, explicitTag
   return Array.from(new Set([...explicitTags, ...inferred, ...fallback])).slice(0, 8);
 }
 
+function sanitizeFrontmatter(raw: string): string {
+  if (!raw.startsWith('---')) return raw;
+  const closingMarker = raw.indexOf('\n---', 3);
+  if (closingMarker === -1) return raw;
+  const header = raw.slice(0, closingMarker);
+  const body = raw.slice(closingMarker);
+  const normalizedHeader = header.replace(/^(\s*[A-Za-z_][\w-]*:\s*)"(.*)"\s*$/gm, (_, prefix: string, value: string) => {
+    // LLM 偶爾會在 YAML 雙引號字串內留下未跳脫的引號；以 JSON 字串格式重寫。
+    return `${prefix}${JSON.stringify(value.replace(/\\"/g, '"'))}`;
+  });
+  return `${normalizedHeader}${body}`;
+}
+
 function parseArticle(filename: string, fileContents: string): Article {
   const slug = filename.replace(/\.md$/, '');
-  const { data, content } = matter(fileContents) as { data: ArticleFrontmatter; content: string };
+  const { data, content } = matter(sanitizeFrontmatter(fileContents)) as { data: ArticleFrontmatter; content: string };
   const title = String(data.title || '無標題新聞');
   const titleEn = String(data.titleEn || 'English edition unavailable');
   const date = String(data.date || new Date().toISOString().split('T')[0]);
@@ -93,11 +106,18 @@ export async function getAllArticles(): Promise<Article[]> {
     const markdownFiles = entries
       .filter(entry => entry.isFile() && entry.name.endsWith('.md'))
       .map(entry => entry.name);
-    const articles = await Promise.all(markdownFiles.map(async filename => {
-      const content = await readFile(join(ARTICLES_DIRECTORY, filename), 'utf8');
-      return parseArticle(filename, content);
+    const parsedArticles = await Promise.all(markdownFiles.map(async filename => {
+      try {
+        const content = await readFile(join(ARTICLES_DIRECTORY, filename), 'utf8');
+        return parseArticle(filename, content);
+      } catch (error) {
+        console.error(`Skipping invalid article ${filename}:`, error);
+        return null;
+      }
     }));
-    return articles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return parsedArticles
+      .filter((article): article is Article => article !== null)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   } catch (error) {
     console.error('Error reading local article content:', error);
     return [];

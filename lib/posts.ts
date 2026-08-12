@@ -128,7 +128,9 @@ function stripTrailingSourceSection(content: string): string {
 }
 
 function splitLongParagraph(block: string, language: 'zh' | 'en'): string {
-  const limit = language === 'zh' ? 260 : 620;
+  // Keep Chinese segments short enough to match the structured English
+  // translation one paragraph at a time while remaining comfortable to read.
+  const limit = language === 'zh' ? 140 : 620;
   if (block.length <= limit || /^(#{1,6}\s|>|[-*+]\s|<)/.test(block)) return block;
   const protectedBlock = language === 'en'
     // A naïve sentence splitter treats the second stop in `U.S.` as a sentence

@@ -7,9 +7,8 @@ import Footer from '@/components/Footer';
 import BilingualText, { BilingualMarkup } from '@/components/BilingualText';
 import { tagToEnglish } from '@/lib/i18n';
 
-// Cloudflare Pages static export：由 generateStaticParams 預先產出文章頁。
-export const dynamic = 'force-static';
-export const revalidate = 300;
+// Cloudflare Pages 使用靜態匯出；文章清單在建置時由 generateStaticParams 取得。
+export const dynamicParams = false;
 
 interface ArticlePageProps {
   params: { slug: string };

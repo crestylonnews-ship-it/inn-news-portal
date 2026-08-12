@@ -109,11 +109,47 @@ function splitLegacyBilingualContent(content: string): { zh: string; en: string 
   return { zh, en };
 }
 
+function splitLongParagraph(block: string, language: 'zh' | 'en'): string {
+  const limit = language === 'zh' ? 260 : 620;
+  if (block.length <= limit || /^(#{1,6}\s|>|[-*+]\s|<)/.test(block)) return block;
+  const sentences = language === 'zh'
+    ? block.match(/[^。！？]+[。！？]+|[^。！？]+$/g)
+    : block.match(/[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/g);
+  if (!sentences || sentences.length < 2) return block;
+
+  const paragraphs: string[] = [];
+  let paragraph = '';
+  for (const sentence of sentences) {
+    const next = `${paragraph}${sentence}`.trim();
+    if (paragraph && next.length > limit) {
+      paragraphs.push(paragraph.trim());
+      paragraph = sentence.trim();
+    } else {
+      paragraph = next;
+    }
+  }
+  if (paragraph) paragraphs.push(paragraph.trim());
+  return paragraphs.join('\n\n');
+}
+
+function normalizeReadableContent(content: string, language: 'zh' | 'en'): string {
+  const headingNormalized = language === 'en'
+    ? content
+      .replace(/^(#\s+[^\n]+?)\s+(##\s+)/m, '$1\n\n$2')
+      .replace(/\s+(##\s+(?:Background|Impact|Conclusion)\b)/g, '\n\n$1\n\n')
+    : content;
+  return headingNormalized
+    .split(/\n{2,}/)
+    .map(block => splitLongParagraph(block.trim(), language))
+    .filter(Boolean)
+    .join('\n\n');
+}
+
 function parseArticle(filename: string, fileContents: string): Article {
   const slug = filename.replace(/\.md$/, '');
   const { data, content } = matter(sanitizeFrontmatter(fileContents)) as { data: ArticleFrontmatter; content: string };
   const legacyContent = splitLegacyBilingualContent(content);
-  const primaryContent = legacyContent?.zh || content;
+  const primaryContent = normalizeReadableContent(legacyContent?.zh || content, 'zh');
   const title = String(data.title || '無標題新聞');
   const titleEn = String(data.titleEn || 'English edition unavailable');
   const date = String(data.date || new Date().toISOString().split('T')[0]);
@@ -121,7 +157,7 @@ function parseArticle(filename: string, fileContents: string): Article {
   const plainText = markdownToText(primaryContent);
   const excerpt = String(data.excerpt || `${plainText.substring(0, 140)}${plainText.length > 140 ? '…' : ''}`);
   const excerptEn = String(data.excerptEn || 'The English edition of this article is temporarily unavailable.');
-  const contentEn = String(data.contentEn || legacyContent?.en || '# English edition unavailable\n\nThe English edition of this article is temporarily unavailable.');
+  const contentEn = normalizeReadableContent(String(data.contentEn || legacyContent?.en || '# English edition unavailable\n\nThe English edition of this article is temporarily unavailable.'), 'en');
 
   return {
     slug,

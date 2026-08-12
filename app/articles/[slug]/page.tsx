@@ -7,9 +7,9 @@ import Footer from '@/components/Footer';
 import BilingualText, { BilingualMarkup } from '@/components/BilingualText';
 import { tagToEnglish } from '@/lib/i18n';
 
-// 讓單頁也支援動態抓取與 Edge 快取
-export const dynamic = 'force-dynamic';
-export const revalidate = 300; 
+// Cloudflare Pages static export：由 generateStaticParams 預先產出文章頁。
+export const dynamic = 'force-static';
+export const revalidate = 300;
 
 interface ArticlePageProps {
   params: { slug: string };

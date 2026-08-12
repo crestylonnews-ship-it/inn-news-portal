@@ -4,8 +4,8 @@ import { getAllArticles } from '@/lib/posts';
 import ArticleCard from '@/components/ArticleCard';
 import BilingualText from '@/components/BilingualText';
 
-export default function OpinionPage() {
-  const articles = getAllArticles().filter(a => a.category === 'opinion' || a.category === 'deep-dive');
+export default async function OpinionPage() {
+  const articles = (await getAllArticles()).filter(a => a.category === 'opinion' || a.category === 'deep-dive');
 
   return (
     <div className="min-h-screen bg-[#0a0b0f] text-white flex flex-col font-sans">

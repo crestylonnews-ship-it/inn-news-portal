@@ -7,9 +7,10 @@ import OpeningAnimation from '@/components/OpeningAnimation';
 import LiveClock from '@/components/LiveClock';
 import BilingualText from '@/components/BilingualText';
 import { tagToEnglish } from '@/lib/i18n';
+import NewsMapExplorer from '@/components/NewsMapExplorer';
 
-// 強制使用動態渲染以獲取最新內容
-export const dynamic = 'force-dynamic';
+// Cloudflare Pages static export：建置時同步最新內容，並由部署端重新建置更新。
+export const dynamic = 'force-static';
 export const revalidate = 300; // 5 分鐘快取
 
 export default async function Home() {
@@ -29,12 +30,12 @@ export default async function Home() {
   const restOfLatest = latestArticles.slice(4);
 
   return (
-    <div className="min-h-screen bg-[#0a0b0f] text-white selection:bg-cyan-500 selection:text-black font-sans">
+    <div className="site-shell min-h-screen bg-[#0a0b0f] text-white selection:bg-cyan-500 selection:text-black font-sans">
       <OpeningAnimation />
       <Navbar />
       
       {/* Ticker Section */}
-      <div className="bg-black/80 border-y border-cyan-500/30 py-2 overflow-hidden backdrop-blur-md sticky top-[64px] z-40">
+      <div className="ticker-section bg-black/80 border-y border-cyan-500/30 py-2 overflow-hidden backdrop-blur-md sticky top-[64px] z-40">
         <div className="max-w-7xl mx-auto px-4 flex items-center">
           <div className="flex-shrink-0 bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded mr-4 animate-pulse tracking-tighter uppercase">
             LIVE FEED
@@ -50,9 +51,9 @@ export default async function Home() {
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 space-y-12 lg:space-y-20">
+      <main className="content-shell max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 space-y-12 lg:space-y-20">
         {/* Prime Section */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+        <section className="primary-layout grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
           {primeHeadline && (
             <div className="lg:col-span-8 group">
               <Link href={`/articles/${primeHeadline.slug}`} className="block space-y-6">
@@ -101,8 +102,11 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* Map Explorer Section */}
+        <NewsMapExplorer articles={prioritizedArticles} />
+
         {/* Global Stream Section */}
-        <section className="space-y-8 lg:space-y-12">
+        <section className="latest-section space-y-8 lg:space-y-12">
           <div className="flex items-end justify-between border-b-2 border-cyan-500/20 pb-6">
             <div className="space-y-2">
               <h2 className="text-2xl sm:text-3xl font-black font-orbitron tracking-tighter text-white uppercase italic">

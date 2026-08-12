@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getAllArticles } from '@/lib/posts';
 
-export const dynamic = 'force-dynamic';
+// Static export compatibility: the endpoint is generated at build time from the same GitHub article source.
+export const dynamic = 'force-static';
+export const revalidate = 300;
 
 export async function GET() {
   try {

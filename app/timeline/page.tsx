@@ -5,8 +5,8 @@ import Link from 'next/link';
 import BilingualText from '@/components/BilingualText';
 import { tagToEnglish } from '@/lib/i18n';
 
-export default function TimelinePage() {
-  const articles = getAllArticles();
+export default async function TimelinePage() {
+  const articles = await getAllArticles();
   const latestDate = articles[0]?.date || 'NO DATA';
   const categories = new Set(articles.map(article => article.category)).size;
 

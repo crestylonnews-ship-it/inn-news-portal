@@ -33,6 +33,7 @@ interface BilingualTextProps {
   en: ReactNode;
   className?: string;
   primaryClassName?: string;
+  secondaryClassName?: string;
   block?: boolean;
 }
 
@@ -41,12 +42,13 @@ export default function BilingualText({
   en,
   className = '',
   primaryClassName = '',
+  secondaryClassName = '',
   block = false,
 }: BilingualTextProps) {
   return (
     <span className={`${block ? 'block' : 'inline-block'} bilingual-text ${className}`}>
       <span className={`bilingual-language-zh bilingual-primary ${primaryClassName}`}>{zh}</span>
-      <span className={`bilingual-language-en bilingual-primary ${primaryClassName}`}>{en}</span>
+      <span className={`bilingual-language-en bilingual-primary ${primaryClassName} ${secondaryClassName}`}>{en}</span>
     </span>
   );
 }

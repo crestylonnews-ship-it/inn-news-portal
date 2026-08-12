@@ -130,7 +130,7 @@ export default function NewsMapExplorer({ articles, compact = false }: Props) {
   const [geoJson, setGeoJson] = useState<GeoCollection | null>(null);
   const [dragging, setDragging] = useState(false);
   const [selectedRegionKey, setSelectedRegionKey] = useState<string | null>(null);
-  const [selectedTopic, setSelectedTopic] = useState('all');
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [activeRegion, setActiveRegion] = useState('全球');
   const { language, setLanguage } = useLanguage();
   const dragStart = useRef<{ x: number; y: number; viewport: Viewport } | null>(null);
@@ -138,9 +138,10 @@ export default function NewsMapExplorer({ articles, compact = false }: Props) {
   const entries = useMemo(() => getArticleGeoEntries(articles), [articles]);
   const allRecentEntries = useMemo(() => entries.filter(({ article }) => isWithinLastSevenDays(article)), [entries]);
   const recentEntries = useMemo(
-    () => allRecentEntries.filter(({ article }) => selectedTopic === 'all' || getCategoryMeta(article.category).key === selectedTopic),
-    [allRecentEntries, selectedTopic],
+    () => allRecentEntries.filter(({ article }) => selectedTopics.length === 0 || selectedTopics.includes(getCategoryMeta(article.category).key)),
+    [allRecentEntries, selectedTopics],
   );
+  const isShowingAllTopics = selectedTopics.length === 0;
   const bounds = useMemo(() => getBounds(viewport), [viewport]);
 
   useEffect(() => {
@@ -262,6 +263,12 @@ export default function NewsMapExplorer({ articles, compact = false }: Props) {
     });
   };
 
+  const toggleTopic = (topicKey: string) => {
+    setSelectedTopics((current) => current.includes(topicKey) ? current.filter((key) => key !== topicKey) : [...current, topicKey]);
+  };
+
+  const clearTopicSelection = () => setSelectedTopics([]);
+
   const handleRegionPointClick = (regionKey: string) => {
     setSelectedRegionKey(regionKey);
     window.setTimeout(() => regionDetailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
@@ -327,20 +334,31 @@ export default function NewsMapExplorer({ articles, compact = false }: Props) {
         </div>
       </div>
 
-      <div className="map-category-legend" aria-label="新聞主題選擇">
-        <span className="map-category-legend-label"><BilingualText zh="選擇主題" en="CHOOSE A TOPIC" /></span>
-        <button type="button" className={`map-category-chip map-category-chip-button ${selectedTopic === 'all' ? 'is-active' : ''}`} onClick={() => setSelectedTopic('all')} aria-pressed={selectedTopic === 'all'}>
+      <div className="map-category-legend" aria-label="新聞主題多選圖例">
+        <span className="map-category-legend-label"><BilingualText zh="點選領域 · 可複選" en="CLICK TOPICS · MULTI-SELECT" /></span>
+        <button type="button" className={`map-category-chip map-category-chip-button ${isShowingAllTopics ? 'is-active' : ''}`} onClick={clearTopicSelection} aria-pressed={isShowingAllTopics}>
           <i aria-hidden="true" className="map-category-all-dot" />
           <BilingualText zh="全部訊號" en="ALL SIGNALS" />
           <b>{allRecentEntries.length}</b>
         </button>
-        {categoryLegend.map((category) => (
-          <button key={category.key} type="button" className={`map-category-chip map-category-chip-button ${selectedTopic === category.key ? 'is-active' : ''}`} onClick={() => setSelectedTopic(category.key)} aria-pressed={selectedTopic === category.key}>
-            <i aria-hidden="true" style={{ backgroundColor: category.color, boxShadow: `0 0 10px ${category.color}` }} />
-            <BilingualText zh={category.label} en={category.labelEn} />
-            <b>{category.count}</b>
-          </button>
-        ))}
+        {categoryLegend.map((category) => {
+          const isSelected = selectedTopics.includes(category.key);
+          return (
+            <button
+              key={category.key}
+              type="button"
+              className={`map-category-chip map-category-chip-button ${isSelected ? 'is-selected' : ''}`}
+              onClick={() => toggleTopic(category.key)}
+              aria-pressed={isSelected}
+              style={isSelected ? { borderColor: category.color, color: category.color } : undefined}
+            >
+              <i aria-hidden="true" style={{ backgroundColor: category.color, boxShadow: `0 0 10px ${category.color}` }} />
+              {isSelected && <span aria-hidden="true" className="map-topic-check">✓</span>}
+              <BilingualText zh={category.label} en={category.labelEn} />
+              <b>{category.count}</b>
+            </button>
+          );
+        })}
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.45fr)_minmax(20rem,0.75fr)]">
@@ -489,12 +507,37 @@ export default function NewsMapExplorer({ articles, compact = false }: Props) {
           <div className="map-region-details-body">
             <div className="map-region-detail-summary">
               <span className="map-detail-location">{selectedRegionGeo.label} · {selectedRegionGeo.region}</span>
+              <span className="map-detail-filter-status"><BilingualText zh={isShowingAllTopics ? '目前顯示全部領域' : `沿用 ${selectedTopics.length} 個已選領域`} en={isShowingAllTopics ? 'SHOWING ALL TOPICS' : `KEEPING ${selectedTopics.length} SELECTED TOPICS`} /></span>
               {selectedCategorySummary.map(({ category, count }) => (
                 <span key={category.key} className="map-detail-category">
                   <i aria-hidden="true" style={{ backgroundColor: category.color }} />
                   <BilingualText zh={category.label} en={category.labelEn} /> <b>{count}</b>
                 </span>
               ))}
+            </div>
+            <div className="map-detail-topic-controls" aria-label="區域新聞領域篩選">
+              <span className="map-detail-topic-label"><BilingualText zh="調整此區域領域" en="REFINE THIS REGION" /></span>
+              <button type="button" className={`map-category-chip map-category-chip-button ${isShowingAllTopics ? 'is-active' : ''}`} onClick={clearTopicSelection} aria-pressed={isShowingAllTopics}>
+                <i aria-hidden="true" className="map-category-all-dot" />
+                <BilingualText zh="全部" en="ALL" />
+              </button>
+              {categoryLegend.map((category) => {
+                const isSelected = selectedTopics.includes(category.key);
+                return (
+                  <button
+                    key={`detail-${category.key}`}
+                    type="button"
+                    className={`map-category-chip map-category-chip-button ${isSelected ? 'is-selected' : ''}`}
+                    onClick={() => toggleTopic(category.key)}
+                    aria-pressed={isSelected}
+                    style={isSelected ? { borderColor: category.color, color: category.color } : undefined}
+                  >
+                    <i aria-hidden="true" style={{ backgroundColor: category.color }} />
+                    {isSelected && <span aria-hidden="true" className="map-topic-check">✓</span>}
+                    <BilingualText zh={category.label} en={category.labelEn} />
+                  </button>
+                );
+              })}
             </div>
             <div className="map-region-detail-list">
               {selectedRegionEntries.map(({ article, geo }) => (

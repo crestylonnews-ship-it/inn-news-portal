@@ -2954,3 +2954,372 @@ main,
     animation-play-state: paused;
   }
 }
+
+/* Self-directed homepage exploration space */
+.home-exploration {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.1rem, 3vw, 2rem);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  border-radius: 1.45rem;
+  background:
+    radial-gradient(circle at 86% 0%, rgba(167, 139, 250, 0.12), transparent 30%),
+    linear-gradient(135deg, rgba(18, 20, 38, 0.94), rgba(8, 12, 22, 0.96));
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22), inset 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.home-exploration-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-bottom: 1.35rem;
+  border-bottom: 1px solid rgba(167, 139, 250, 0.18);
+}
+
+.home-exploration-title {
+  max-width: 42rem;
+  text-wrap: balance;
+}
+
+.home-exploration-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.home-exploration-action,
+.home-index-link {
+  transition: color 180ms ease, background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.home-exploration-action {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid rgba(165, 243, 252, 0.2);
+  border-radius: 0.55rem;
+  color: rgba(165, 243, 252, 0.8);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
+
+.home-exploration-action:hover,
+.home-exploration-action:focus-visible {
+  border-color: rgba(165, 243, 252, 0.7);
+  background: rgba(34, 211, 238, 0.1);
+  color: #ecfeff;
+  transform: translateY(-1px);
+}
+
+.home-exploration-grid {
+  display: grid;
+  grid-template-columns: minmax(14rem, 0.36fr) minmax(0, 1.64fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.home-index-panel {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid rgba(167, 139, 250, 0.18);
+  border-radius: 1rem;
+  background: rgba(6, 10, 22, 0.58);
+}
+
+.home-index-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(167, 139, 250, 0.13);
+}
+
+.home-index-kicker,
+.home-index-mark,
+.home-index-number {
+  color: rgba(216, 180, 254, 0.72);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.home-index-mark {
+  color: rgba(148, 163, 184, 0.55);
+}
+
+.home-index-links {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.75rem 0;
+}
+
+.home-index-link {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 3.1rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid transparent;
+  border-radius: 0.65rem;
+  color: rgba(226, 232, 240, 0.8);
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.home-index-link:hover,
+.home-index-link:focus-visible,
+.home-index-link.is-active {
+  border-color: rgba(103, 232, 249, 0.24);
+  background: linear-gradient(90deg, rgba(34, 211, 238, 0.12), rgba(167, 139, 250, 0.08));
+  color: #f8fafc;
+  transform: translateX(2px);
+}
+
+.home-index-link.is-active .home-index-number {
+  color: #67e8f9;
+}
+
+.home-index-note {
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(167, 139, 250, 0.13);
+  color: rgba(148, 163, 184, 0.72);
+  font-size: 0.7rem;
+  line-height: 1.65;
+}
+
+.home-map-panel {
+  min-width: 0;
+}
+
+.map-home-preview {
+  padding: 1rem;
+  border-color: rgba(103, 232, 249, 0.18);
+  border-radius: 1rem;
+  box-shadow: none;
+}
+
+.map-home-preview::before {
+  inset: 0.65rem;
+  border-radius: 0.7rem;
+}
+
+.map-home-preview .map-stage,
+.map-home-preview .world-map {
+  min-height: clamp(20rem, 34vw, 26rem);
+}
+
+.map-home-preview .map-region-details-home-hidden {
+  display: none;
+}
+
+.map-home-link {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.65rem 0.9rem 0.8rem;
+  border-top: 1px solid rgba(103, 232, 249, 0.1);
+}
+
+.map-home-link-button {
+  color: #a5f3fc;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.map-home-link-button:hover,
+.map-home-link-button:focus-visible {
+  color: #ffffff;
+  transform: translateX(3px);
+}
+
+@media (max-width: 1023px) {
+  .home-exploration-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .home-exploration-actions {
+    justify-content: flex-start;
+  }
+
+  .home-exploration-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-index-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .home-exploration {
+    border-radius: 1.1rem;
+    padding: 1rem;
+  }
+
+  .home-exploration-actions {
+    width: 100%;
+  }
+
+  .home-exploration-action {
+    flex: 1 1 9rem;
+    justify-content: center;
+  }
+
+  .home-index-links {
+    grid-template-columns: 1fr;
+  }
+
+  .map-home-preview {
+    padding: 0.75rem;
+  }
+
+  .map-home-preview .map-stage,
+  .map-home-preview .world-map {
+    min-height: 18rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-exploration-action,
+  .home-index-link,
+  .map-home-link-button {
+    transition: none;
+  }
+}
+
+/* Map space choice controls */
+.map-index-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(103, 232, 249, 0.13);
+  border-radius: 0.85rem;
+  background: rgba(3, 10, 19, 0.38);
+}
+
+.map-index-control-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.38rem;
+}
+
+.map-index-control-label {
+  margin-right: 0.2rem;
+  color: rgba(148, 163, 184, 0.72);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.map-index-button,
+.map-index-status,
+.map-index-timeline {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 0.45rem;
+  padding: 0.28rem 0.48rem;
+  background: rgba(8, 15, 27, 0.55);
+  color: rgba(203, 213, 225, 0.78);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+
+.map-index-button {
+  cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
+}
+
+.map-index-button:hover,
+.map-index-button:focus-visible,
+.map-index-button.is-active {
+  border-color: rgba(103, 232, 249, 0.72);
+  background: rgba(34, 211, 238, 0.14);
+  color: #ecfeff;
+}
+
+.map-index-status {
+  border-color: rgba(167, 139, 250, 0.24);
+  color: rgba(216, 180, 254, 0.85);
+}
+
+.map-index-timeline {
+  border-color: transparent;
+  background: transparent;
+  color: rgba(165, 243, 252, 0.84);
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.map-index-timeline:hover,
+.map-index-timeline:focus-visible {
+  color: #ffffff;
+  transform: translateX(2px);
+}
+
+.map-category-chip-button {
+  cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.map-category-chip-button:hover,
+.map-category-chip-button:focus-visible,
+.map-category-chip-button.is-active {
+  border-color: rgba(165, 243, 252, 0.72);
+  background: rgba(34, 211, 238, 0.12);
+  color: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.map-category-all-dot {
+  background: linear-gradient(135deg, #22d3ee, #a78bfa);
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.62);
+}
+
+.map-region-chip.is-active {
+  border-color: rgba(216, 180, 254, 0.78);
+  background: rgba(167, 139, 250, 0.22);
+  color: #ffffff;
+}
+
+@media (max-width: 640px) {
+  .map-index-controls {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .map-index-control-group {
+    width: 100%;
+  }
+
+  .map-index-timeline {
+    margin-left: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-index-button,
+  .map-index-timeline,
+  .map-category-chip-button {
+    transition: none;
+  }
+}

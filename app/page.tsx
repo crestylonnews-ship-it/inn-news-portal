@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import OpeningAnimation from '@/components/OpeningAnimation';
 import LiveClock from '@/components/LiveClock';
 import BilingualText from '@/components/BilingualText';
+import NewsMapExplorer from '@/components/NewsMapExplorer';
 import { tagToEnglish } from '@/lib/i18n';
 
 // Cloudflare Pages static export：建置時同步最新內容，並由部署端重新建置更新。
@@ -103,6 +104,62 @@ export default async function Home() {
                   </article>
                 </Link>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Self-directed exploration space */}
+        <section id="explore" className="home-exploration space-y-6" aria-labelledby="home-exploration-title">
+          <div className="home-exploration-header">
+            <div className="space-y-2">
+              <p className="map-eyebrow"><BilingualText zh="探索索引 // 你選擇方向" en="EXPLORATION INDEX // YOUR CHOICE" /></p>
+              <h2 id="home-exploration-title" className="home-exploration-title font-orbitron text-2xl font-black tracking-tight text-white sm:text-3xl">
+                <BilingualText zh="新聞恆在，訊號不止。由你選擇看什麼。" en="NEWS NEVER STOPS. YOU CHOOSE THE SIGNAL." />
+              </h2>
+              <p className="max-w-3xl text-sm leading-7 text-slate-400 sm:text-base">
+                <BilingualText zh="不替你預設唯一的新聞路徑。從主題、地區、時間線、語言或地圖開始，自己決定要理解哪一段時事。" en="There is no single preset path. Start with a topic, region, timeline, language or map—and decide which part of the present you want to understand." block />
+              </p>
+            </div>
+            <div className="home-exploration-actions">
+              <Link href="/tags" className="home-exploration-action"><BilingualText zh="主題索引 →" en="TOPIC INDEX →" /></Link>
+              <Link href="/search" className="home-exploration-action"><BilingualText zh="搜尋索引 →" en="SEARCH INDEX →" /></Link>
+            </div>
+          </div>
+
+          <div className="home-exploration-grid">
+            <aside className="home-index-panel" aria-label="自選新聞入口">
+              <div className="home-index-heading">
+                <span className="home-index-kicker"><BilingualText zh="選擇你的入口" en="CHOOSE YOUR ENTRY" /></span>
+                <span className="home-index-mark">01—05</span>
+              </div>
+              <div className="home-index-links">
+                <Link href="/" className="home-index-link is-active">
+                  <span className="home-index-number">01</span>
+                  <span><BilingualText zh="傳統首頁" en="CLASSIC HOME" block /></span>
+                </Link>
+                <Link href="/map-test" className="home-index-link">
+                  <span className="home-index-number">02</span>
+                  <span><BilingualText zh="地圖空間" en="MAP SPACE" block /></span>
+                </Link>
+                <Link href="/tags" className="home-index-link">
+                  <span className="home-index-number">03</span>
+                  <span><BilingualText zh="主題索引" en="TOPIC INDEX" block /></span>
+                </Link>
+                <Link href="/timeline" className="home-index-link">
+                  <span className="home-index-number">04</span>
+                  <span><BilingualText zh="時事時間線" en="CURRENT TIMELINE" block /></span>
+                </Link>
+                <Link href="/search" className="home-index-link">
+                  <span className="home-index-number">05</span>
+                  <span><BilingualText zh="語言與關鍵字搜尋" en="LANGUAGE & KEYWORD SEARCH" block /></span>
+                </Link>
+              </div>
+              <div className="home-index-note">
+                <BilingualText zh="中英雙語可切換；入口不替你下結論，只幫你找到下一個訊號。" en="Switch between Chinese and English. The index does not decide for you—it helps you find the next signal." block />
+              </div>
+            </aside>
+            <div className="home-map-panel">
+              <NewsMapExplorer articles={articles} compact />
             </div>
           </div>
         </section>

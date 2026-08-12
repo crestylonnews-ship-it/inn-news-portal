@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { PointerEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { Article } from '@/lib/types';
 import { getArticleGeoEntries } from '@/lib/geo';
-import BilingualText from './BilingualText';
+import BilingualText, { useLanguage } from './BilingualText';
 
 type Bounds = { west: number; east: number; south: number; north: number };
 type Viewport = { centerLon: number; centerLat: number; zoom: number };
@@ -20,7 +20,7 @@ type CategoryMeta = {
   keywords: string[];
 };
 
-type Props = { articles: Article[] };
+type Props = { articles: Article[]; compact?: boolean };
 
 const MAP_WIDTH = 1000;
 const MAP_HEIGHT = 540;
@@ -125,15 +125,22 @@ function isWithinLastSevenDays(article: Article) {
   return timestamp >= start.getTime() && timestamp <= end.getTime();
 }
 
-export default function NewsMapExplorer({ articles }: Props) {
+export default function NewsMapExplorer({ articles, compact = false }: Props) {
   const [viewport, setViewport] = useState<Viewport>({ centerLon: 20, centerLat: 18, zoom: 1.05 });
   const [geoJson, setGeoJson] = useState<GeoCollection | null>(null);
   const [dragging, setDragging] = useState(false);
   const [selectedRegionKey, setSelectedRegionKey] = useState<string | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState('all');
+  const [activeRegion, setActiveRegion] = useState('全球');
+  const { language, setLanguage } = useLanguage();
   const dragStart = useRef<{ x: number; y: number; viewport: Viewport } | null>(null);
   const regionDetailsRef = useRef<HTMLElement | null>(null);
   const entries = useMemo(() => getArticleGeoEntries(articles), [articles]);
-  const recentEntries = useMemo(() => entries.filter(({ article }) => isWithinLastSevenDays(article)), [entries]);
+  const allRecentEntries = useMemo(() => entries.filter(({ article }) => isWithinLastSevenDays(article)), [entries]);
+  const recentEntries = useMemo(
+    () => allRecentEntries.filter(({ article }) => selectedTopic === 'all' || getCategoryMeta(article.category).key === selectedTopic),
+    [allRecentEntries, selectedTopic],
+  );
   const bounds = useMemo(() => getBounds(viewport), [viewport]);
 
   useEffect(() => {
@@ -198,7 +205,7 @@ export default function NewsMapExplorer({ articles }: Props) {
 
   const categoryLegend = useMemo(() => {
     const counts = new Map<string, number>();
-    recentEntries.forEach(({ article }) => {
+    allRecentEntries.forEach(({ article }) => {
       const category = getCategoryMeta(article.category);
       counts.set(category.key, (counts.get(category.key) || 0) + 1);
     });
@@ -206,7 +213,7 @@ export default function NewsMapExplorer({ articles }: Props) {
       .filter((category) => counts.has(category.key))
       .map((category) => ({ ...category, count: counts.get(category.key) || 0 }))
       .sort((a, b) => b.count - a.count);
-  }, [recentEntries]);
+  }, [allRecentEntries]);
 
   const selectedRegionEntries = useMemo(
     () => selectedRegionKey ? recentEntries.filter(({ geo }) => geo.key === selectedRegionKey).sort((a, b) => new Date(b.article.date).getTime() - new Date(a.article.date).getTime()) : [],
@@ -240,10 +247,12 @@ export default function NewsMapExplorer({ articles }: Props) {
 
   const resetViewport = () => {
     setSelectedRegionKey(null);
+    setActiveRegion('全球');
     setViewport({ centerLon: 20, centerLat: 18, zoom: 1.05 });
   };
 
-  const focusRegion = (lon: number, lat: number, zoom: number) => {
+  const focusRegion = (label: string, lon: number, lat: number, zoom: number) => {
+    setActiveRegion(label);
     const spanLon = 360 / zoom;
     const spanLat = 180 / zoom;
     setViewport({
@@ -291,12 +300,12 @@ export default function NewsMapExplorer({ articles }: Props) {
   };
 
   return (
-    <section id="map-explorer" className="map-explorer space-y-6" aria-labelledby="map-explorer-title">
+    <section id="map-explorer" className={`map-explorer space-y-6 ${compact ? 'map-home-preview' : ''}`} aria-labelledby="map-explorer-title">
       <div className="flex flex-col gap-4 border-b border-cyan-400/20 pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div className="space-y-2">
-          <p className="map-eyebrow"><BilingualText zh="測試功能 // 近七日地理新聞索引" en="BETA MODULE // LAST 7 DAYS GEO INDEX" /></p>
-          <h2 id="map-explorer-title" className="font-orbitron text-2xl font-black tracking-tight text-white sm:text-3xl"><BilingualText zh="移動地圖，重新讀取近一週世界" en="MOVE THE MAP. RELOAD THE LAST 7 DAYS." /></h2>
-          <p className="max-w-2xl text-sm leading-relaxed text-slate-400"><BilingualText zh="地圖只顯示最近 7 天的新聞。地區新聞越多，節點越大；不同分類使用不同顏色。點擊節點後，頁面會滑到下方顯示該區域的完整相關新聞。" en="The map shows reports from the last 7 days only. More reports create larger nodes, while categories use distinct colors. Click a node to jump to its full regional news list below." block /></p>
+          <p className="map-eyebrow"><BilingualText zh={compact ? '首頁探索空間 // 近七日地理新聞' : '完整地圖空間 // 近七日地理新聞索引'} en={compact ? 'HOME EXPLORATION SPACE // LAST 7 DAYS' : 'FULL MAP SPACE // LAST 7 DAYS INDEX'} /></p>
+          <h2 id="map-explorer-title" className="font-orbitron text-2xl font-black tracking-tight text-white sm:text-3xl"><BilingualText zh="你決定看什麼，地圖只呈現訊號" en="YOU CHOOSE THE SIGNAL. THE MAP SHOWS THE FIELD." /></h2>
+          <p className="max-w-2xl text-sm leading-relaxed text-slate-400"><BilingualText zh="地圖只顯示最近 7 天的新聞；拖曳、縮放或選擇區域，依自己的方向探索。地區新聞越多，節點越大；不同分類使用不同顏色。點擊節點後，頁面會滑到下方顯示該區域的相關新聞。" en="Only the last 7 days are shown. Pan, zoom or choose a region to explore on your own terms. More reports create larger nodes, categories use distinct colors, and a node click reveals the regional stories below." block /></p>
         </div>
         <div className="map-readout" aria-live="polite">
           <span><BilingualText zh="近 7 日資料" en="LAST 7 DAYS" /></span>
@@ -305,14 +314,32 @@ export default function NewsMapExplorer({ articles }: Props) {
         </div>
       </div>
 
-      <div className="map-category-legend" aria-label="新聞分類圖例">
-        <span className="map-category-legend-label"><BilingualText zh="分類色彩" en="CATEGORY COLORS" /></span>
+      <div className="map-index-controls" aria-label="新聞索引控制">
+        <div className="map-index-control-group">
+          <span className="map-index-control-label"><BilingualText zh="閱讀語言" en="READING LANGUAGE" /></span>
+          <button type="button" className={`map-index-button ${language === 'zh' ? 'is-active' : ''}`} onClick={() => setLanguage('zh')} aria-pressed={language === 'zh'}>中文</button>
+          <button type="button" className={`map-index-button ${language === 'en' ? 'is-active' : ''}`} onClick={() => setLanguage('en')} aria-pressed={language === 'en'}>EN</button>
+        </div>
+        <div className="map-index-control-group">
+          <span className="map-index-control-label"><BilingualText zh="時事範圍" en="CURRENT AFFAIRS" /></span>
+          <span className="map-index-status"><BilingualText zh="近 7 日" en="LAST 7 DAYS" /></span>
+          <Link href="/timeline" className="map-index-timeline"><BilingualText zh="所有時間線 →" en="FULL TIMELINE →" /></Link>
+        </div>
+      </div>
+
+      <div className="map-category-legend" aria-label="新聞主題選擇">
+        <span className="map-category-legend-label"><BilingualText zh="選擇主題" en="CHOOSE A TOPIC" /></span>
+        <button type="button" className={`map-category-chip map-category-chip-button ${selectedTopic === 'all' ? 'is-active' : ''}`} onClick={() => setSelectedTopic('all')} aria-pressed={selectedTopic === 'all'}>
+          <i aria-hidden="true" className="map-category-all-dot" />
+          <BilingualText zh="全部訊號" en="ALL SIGNALS" />
+          <b>{allRecentEntries.length}</b>
+        </button>
         {categoryLegend.map((category) => (
-          <span key={category.key} className="map-category-chip">
+          <button key={category.key} type="button" className={`map-category-chip map-category-chip-button ${selectedTopic === category.key ? 'is-active' : ''}`} onClick={() => setSelectedTopic(category.key)} aria-pressed={selectedTopic === category.key}>
             <i aria-hidden="true" style={{ backgroundColor: category.color, boxShadow: `0 0 10px ${category.color}` }} />
             <BilingualText zh={category.label} en={category.labelEn} />
             <b>{category.count}</b>
-          </span>
+          </button>
         ))}
       </div>
 
@@ -403,12 +430,22 @@ export default function NewsMapExplorer({ articles }: Props) {
 
           <div className="map-region-bar" aria-label="快速定位區域">
             <span className="map-region-label"><BilingualText zh="快速鎖定" en="FOCUS" /></span>
+            <button type="button" onClick={resetViewport} className={`map-region-chip ${activeRegion === '全球' ? 'is-active' : ''}`} aria-pressed={activeRegion === '全球'}>
+              <BilingualText zh="全球" en="GLOBAL" />
+            </button>
             {REGIONS.map((region) => (
-              <button key={region.label} type="button" onClick={() => focusRegion(region.lon, region.lat, region.zoom)} className="map-region-chip">
+              <button key={region.label} type="button" onClick={() => focusRegion(region.label, region.lon, region.lat, region.zoom)} className={`map-region-chip ${activeRegion === region.label ? 'is-active' : ''}`} aria-pressed={activeRegion === region.label}>
                 <BilingualText zh={region.label} en={region.labelEn} />
               </button>
             ))}
           </div>
+          {compact && (
+            <div className="map-home-link">
+              <Link href="/map-test" className="map-home-link-button">
+                <BilingualText zh="開啟完整空間索引 →" en="OPEN FULL SPACE INDEX →" />
+              </Link>
+            </div>
+          )}
         </div>
 
         <aside className="map-results" aria-labelledby="map-results-title">
@@ -424,14 +461,14 @@ export default function NewsMapExplorer({ articles }: Props) {
             {regionSummaries.length === 0 && <span><BilingualText zh="此視窗目前沒有近七日定位訊號" en="NO RECENT GEO SIGNAL IN THIS VIEW" /></span>}
           </div>
           <div className="map-result-list">
-            {visibleEntries.slice(0, 6).map(({ article, geo }) => (
+            {visibleEntries.slice(0, compact ? 4 : 6).map(({ article, geo }) => (
               <Link key={article.slug} href={`/articles/${article.slug}`} className="map-result-item">
                 <span className="map-result-meta">{geo.label} · {article.date} · {getCategoryMeta(article.category).label}</span>
                 <strong>{article.title}</strong>
                 <span>{article.titleEn}</span>
               </Link>
             ))}
-            {visibleEntries.length > 6 && <p className="map-result-more"><BilingualText zh={`還有 ${visibleEntries.length - 6} 篇近七日報導隨視窗同步。`} en={`${visibleEntries.length - 6} more recent reports follow this viewport.`} /></p>}
+            {visibleEntries.length > (compact ? 4 : 6) && <p className="map-result-more"><BilingualText zh={`還有 ${visibleEntries.length - (compact ? 4 : 6)} 篇近七日報導隨視窗同步。`} en={`${visibleEntries.length - (compact ? 4 : 6)} more recent reports follow this viewport.`} /></p>}
             {visibleEntries.length === 0 && <div className="map-empty"><BilingualText zh="請拖曳地圖至其他地區，或使用上方快速定位。" en="Pan to another region or use a focus shortcut above." block /></div>}
           </div>
         </aside>

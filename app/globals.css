@@ -3015,6 +3015,17 @@ html[data-language='en'] aside h2 .bilingual-pair {
   flex-direction: column-reverse;
 }
 
+/* The title's general block rule has greater selector specificity than the
+   generic pair rule, so restate the flex container here for language reversal. */
+.article-title .article-bilingual-pair {
+  display: flex;
+  flex-direction: column;
+}
+
+html[data-language='en'] .article-title .article-bilingual-pair {
+  flex-direction: column-reverse;
+}
+
 @media (max-width: 767px) {
   .article-bilingual-pair > .bilingual-secondary {
     margin-top: .36rem;

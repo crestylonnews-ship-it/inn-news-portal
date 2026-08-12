@@ -2416,21 +2416,6 @@ main,
   stroke-width: 2.4;
 }
 
-.map-point:hover .map-point-halo,
-.map-point:focus-visible .map-point-halo,
-.map-point.is-selected .map-point-halo {
-  opacity: 1;
-  stroke: currentColor;
-}
-
-.map-point-halo {
-  fill: currentColor;
-  opacity: 0.16;
-  stroke: currentColor;
-  stroke-width: 1;
-  animation: map-marker-breathe 2.7s ease-in-out infinite;
-}
-
 .map-point-core {
   fill: currentColor;
   stroke: #d9fbff;
@@ -2762,11 +2747,6 @@ main,
 @keyframes map-pulse {
   0%, 100% { opacity: 0.65; transform: scale(0.9); }
   50% { opacity: 1; transform: scale(1.12); }
-}
-
-@keyframes map-marker-breathe {
-  0%, 100% { opacity: 0.45; transform: scale(0.9); transform-origin: center; }
-  50% { opacity: 0.95; transform: scale(1.12); transform-origin: center; }
 }
 
 @media (max-width: 640px) {

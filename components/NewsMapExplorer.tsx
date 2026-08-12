@@ -346,10 +346,6 @@ export default function NewsMapExplorer({ articles }: Props) {
                   <stop offset="0%" stopColor="#102b3b" stopOpacity="0.85" />
                   <stop offset="100%" stopColor="#070c16" stopOpacity="0.2" />
                 </radialGradient>
-                <filter id="map-marker-glow" x="-100%" y="-100%" width="300%" height="300%">
-                  <feGaussianBlur stdDeviation="5" result="blur" />
-                  <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-                </filter>
               </defs>
               <rect width={MAP_WIDTH} height={MAP_HEIGHT} fill="url(#map-glow)" />
               <rect width={MAP_WIDTH} height={MAP_HEIGHT} fill="url(#map-grid)" />
@@ -383,7 +379,6 @@ export default function NewsMapExplorer({ articles }: Props) {
                         }
                       }}
                     >
-                      <circle r={radius + 7} className="map-point-halo" />
                       <circle r={radius} className="map-point-core" />
                       <text y={-radius - 5} textAnchor="middle" className="map-point-label">{geo.label} · {category.short}</text>
                       <text y={radius + 14} textAnchor="middle" className="map-point-count">{count}</text>

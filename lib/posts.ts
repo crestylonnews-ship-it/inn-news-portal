@@ -96,7 +96,7 @@ function splitLegacyBilingualContent(content: string): { zh: string; en: string 
   if (archiveStart === -1) return null;
   const zh = content.slice(0, archiveStart)
     .replace(/^##\s+[A-Za-z][^\n]*\n/gm, '')
-    .replace(/^>\s*\*[A-Za-z][^\n]*\*\s*\n?/gm, '')
+    .replace(/^>\s*\*[A-Za-z][^\n]*\*\s*$/gm, '')
     .trim();
   const en = content.slice(archiveStart)
     .replace(/^\n---\s*\n(?:###\s*\n---\s*\n)?## Global Archive\s*\/\s*英文存檔\s*\n?/i, '')

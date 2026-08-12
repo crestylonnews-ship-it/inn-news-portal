@@ -22,8 +22,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: languageBootstrapScript }} />
         <style>{`
-          html[data-language="zh"] .bilingual-language-en { display: none !important; }
-          html[data-language="en"] .bilingual-language-zh { display: none !important; }
+          /* Both languages remain visible. Article CSS reverses each paired
+             block in English mode so the active language always leads. */
           .bilingual-language-zh, .bilingual-language-en { min-width: 0; }
         `}</style>
       </head>

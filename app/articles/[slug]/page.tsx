@@ -11,10 +11,10 @@ interface ArticlePageProps {
   params: { slug: string };
 }
 
-// 雖然是動態抓取，但我們仍可以預先生成前 100 篇以優化效能
+// Cloudflare Pages 無伺服器動態路由；所有已提交文章都需在建置時生成。
 export async function generateStaticParams() {
   const articles = await getAllArticles();
-  return articles.slice(0, 100).map(article => ({ slug: article.slug }));
+  return articles.map(article => ({ slug: article.slug }));
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {

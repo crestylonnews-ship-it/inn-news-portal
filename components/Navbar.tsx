@@ -9,6 +9,7 @@ const navItems = [
   { href: '/', zh: '首頁', en: 'HOME' },
   { href: '/tags', zh: '標籤分類', en: 'TAGS' },
   { href: '/timeline', zh: '時間線歸檔', en: 'TIMELINE' },
+  { href: '/map-test', zh: '地圖測試', en: 'MAP TEST' },
   { href: '/opinion', zh: '社論與評論', en: 'OPINION' },
   { href: '/about', zh: '關於本網', en: 'ABOUT' },
 ];

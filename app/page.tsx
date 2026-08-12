@@ -7,7 +7,6 @@ import OpeningAnimation from '@/components/OpeningAnimation';
 import LiveClock from '@/components/LiveClock';
 import BilingualText from '@/components/BilingualText';
 import { tagToEnglish } from '@/lib/i18n';
-import NewsMapExplorer from '@/components/NewsMapExplorer';
 
 // Cloudflare Pages static export：建置時同步最新內容，並由部署端重新建置更新。
 export const dynamic = 'force-static';
@@ -101,9 +100,6 @@ export default async function Home() {
             </div>
           </div>
         </section>
-
-        {/* Map Explorer Section */}
-        <NewsMapExplorer articles={prioritizedArticles} />
 
         {/* Global Stream Section */}
         <section className="latest-section space-y-8 lg:space-y-12">

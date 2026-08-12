@@ -130,9 +130,14 @@ function stripTrailingSourceSection(content: string): string {
 function splitLongParagraph(block: string, language: 'zh' | 'en'): string {
   const limit = language === 'zh' ? 260 : 620;
   if (block.length <= limit || /^(#{1,6}\s|>|[-*+]\s|<)/.test(block)) return block;
+  const protectedBlock = language === 'en'
+    // A naïve sentence splitter treats the second stop in `U.S.` as a sentence
+    // boundary and can drop the leading words when adjacent groups are joined.
+    ? block.replace(/\b(?:U\.S\.|U\.K\.|e\.g\.|i\.e\.|Mr\.|Mrs\.|Ms\.|Dr\.)/g, abbreviation => abbreviation.replace(/\./g, '\uE000'))
+    : block;
   const sentences = language === 'zh'
     ? block.match(/[^。！？]+[。！？]+|[^。！？]+$/g)
-    : block.match(/[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/g);
+    : protectedBlock.match(/[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/g)?.map(sentence => sentence.replace(/\uE000/g, '.'));
   if (!sentences || sentences.length < 2) return block;
 
   const paragraphs: string[] = [];

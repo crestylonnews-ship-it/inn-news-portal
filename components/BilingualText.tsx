@@ -1,12 +1,31 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 export type SiteLanguage = 'zh' | 'en';
 
 // 保留既有版面 API，但不使用 React Context／Hooks，讓靜態匯出可在伺服器端穩定預渲染。
 export function LanguageProvider({ children }: { children: ReactNode }) {
   return <>{children}</>;
+}
+
+export function useLanguage() {
+  const [language, setLanguageState] = useState<SiteLanguage>('zh');
+
+  useEffect(() => {
+    const readLanguage = () => setLanguageState(document.documentElement.dataset.language === 'en' ? 'en' : 'zh');
+    readLanguage();
+    window.addEventListener('inn-language-change', readLanguage);
+    return () => window.removeEventListener('inn-language-change', readLanguage);
+  }, []);
+
+  const setLanguage = (nextLanguage: SiteLanguage) => {
+    document.documentElement.dataset.language = nextLanguage;
+    window.localStorage.setItem('inn-language', nextLanguage);
+    window.dispatchEvent(new Event('inn-language-change'));
+  };
+
+  return { language, setLanguage, toggleLanguage: () => setLanguage(language === 'zh' ? 'en' : 'zh') };
 }
 
 interface BilingualTextProps {
@@ -48,6 +67,7 @@ export function LanguageToggle() {
     const next = current === 'zh' ? 'en' : 'zh';
     root.dataset.language = next;
     window.localStorage.setItem('inn-language', next);
+    window.dispatchEvent(new Event('inn-language-change'));
   };
 
   return (

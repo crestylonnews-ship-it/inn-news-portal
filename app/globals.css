@@ -9,6 +9,7 @@
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 1rem;
   }
 
   body {
@@ -549,6 +550,32 @@ body {
 
 .site-nav {
   box-shadow: 0 10px 36px rgba(0, 0, 0, 0.28), 0 1px 0 rgba(103, 232, 249, 0.08);
+}
+
+.site-nav > div,
+.site-nav form,
+.site-nav nav {
+  min-width: 0;
+}
+
+.site-nav nav[aria-label='主選單'] {
+  scrollbar-width: none;
+  overscroll-behavior-inline: contain;
+}
+
+.site-nav nav[aria-label='主選單']::-webkit-scrollbar {
+  display: none;
+}
+
+.site-nav .nav-link {
+  display: inline-flex;
+  min-height: 2.35rem;
+  align-items: center;
+}
+
+main,
+.content-shell {
+  scroll-margin-top: 1rem;
 }
 
 .site-nav::after {

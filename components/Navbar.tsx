@@ -27,8 +27,8 @@ export default function Navbar() {
   };
 
   return (
-    <header className="site-nav sticky top-0 z-50 border-b border-cyan-500/20 bg-[#0a0b0f]/95 backdrop-blur-xl">
-      <div className="mx-auto flex min-h-[4.5rem] max-w-7xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6 lg:flex-nowrap lg:gap-5 lg:py-2">
+    <header className="site-nav relative z-30 border-b border-cyan-500/20 bg-[#0a0b0f]/95 backdrop-blur-xl">
+      <div className="mx-auto flex min-h-[4.5rem] min-w-0 max-w-7xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6 lg:flex-nowrap lg:gap-5 lg:py-2">
         <Link href="/" className="nav-brand group flex shrink-0 items-center gap-2.5" aria-label="INN NEWS 首頁 / Home">
           <div>
             <span className="block font-orbitron text-base font-extrabold tracking-wider text-white text-glow sm:text-xl">INN NEWS</span>
@@ -36,7 +36,7 @@ export default function Navbar() {
           </div>
         </Link>
 
-        <form onSubmit={handleSearch} className="order-3 w-full lg:order-none lg:flex-1 lg:mx-2 lg:max-w-xl" role="search">
+        <form onSubmit={handleSearch} className="order-3 min-w-0 w-full lg:order-none lg:flex-1 lg:mx-2 lg:max-w-xl" role="search">
           <div className="relative">
             <label htmlFor="site-search" className="sr-only">搜尋新聞</label>
             <input
@@ -65,7 +65,7 @@ export default function Navbar() {
           <BilingualText zh={`選單${menuOpen ? '（關閉）' : ''}`} en={`MENU${menuOpen ? ' (CLOSE)' : ''}`} />
         </button>
 
-        <nav className="hidden shrink-0 items-center gap-4 xl:gap-6 lg:flex" aria-label="主選單">
+        <nav className="hidden min-w-0 max-w-full shrink-0 items-center gap-4 overflow-x-auto xl:gap-6 lg:flex" aria-label="主選單">
           {navItems.map(item => (
                           <Link key={item.href} href={item.href} className="nav-link whitespace-nowrap rounded-sm text-sm font-medium text-gray-300 transition-colors hover:text-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50">
                 <BilingualText zh={item.zh} en={item.en} />

@@ -358,12 +358,14 @@ export default function NewsMapExplorer({ articles }: Props) {
               <g className="map-points" aria-label="近七日新聞地理節點">
                 {groupedPoints.map(({ geo, category, count, totalCount, offsetX, offsetY }) => {
                   const point = project(geo.lon, geo.lat, viewport);
-                  const radius = Math.min(26, 6.5 + Math.sqrt(count) * 2.8 + Math.log2(totalCount + 1) * 1.2);
+                  const zoomScale = clamp(Math.pow(viewport.zoom, 0.45), 1, 1.9);
+                  const baseRadius = Math.min(26, 6.5 + Math.sqrt(count) * 2.8 + Math.log2(totalCount + 1) * 1.2);
+                  const radius = clamp(baseRadius * zoomScale, 6, 42);
                   const isSelected = selectedRegionKey === geo.key;
                   return (
                     <g
                       key={`${geo.key}:${category.key}`}
-                      transform={`translate(${point.x + offsetX} ${point.y + offsetY})`}
+                      transform={`translate(${point.x + offsetX * zoomScale} ${point.y + offsetY * zoomScale})`}
                       className={`map-point ${isSelected ? 'is-selected' : ''}`}
                       style={{ color: category.color }}
                       data-selected={isSelected}

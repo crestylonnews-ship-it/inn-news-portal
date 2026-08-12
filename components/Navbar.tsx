@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import BilingualText, { LanguageToggle, useLanguage } from '@/components/BilingualText';
 
 const navItems = [
@@ -17,13 +16,12 @@ const navItems = [
 export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
-  const router = useRouter();
   const { language } = useLanguage();
 
   const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
     const query = searchQuery.trim();
-    if (query) router.push(`/search?q=${encodeURIComponent(query)}`);
+    if (query) window.location.assign(`/search?q=${encodeURIComponent(query)}`);
   };
 
   return (
@@ -67,10 +65,9 @@ export default function Navbar() {
 
         <nav className="hidden min-w-0 max-w-full shrink-0 items-center gap-4 overflow-x-auto xl:gap-6 lg:flex" aria-label="主選單">
           {navItems.map(item => (
-                          <Link key={item.href} href={item.href} className="nav-link whitespace-nowrap rounded-sm text-sm font-medium text-gray-300 transition-colors hover:text-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50">
-                <BilingualText zh={item.zh} en={item.en} />
-              </Link>
-
+            <Link key={item.href} href={item.href} className="nav-link whitespace-nowrap rounded-sm text-sm font-medium text-gray-300 transition-colors hover:text-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50">
+              <BilingualText zh={item.zh} en={item.en} />
+            </Link>
           ))}
         </nav>
 

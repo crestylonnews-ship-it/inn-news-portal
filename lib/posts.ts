@@ -68,12 +68,13 @@ function parseGitHubArticle(filename: string, fileContents: string): Article {
   const { data, content } = matter(fileContents) as { data: ArticleFrontmatter; content: string };
 
   const title = String(data.title || '無標題新聞');
-  const titleEn = String(data.titleEn || title);
+  const titleEn = String(data.titleEn || 'English edition unavailable');
   const date = String(data.date || new Date().toISOString().split('T')[0]);
   const category = String(data.category || 'breaking');
   const plainText = markdownToText(content);
   const excerpt = String(data.excerpt || `${plainText.substring(0, 140)}${plainText.length > 140 ? '…' : ''}`);
-  const excerptEn = String(data.excerptEn || excerpt);
+  const excerptEn = String(data.excerptEn || 'The English edition of this article is temporarily unavailable.');
+  const contentEn = String(data.contentEn || '# English edition unavailable\n\nThe English edition of this article is temporarily unavailable.');
 
   return {
     slug,
@@ -87,7 +88,7 @@ function parseGitHubArticle(filename: string, fileContents: string): Article {
     tags: inferTags(title, plainText, category, normalizeArray(data.tags)),
     sources: normalizeArray(data.sources),
     content,
-    contentEn: String(data.contentEn || content),
+    contentEn,
     excerpt,
     excerptEn,
   };

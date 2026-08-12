@@ -56,17 +56,14 @@ export default function BilingualText({
   en,
   className = '',
   primaryClassName = '',
-  secondaryClassName = '',
   block = false,
 }: BilingualTextProps) {
   const { language } = useLanguage();
   const primary = language === 'zh' ? zh : en;
-  const secondary = language === 'zh' ? en : zh;
 
   return (
     <span className={`${block ? 'block' : 'inline-block'} bilingual-text ${className}`}>
       <span className={`bilingual-primary ${primaryClassName}`}>{primary}</span>
-      <span className={`bilingual-secondary ${secondaryClassName}`}>{secondary}</span>
     </span>
   );
 }
@@ -74,12 +71,10 @@ export default function BilingualText({
 export function BilingualMarkup({ zhHtml, enHtml, className = '' }: { zhHtml: string; enHtml: string; className?: string }) {
   const { language } = useLanguage();
   const primaryHtml = language === 'zh' ? zhHtml : enHtml;
-  const secondaryHtml = language === 'zh' ? enHtml : zhHtml;
 
   return (
     <div className={`bilingual-text bilingual-markup ${className}`}>
       <div className="bilingual-primary" dangerouslySetInnerHTML={{ __html: primaryHtml }} />
-      <div className="bilingual-secondary" dangerouslySetInnerHTML={{ __html: secondaryHtml }} />
     </div>
   );
 }

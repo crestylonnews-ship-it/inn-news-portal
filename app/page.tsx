@@ -34,21 +34,27 @@ export default async function Home() {
       <Navbar />
       
       {/* Ticker Section */}
-      <div className="ticker-section bg-black/80 border-y border-cyan-500/30 py-2 overflow-hidden backdrop-blur-md sticky top-[64px] z-40">
-        <div className="max-w-7xl mx-auto px-4 flex items-center">
-          <div className="flex-shrink-0 bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded mr-4 animate-pulse tracking-tighter uppercase">
+      <section className="ticker-section relative z-20 overflow-hidden border-y border-cyan-500/30 bg-black/80 py-2 backdrop-blur-md" aria-label="即時新聞跑馬燈">
+        <div className="mx-auto flex min-w-0 max-w-7xl items-center gap-3 px-4 sm:px-6 lg:px-8">
+          <div className="ticker-label flex shrink-0 items-center rounded bg-red-600 px-2 py-0.5 text-[10px] font-black tracking-tighter text-white animate-pulse uppercase">
             LIVE FEED
           </div>
-          <div className="flex space-x-8 animate-marquee whitespace-nowrap text-xs font-mono text-cyan-400/80">
-            {latestArticles.map((a, i) => (
-              <span key={i} className="flex items-center">
-                <span className="text-red-500 mr-2">✦</span>
-                {a.title} / {a.titleEn}
-              </span>
-            ))}
+          <div className="ticker-viewport min-w-0 flex-1 overflow-hidden">
+            <div className="ticker-track flex w-max whitespace-nowrap text-xs font-mono text-cyan-400/80">
+              {[0, 1].map(copy => (
+                <div key={copy} className="ticker-group flex shrink-0 items-center gap-8 pr-8" aria-hidden={copy === 1}>
+                  {latestArticles.map(a => (
+                    <span key={`${a.slug}-${copy}`} className="flex shrink-0 items-center">
+                      <span className="mr-2 text-red-500">✦</span>
+                      {a.title} / {a.titleEn}
+                    </span>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <main className="content-shell max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 space-y-12 lg:space-y-20">
         {/* Prime Section */}

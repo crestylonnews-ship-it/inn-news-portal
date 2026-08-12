@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getArticleBySlug, getAllArticles } from '@/lib/posts';
+import { getAllArticleSlugs, getArticleBySlug } from '@/lib/posts';
 import { renderMarkdown } from '@/lib/markdown';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -13,8 +13,8 @@ interface ArticlePageProps {
 
 // Cloudflare Pages 無伺服器動態路由；所有已提交文章都需在建置時生成。
 export async function generateStaticParams() {
-  const articles = await getAllArticles();
-  return articles.map(article => ({ slug: article.slug }));
+  const slugs = await getAllArticleSlugs();
+  return slugs.map(slug => ({ slug }));
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {

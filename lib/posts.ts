@@ -124,6 +124,19 @@ export async function getAllArticles(): Promise<Article[]> {
   }
 }
 
+export async function getAllArticleSlugs(): Promise<string[]> {
+  try {
+    const entries = await readdir(ARTICLES_DIRECTORY, { withFileTypes: true });
+    return entries
+      .filter(entry => entry.isFile() && entry.name.endsWith('.md'))
+      .map(entry => entry.name.replace(/\.md$/, ''))
+      .filter(slug => SAFE_SLUG.test(slug));
+  } catch (error) {
+    console.error('Error reading local article slugs:', error);
+    return [];
+  }
+}
+
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
   if (!SAFE_SLUG.test(slug)) return null;
   try {

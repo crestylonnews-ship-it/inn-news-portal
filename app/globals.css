@@ -2954,3 +2954,79 @@ main,
     animation-play-state: paused;
   }
 }
+
+/* Article bilingual reading: pair each matching block and let the selected
+   language lead, rather than rendering one complete language after another. */
+.article-bilingual-pair,
+.bilingual-markup .bilingual-block {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.article-bilingual-pair > .bilingual-language-zh,
+.article-bilingual-pair > .bilingual-language-en {
+  display: block;
+}
+
+.article-bilingual-pair > .bilingual-secondary {
+  margin-top: .45rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: .42em;
+  font-weight: 500;
+  line-height: 1.34;
+  letter-spacing: .025em;
+  color: rgb(148 163 184 / .88);
+}
+
+.bilingual-markup .bilingual-block {
+  gap: .62rem;
+  margin: 0 0 1.75rem;
+}
+
+.bilingual-markup .bilingual-block > .bilingual-primary,
+.bilingual-markup .bilingual-block > .bilingual-secondary {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.bilingual-markup .bilingual-block > .bilingual-primary {
+  color: rgb(241 245 249);
+}
+
+.bilingual-markup .bilingual-block > .bilingual-secondary {
+  padding-left: 1rem;
+  border-left: 2px solid rgb(34 211 238 / .24);
+  font-size: .88em;
+  line-height: 1.78;
+  color: rgb(148 163 184 / .94);
+}
+
+.bilingual-markup .bilingual-block > :empty {
+  display: none;
+}
+
+html[data-language='en'] .article-bilingual-pair,
+html[data-language='en'] .bilingual-markup .bilingual-block {
+  flex-direction: column-reverse;
+}
+
+@media (max-width: 767px) {
+  .article-bilingual-pair > .bilingual-secondary {
+    margin-top: .36rem;
+    font-size: .48em;
+  }
+
+  .bilingual-markup .bilingual-block {
+    gap: .5rem;
+    margin-bottom: 1.45rem;
+  }
+
+  .bilingual-markup .bilingual-block > .bilingual-secondary {
+    padding-left: .75rem;
+    font-size: .9em;
+    line-height: 1.7;
+  }
+}

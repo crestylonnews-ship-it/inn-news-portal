@@ -61,7 +61,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </div>
             
             <h1 className="article-title text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold font-orbitron tracking-tight text-white leading-[1.18]">
-              <BilingualText zh={article.title} en={article.titleEn} block />
+              <BilingualText zh={article.title} en={article.titleEn} className="article-bilingual-pair" block />
             </h1>
 
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-400 font-mono">

@@ -46,18 +46,38 @@ export default function BilingualText({
   block = false,
 }: BilingualTextProps) {
   return (
-    <span className={`${block ? 'block' : 'inline-block'} bilingual-text ${className}`}>
+    <span className={`${block ? 'block' : 'inline-block'} bilingual-text bilingual-pair ${className}`}>
       <span className={`bilingual-language-zh bilingual-primary ${primaryClassName}`}>{zh}</span>
-      <span className={`bilingual-language-en bilingual-primary ${primaryClassName} ${secondaryClassName}`}>{en}</span>
+      <span className={`bilingual-language-en bilingual-secondary ${primaryClassName} ${secondaryClassName}`}>{en}</span>
     </span>
   );
 }
 
+function splitMarkupBlocks(html: string): string[] {
+  const value = String(html || '').trim();
+  if (!value) return [];
+  const pattern = /<(h[1-6]|p|blockquote|ul|ol|pre|table|hr)(?:\s[^>]*)?>[\s\S]*?<\/\1>|<hr\s*\/?\s*>/gi;
+  const blocks = value.match(pattern) || [];
+  return blocks.length ? blocks : [value];
+}
+
 export function BilingualMarkup({ zhHtml, enHtml, className = '' }: { zhHtml: string; enHtml: string; className?: string }) {
+  const zhBlocks = splitMarkupBlocks(zhHtml);
+  const enBlocks = splitMarkupBlocks(enHtml);
+  const blockCount = Math.max(zhBlocks.length, enBlocks.length);
+
   return (
     <div className={`bilingual-text bilingual-markup ${className}`}>
-      <div className="bilingual-language-zh bilingual-primary" dangerouslySetInnerHTML={{ __html: zhHtml }} />
-      <div className="bilingual-language-en bilingual-primary" dangerouslySetInnerHTML={{ __html: enHtml }} />
+      {Array.from({ length: blockCount }, (_, index) => {
+        const zhBlock = zhBlocks[index] || '';
+        const enBlock = enBlocks[index] || '';
+        return (
+          <section className="bilingual-block" key={`bilingual-block-${index}`}>
+            <div className="bilingual-language-zh bilingual-primary" dangerouslySetInnerHTML={{ __html: zhBlock }} />
+            <div className="bilingual-language-en bilingual-secondary" dangerouslySetInnerHTML={{ __html: enBlock }} />
+          </section>
+        );
+      })}
     </div>
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import ArticleCard from '@/components/ArticleCard';
 import Footer from '@/components/Footer';
@@ -11,11 +10,14 @@ import BilingualText from '@/components/BilingualText';
 import { tagToEnglish } from '@/lib/i18n';
 
 function TagsContent() {
-  const searchParams = useSearchParams();
-  const selectedTag = searchParams.get('tag');
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAllTags, setShowAllTags] = useState(false);
+
+  useEffect(() => {
+    setSelectedTag(new URLSearchParams(window.location.search).get('tag'));
+  }, []);
 
   useEffect(() => {
     let cancelled = false;

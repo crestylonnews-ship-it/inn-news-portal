@@ -3,17 +3,19 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ArticleCard from '@/components/ArticleCard';
-import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
 import { Article } from '@/lib/types';
 import BilingualText from '@/components/BilingualText';
 
 function SearchContent() {
-  const searchParams = useSearchParams();
-  const query = searchParams.get('q') || '';
+  const [query, setQuery] = useState('');
 
   const [results, setResults] = useState<Article[]>([]);
   const [loading, setLoading] = useState(Boolean(query));
+
+  useEffect(() => {
+    setQuery(new URLSearchParams(window.location.search).get('q') || '');
+  }, []);
 
   useEffect(() => {
     if (!query) {

@@ -31,6 +31,7 @@ export default function Navbar() {
           <div>
             <span className="block font-orbitron text-base font-extrabold tracking-wider text-white text-glow sm:text-xl">INN NEWS</span>
             <BilingualText zh="星際聯邦官方新聞網" en="Stellar Federation News Network" primaryClassName="text-cyan-300" secondaryClassName="text-cyan-500/70" />
+            <span className="nav-choice-tagline">空間及索引，把選擇權還給你</span>
           </div>
         </Link>
 

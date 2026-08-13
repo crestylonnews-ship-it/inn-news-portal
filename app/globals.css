@@ -3958,3 +3958,394 @@ html[data-language='en'] .bilingual-markup .bilingual-block {
     min-height: 20.5rem;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Quiet map home: one statement, regional briefings, then an immersive map
+   -------------------------------------------------------------------------- */
+.nav-choice-tagline {
+  display: block;
+  margin-top: 0.14rem;
+  color: rgba(153, 246, 228, 0.72);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.map-home-shell--fullscreen {
+  min-height: calc(100svh - 4.5rem);
+}
+
+.map-home-explorer {
+  width: 100%;
+  margin: 0;
+  padding: clamp(0.7rem, 1.6vw, 1.25rem);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.map-home-explorer .map-today-briefs {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0.72rem 0.82rem;
+  border-radius: 0.9rem;
+  background: rgba(5, 16, 28, 0.48);
+}
+
+.map-home-explorer .map-today-briefs-header {
+  margin-bottom: 0.48rem;
+}
+
+.map-home-explorer .map-today-briefs-header .map-eyebrow {
+  display: none;
+}
+
+.map-home-explorer .map-today-briefs h2 {
+  font-size: clamp(0.86rem, 1.4vw, 1.02rem);
+  letter-spacing: 0.03em;
+}
+
+.map-home-explorer .map-today-brief-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.map-home-explorer .map-today-brief-card {
+  min-height: 5.25rem;
+  padding: 0.52rem;
+  gap: 0.2rem 0.4rem;
+}
+
+.map-home-explorer .map-today-brief-card strong {
+  font-size: 0.67rem;
+  line-height: 1.34;
+  -webkit-line-clamp: 2;
+}
+
+.map-home-explorer .map-today-brief-card small {
+  display: none;
+}
+
+.map-home-explorer .map-today-brief-region {
+  font-size: 0.64rem;
+}
+
+.map-home-explorer .map-today-brief-count {
+  font-size: 0.82rem;
+}
+
+.map-home-explorer .map-category-legend {
+  max-width: 100%;
+  margin: 0 auto;
+  padding-block: 0.42rem;
+  border-radius: 0.75rem;
+  background: rgba(3, 12, 22, 0.42);
+}
+
+.map-home-explorer > .grid {
+  grid-template-columns: minmax(0, 1fr) !important;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.map-home-explorer .map-console {
+  min-height: max(33rem, calc(100svh - 16rem));
+  border-color: rgba(45, 212, 191, 0.22);
+  background: rgba(4, 14, 25, 0.56);
+}
+
+.map-home-explorer .map-stage,
+.map-home-explorer .world-map {
+  min-height: max(29rem, calc(100svh - 21.5rem));
+}
+
+.map-home-explorer .map-results {
+  display: none;
+}
+
+.map-home-explorer .map-console-bar {
+  min-height: 2.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   Shared stellar field: a low-contrast, scroll-reactive frame around content
+   -------------------------------------------------------------------------- */
+:root {
+  --stellar-scroll: 0;
+  --stellar-shift: 0px;
+  --stellar-shift-slow: 0px;
+}
+
+.stellar-field {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(103, 232, 249, 0.11) 0 1px, transparent 2px),
+    radial-gradient(circle at 76% 31%, rgba(196, 181, 253, 0.13) 0 1px, transparent 2px),
+    radial-gradient(circle at 35% 76%, rgba(45, 212, 191, 0.1) 0 1px, transparent 2px),
+    #06080e;
+}
+
+.stellar-nebula {
+  position: absolute;
+  width: 46vw;
+  height: 46vw;
+  min-width: 32rem;
+  min-height: 32rem;
+  border-radius: 50%;
+  filter: blur(26px);
+  opacity: 0.16;
+  transition: opacity 180ms ease-out;
+  will-change: transform;
+}
+
+.stellar-nebula-a {
+  top: -23vw;
+  right: -16vw;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.72), rgba(30, 64, 175, 0.15) 45%, transparent 70%);
+  transform: translate3d(0, calc(0px - var(--stellar-shift)), 0);
+}
+
+.stellar-nebula-b {
+  bottom: -28vw;
+  left: -18vw;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.54), rgba(14, 165, 233, 0.12) 48%, transparent 72%);
+  transform: translate3d(0, var(--stellar-shift-slow), 0);
+}
+
+.stellar-star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 0 9px 2px rgba(103, 232, 249, 0.23);
+  opacity: 0.3;
+  transform: translate3d(0, calc(0px - var(--stellar-shift)), 0);
+  will-change: transform;
+}
+
+.stellar-star:nth-of-type(3n) { width: 3px; height: 3px; opacity: 0.48; }
+.stellar-star:nth-of-type(1) { top: 8%; left: 6%; }
+.stellar-star:nth-of-type(2) { top: 17%; left: 23%; }
+.stellar-star:nth-of-type(3) { top: 10%; left: 58%; }
+.stellar-star:nth-of-type(4) { top: 28%; left: 87%; }
+.stellar-star:nth-of-type(5) { top: 39%; left: 12%; }
+.stellar-star:nth-of-type(6) { top: 47%; left: 41%; }
+.stellar-star:nth-of-type(7) { top: 56%; left: 72%; }
+.stellar-star:nth-of-type(8) { top: 64%; left: 94%; }
+.stellar-star:nth-of-type(9) { top: 74%; left: 29%; }
+.stellar-star:nth-of-type(10) { top: 84%; left: 54%; }
+.stellar-star:nth-of-type(11) { top: 92%; left: 82%; }
+.stellar-star:nth-of-type(12) { top: 31%; left: 66%; }
+.stellar-star:nth-of-type(13) { top: 68%; left: 3%; }
+.stellar-star:nth-of-type(14) { top: 5%; left: 92%; }
+.stellar-star:nth-of-type(15) { top: 88%; left: 16%; }
+.stellar-star:nth-of-type(16) { top: 43%; left: 51%; }
+.stellar-star:nth-of-type(17) { top: 22%; left: 76%; }
+.stellar-star:nth-of-type(18) { top: 61%; left: 61%; }
+
+.site-shell {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  background-color: rgba(10, 11, 15, 0.88) !important;
+}
+
+.site-shell > * {
+  position: relative;
+  z-index: 1;
+}
+
+.site-shell::before,
+.site-shell::after {
+  position: fixed;
+  z-index: 0;
+  inset: 0.65rem;
+  content: '';
+  pointer-events: none;
+}
+
+.site-shell::before {
+  border: 1px solid rgba(103, 232, 249, 0.08);
+  box-shadow: inset 0 0 2rem rgba(34, 211, 238, 0.035), 0 0 1.25rem rgba(8, 145, 178, 0.035);
+}
+
+.site-shell::after {
+  background:
+    linear-gradient(90deg, rgba(103, 232, 249, 0.16), transparent 12%) top left / 32% 1px no-repeat,
+    linear-gradient(270deg, rgba(139, 92, 246, 0.14), transparent 12%) bottom right / 32% 1px no-repeat,
+    linear-gradient(180deg, rgba(103, 232, 249, 0.14), transparent 12%) top left / 1px 26% no-repeat,
+    linear-gradient(0deg, rgba(139, 92, 246, 0.13), transparent 12%) bottom right / 1px 26% no-repeat;
+  opacity: 0.58;
+}
+
+/* --------------------------------------------------------------------------
+   Global bilingual reading hierarchy: chosen language first on every page
+   -------------------------------------------------------------------------- */
+.bilingual-pair,
+.bilingual-markup .bilingual-block {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.bilingual-pair > .bilingual-language-zh,
+.bilingual-pair > .bilingual-language-en,
+.bilingual-markup .bilingual-block > .bilingual-language-zh,
+.bilingual-markup .bilingual-block > .bilingual-language-en {
+  display: block !important;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+html[data-language='en'] .bilingual-pair > .bilingual-language-en,
+html[data-language='en'] .bilingual-markup .bilingual-block > .bilingual-language-en {
+  order: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  color: inherit !important;
+  font-size: 1em !important;
+  font-weight: inherit;
+  line-height: inherit;
+  opacity: 1 !important;
+}
+
+html[data-language='en'] .bilingual-pair > .bilingual-language-zh,
+html[data-language='en'] .bilingual-markup .bilingual-block > .bilingual-language-zh {
+  order: 2 !important;
+  margin-top: 0.42em !important;
+  padding-left: 0.78em !important;
+  border-left: 2px solid rgba(34, 211, 238, 0.28) !important;
+  color: rgba(148, 163, 184, 0.9) !important;
+  font-size: 0.78em !important;
+  font-weight: 400 !important;
+  line-height: 1.58 !important;
+  letter-spacing: normal !important;
+  opacity: 1 !important;
+}
+
+html[data-language='zh'] .bilingual-pair > .bilingual-language-zh,
+html[data-language='zh'] .bilingual-markup .bilingual-block > .bilingual-language-zh {
+  order: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  color: inherit !important;
+  font-size: 1em !important;
+  font-weight: inherit;
+  line-height: inherit;
+  opacity: 1 !important;
+}
+
+html[data-language='zh'] .bilingual-pair > .bilingual-language-en,
+html[data-language='zh'] .bilingual-markup .bilingual-block > .bilingual-language-en {
+  order: 2 !important;
+  margin-top: 0.42em !important;
+  padding-left: 0.78em !important;
+  border-left: 2px solid rgba(34, 211, 238, 0.28) !important;
+  color: rgba(148, 163, 184, 0.9) !important;
+  font-size: 0.78em !important;
+  font-weight: 400 !important;
+  line-height: 1.58 !important;
+  letter-spacing: normal !important;
+  opacity: 1 !important;
+}
+
+@media (max-width: 760px) {
+  .nav-choice-tagline {
+    max-width: 12rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.48rem;
+  }
+
+  .map-home-explorer {
+    padding: 0.55rem;
+  }
+
+  .map-home-explorer .map-today-briefs {
+    padding: 0.62rem;
+  }
+
+  .map-home-explorer .map-today-brief-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .map-home-explorer .map-today-brief-card {
+    min-height: 4.5rem;
+  }
+
+  .map-home-explorer .map-stage,
+  .map-home-explorer .world-map {
+    min-height: max(25rem, calc(100svh - 15rem));
+  }
+
+  .map-home-explorer .map-console {
+    min-height: max(29rem, calc(100svh - 10rem));
+  }
+
+  .site-shell::before,
+  .site-shell::after {
+    inset: 0.35rem;
+  }
+
+  html[data-language='en'] .bilingual-pair > .bilingual-language-zh,
+  html[data-language='en'] .bilingual-markup .bilingual-block > .bilingual-language-zh,
+  html[data-language='zh'] .bilingual-pair > .bilingual-language-en,
+  html[data-language='zh'] .bilingual-markup .bilingual-block > .bilingual-language-en {
+    margin-top: 0.36em !important;
+    padding-left: 0.62em !important;
+    font-size: 0.72em !important;
+    line-height: 1.5 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stellar-nebula,
+  .stellar-star {
+    transform: none !important;
+  }
+}
+
+/* Keep the map visually primary on smaller screens: topic controls stay in one
+   horizontally scrollable rail instead of consuming the map viewport. */
+.map-home-explorer .map-category-legend {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.map-home-explorer .map-category-legend-label,
+.map-home-explorer .map-category-chip {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 760px) {
+  .map-home-explorer .map-category-legend {
+    gap: 0.34rem;
+    padding: 0.44rem;
+  }
+
+  .map-home-explorer .map-category-legend-label {
+    max-width: 4.4rem;
+    white-space: normal;
+    font-size: 0.48rem;
+    line-height: 1.25;
+  }
+
+  .map-home-explorer .map-category-chip {
+    min-height: 2.15rem;
+    font-size: 0.56rem;
+  }
+}

@@ -356,7 +356,7 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
   };
 
   return (
-    <section id="map-explorer" className={`map-explorer space-y-6 ${compact ? 'map-home-preview' : ''} ${home ? 'map-home-explorer' : ''}`} aria-labelledby="map-explorer-title">
+    <section id="map-explorer" className={`map-explorer space-y-6 ${compact ? 'map-home-preview' : ''} ${home ? 'map-home-explorer' : ''}`} aria-labelledby={home ? undefined : 'map-explorer-title'} aria-label={home ? '地圖新聞探索 / Map news exploration' : undefined}>
       {home && (
         <section className="map-today-briefs" aria-labelledby="map-today-briefs-title">
           <div className="map-today-briefs-header">
@@ -383,31 +383,35 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
         </section>
       )}
 
-      <div className="flex flex-col gap-4 border-b border-cyan-400/20 pb-5 sm:flex-row sm:items-end sm:justify-between">
-        <div className="space-y-2">
-          <p className="map-eyebrow"><BilingualText zh={compact ? '首頁探索空間 // 近七日地理新聞' : '完整地圖空間 // 近七日地理新聞索引'} en={compact ? 'HOME EXPLORATION SPACE // LAST 7 DAYS' : 'FULL MAP SPACE // LAST 7 DAYS INDEX'} /></p>
-          <h2 id="map-explorer-title" className="font-orbitron text-2xl font-black tracking-tight text-white sm:text-3xl"><BilingualText zh="你決定看什麼，地圖只呈現訊號" en="YOU CHOOSE THE SIGNAL. THE MAP SHOWS THE FIELD." /></h2>
-          <p className="max-w-2xl text-sm leading-relaxed text-slate-400"><BilingualText zh="地圖只顯示最近 7 天的新聞；拖曳、縮放或選擇區域，依自己的方向探索。地區新聞越多，節點越大；不同分類使用不同顏色。點擊節點後，頁面會滑到下方顯示該區域的相關新聞。" en="Only the last 7 days are shown. Pan, zoom or choose a region to explore on your own terms. More reports create larger nodes, categories use distinct colors, and a node click reveals the regional stories below." block /></p>
-        </div>
-        <div className="map-readout" aria-live="polite">
-          <span><BilingualText zh="近 7 日資料" en="LAST 7 DAYS" /></span>
-          <strong>{recentEntries.length}</strong>
-          <small><BilingualText zh="篇報導" en="REPORTS" /></small>
-        </div>
-      </div>
+      {!home && (
+        <>
+          <div className="flex flex-col gap-4 border-b border-cyan-400/20 pb-5 sm:flex-row sm:items-end sm:justify-between">
+            <div className="space-y-2">
+              <p className="map-eyebrow"><BilingualText zh={compact ? '首頁探索空間 // 近七日地理新聞' : '完整地圖空間 // 近七日地理新聞索引'} en={compact ? 'HOME EXPLORATION SPACE // LAST 7 DAYS' : 'FULL MAP SPACE // LAST 7 DAYS INDEX'} /></p>
+              <h2 id="map-explorer-title" className="font-orbitron text-2xl font-black tracking-tight text-white sm:text-3xl"><BilingualText zh="你決定看什麼，地圖只呈現訊號" en="YOU CHOOSE THE SIGNAL. THE MAP SHOWS THE FIELD." /></h2>
+              <p className="max-w-2xl text-sm leading-relaxed text-slate-400"><BilingualText zh="地圖只顯示最近 7 天的新聞；拖曳、縮放或選擇區域，依自己的方向探索。地區新聞越多，節點越大；不同分類使用不同顏色。點擊節點後，頁面會滑到下方顯示該區域的相關新聞。" en="Only the last 7 days are shown. Pan, zoom or choose a region to explore on your own terms. More reports create larger nodes, categories use distinct colors, and a node click reveals the regional stories below." block /></p>
+            </div>
+            <div className="map-readout" aria-live="polite">
+              <span><BilingualText zh="近 7 日資料" en="LAST 7 DAYS" /></span>
+              <strong>{recentEntries.length}</strong>
+              <small><BilingualText zh="篇報導" en="REPORTS" /></small>
+            </div>
+          </div>
 
-      <div className="map-index-controls" aria-label="新聞索引控制">
-        <div className="map-index-control-group">
-          <span className="map-index-control-label"><BilingualText zh="閱讀語言" en="READING LANGUAGE" /></span>
-          <button type="button" className={`map-index-button ${language === 'zh' ? 'is-active' : ''}`} onClick={() => setLanguage('zh')} aria-pressed={language === 'zh'}>中文</button>
-          <button type="button" className={`map-index-button ${language === 'en' ? 'is-active' : ''}`} onClick={() => setLanguage('en')} aria-pressed={language === 'en'}>EN</button>
-        </div>
-        <div className="map-index-control-group">
-          <span className="map-index-control-label"><BilingualText zh="時事範圍" en="CURRENT AFFAIRS" /></span>
-          <span className="map-index-status"><BilingualText zh="近 7 日" en="LAST 7 DAYS" /></span>
-          <Link href="/timeline" className="map-index-timeline"><BilingualText zh="所有時間線 →" en="FULL TIMELINE →" /></Link>
-        </div>
-      </div>
+          <div className="map-index-controls" aria-label="新聞索引控制">
+            <div className="map-index-control-group">
+              <span className="map-index-control-label"><BilingualText zh="閱讀語言" en="READING LANGUAGE" /></span>
+              <button type="button" className={`map-index-button ${language === 'zh' ? 'is-active' : ''}`} onClick={() => setLanguage('zh')} aria-pressed={language === 'zh'}>中文</button>
+              <button type="button" className={`map-index-button ${language === 'en' ? 'is-active' : ''}`} onClick={() => setLanguage('en')} aria-pressed={language === 'en'}>EN</button>
+            </div>
+            <div className="map-index-control-group">
+              <span className="map-index-control-label"><BilingualText zh="時事範圍" en="CURRENT AFFAIRS" /></span>
+              <span className="map-index-status"><BilingualText zh="近 7 日" en="LAST 7 DAYS" /></span>
+              <Link href="/timeline" className="map-index-timeline"><BilingualText zh="所有時間線 →" en="FULL TIMELINE →" /></Link>
+            </div>
+          </div>
+        </>
+      )}
 
       <div className="map-category-legend" aria-label="新聞主題多選圖例">
         <span className="map-category-legend-label"><BilingualText zh="點選領域 · 可複選" en="CLICK TOPICS · MULTI-SELECT" /></span>
@@ -513,7 +517,7 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
                 <path d={`M ${MAP_WIDTH / 2 - 12} ${MAP_HEIGHT / 2} H ${MAP_WIDTH / 2 + 12} M ${MAP_WIDTH / 2} ${MAP_HEIGHT / 2 - 12} V ${MAP_HEIGHT / 2 + 12}`} />
               </g>
             </svg>
-            <div className="map-overlay-label map-overlay-label-top"><BilingualText zh="拖曳平移 · 滾輪縮放 · 點擊節點看區域新聞" en="DRAG · ZOOM · CLICK A NODE FOR REGIONAL NEWS" /></div>
+            {!home && <div className="map-overlay-label map-overlay-label-top"><BilingualText zh="拖曳平移 · 滾輪縮放 · 點擊節點看區域新聞" en="DRAG · ZOOM · CLICK A NODE FOR REGIONAL NEWS" /></div>}
             <div className="map-global-anchor" aria-label="全球資料固定位置">
               <span><BilingualText zh="全球資料" en="GLOBAL DATA" /></span>
               <small><BilingualText zh="跨區訊號" en="CROSS-REGION" /></small>

@@ -72,6 +72,7 @@ const freeResources = [
 ];
 
 const aiContributors = [
+  { name: 'MANUS AI', url: 'https://manus.im/' },
   { name: 'DEEPSEEK', url: 'https://www.deepseek.com/' },
   { name: 'CHATGPT', url: 'https://chatgpt.com/' },
   { name: 'GEMINI', url: 'https://gemini.google.com/' },

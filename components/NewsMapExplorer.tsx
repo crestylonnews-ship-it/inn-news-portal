@@ -5,6 +5,7 @@ import { PointerEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { Article } from '@/lib/types';
 import { getArticleGeoEntries } from '@/lib/geo';
 import BilingualText, { useLanguage } from './BilingualText';
+import worldCountries from '@/lib/world-countries.json';
 
 type Bounds = { west: number; east: number; south: number; north: number };
 type Viewport = { centerLon: number; centerLat: number; zoom: number };
@@ -127,13 +128,14 @@ function isWithinLastSevenDays(article: Article) {
 
 export default function NewsMapExplorer({ articles, compact = false, home = false }: Props) {
   const [viewport, setViewport] = useState<Viewport>({ centerLon: 20, centerLat: 18, zoom: 1.05 });
-  const [geoJson, setGeoJson] = useState<GeoCollection | null>(null);
+  const [geoJson] = useState<GeoCollection>(() => worldCountries as GeoCollection);
   const [dragging, setDragging] = useState(false);
   const [selectedRegionKey, setSelectedRegionKey] = useState<string | null>(null);
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [activeRegion, setActiveRegion] = useState('全球');
   const { language, setLanguage } = useLanguage();
   const dragStart = useRef<{ x: number; y: number; viewport: Viewport } | null>(null);
+  const mapSvgRef = useRef<SVGSVGElement | null>(null);
   const regionDetailsRef = useRef<HTMLElement | null>(null);
   const entries = useMemo(() => getArticleGeoEntries(articles), [articles]);
   const allRecentEntries = useMemo(() => entries.filter(({ article }) => isWithinLastSevenDays(article)), [entries]);
@@ -179,19 +181,40 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
   }, [articles, entries]);
 
   useEffect(() => {
-    let cancelled = false;
-    fetch('/data/world-countries.geojson')
-      .then((response) => response.json())
-      .then((data: GeoCollection) => {
-        if (!cancelled) setGeoJson(data);
-      })
-      .catch(() => {
-        if (!cancelled) setGeoJson(null);
-      });
+    const svg = mapSvgRef.current;
+    if (!svg) return;
+
+    const redraw = () => setViewport((current) => ({ ...current }));
+    const frame = window.requestAnimationFrame(redraw);
+    const observer = new ResizeObserver(() => window.requestAnimationFrame(redraw));
+    observer.observe(svg);
     return () => {
-      cancelled = true;
+      window.cancelAnimationFrame(frame);
+      observer.disconnect();
     };
+  }, [geoJson]);
+
+  useEffect(() => {
+    const svg = mapSvgRef.current;
+    if (!svg) return;
+
+    const zoomWithWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      setViewport((current) => ({
+        ...current,
+        zoom: clamp(Number((current.zoom + (event.deltaY > 0 ? -0.45 : 0.45)).toFixed(2)), MIN_ZOOM, MAX_ZOOM),
+      }));
+    };
+
+    svg.addEventListener('wheel', zoomWithWheel, { passive: false });
+    return () => svg.removeEventListener('wheel', zoomWithWheel);
   }, []);
+
+  useEffect(() => {
+    if (selectedRegionKey && !recentEntries.some(({ geo }) => geo.key === selectedRegionKey)) {
+      setSelectedRegionKey(null);
+    }
+  }, [recentEntries, selectedRegionKey]);
 
   const visibleEntries = useMemo(
     () => recentEntries
@@ -320,7 +343,9 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
 
   const handleRegionPointClick = (regionKey: string) => {
     setSelectedRegionKey(regionKey);
-    window.setTimeout(() => regionDetailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
+    window.requestAnimationFrame(() => {
+      window.setTimeout(() => regionDetailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+    });
   };
 
   const handlePointerDown = (event: PointerEvent<SVGSVGElement>) => {
@@ -350,35 +375,29 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
     setDragging(false);
   };
 
-  const handleWheel = (event: React.WheelEvent<SVGSVGElement>) => {
-    event.preventDefault();
-    updateZoom(event.deltaY > 0 ? -1 : 1);
-  };
-
   return (
     <section id="map-explorer" className={`map-explorer space-y-6 ${compact ? 'map-home-preview' : ''} ${home ? 'map-home-explorer' : ''}`} aria-labelledby={home ? undefined : 'map-explorer-title'} aria-label={home ? '地圖新聞探索 / Map news exploration' : undefined}>
       {home && (
-        <section className="map-today-briefs" aria-labelledby="map-today-briefs-title">
-          <div className="map-today-briefs-header">
-            <div>
-              <p className="map-eyebrow"><BilingualText zh="今日地區事件摘要" en="TODAY'S REGIONAL BRIEFINGS" /></p>
-              <h2 id="map-today-briefs-title" className="font-orbitron text-lg font-bold text-cyan-50 sm:text-xl"><BilingualText zh="今天，哪一區正在發生什麼？" en="WHAT IS HAPPENING IN EACH REGION TODAY?" /></h2>
+        <section className="map-headline-ticker" aria-label="近期新聞標題跑馬燈 / Recent headline ticker">
+          <span className="map-headline-ticker-label">{language === 'zh' ? '最新新聞' : 'LATEST NEWS'}</span>
+          <div className="map-headline-ticker-window">
+            <div className="map-headline-ticker-track">
+              {[0, 1].map((copy) => (
+                <div className="map-headline-ticker-group" aria-hidden={copy === 1} key={`ticker-copy-${copy}`}>
+                  {recentEntries.slice(0, 14).map(({ article, geo }) => {
+                    const category = getCategoryMeta(article.category);
+                    const headline = language === 'en' ? article.titleEn || article.title : article.title;
+                    return (
+                      <Link key={`${copy}-${article.slug}`} href={`/articles/${article.slug}`} className="map-headline-ticker-item">
+                        <i aria-hidden="true" style={{ backgroundColor: category.color }} />
+                        <span className="map-headline-ticker-region">{geo.label}</span>
+                        <span>{headline}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
-            <span className="map-today-date">{new Date().toLocaleDateString('zh-TW', { month: '2-digit', day: '2-digit' })}</span>
-          </div>
-          <div className="map-today-brief-grid">
-            {todayRegionBriefs.map((brief) => (
-              <button key={brief.region} type="button" className="map-today-brief-card" onClick={() => focusTodayBrief(brief)}>
-                <span className="map-today-brief-region"><BilingualText zh={brief.region} en={brief.anchor?.region === '全球' ? 'GLOBAL' : brief.anchor?.labelEn || brief.region} /></span>
-                <span className="map-today-brief-count">{brief.entries.length}</span>
-                <span className="map-today-brief-topics">
-                  {brief.categories.map(({ category }) => <i key={category.key} style={{ backgroundColor: category.color }} title={category.label} />)}
-                </span>
-                <strong>{brief.entries[0]?.article.title}</strong>
-                <small>{brief.entries[0]?.article.titleEn}</small>
-              </button>
-            ))}
-            {todayRegionBriefs.length === 0 && <p className="map-empty"><BilingualText zh="今日尚無可定位的地區事件，請從近七日地圖探索。" en="No mappable regional brief is available for today. Explore the last 7 days on the map." block /></p>}
           </div>
         </section>
       )}
@@ -452,6 +471,7 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
 
           <div className="map-stage">
             <svg
+              ref={mapSvgRef}
               className={`world-map ${dragging ? 'is-dragging' : ''}`}
               viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
               role="application"
@@ -460,7 +480,6 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
-              onWheel={handleWheel}
             >
               <defs>
                 <pattern id="map-grid" width="50" height="50" patternUnits="userSpaceOnUse">
@@ -476,6 +495,11 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
               <g className="world-land" aria-hidden="true">
                 {mapPaths.map(({ key, path, name }) => <path key={key} d={`M ${path}`} vectorEffect="non-scaling-stroke" aria-label={name} />)}
               </g>
+              {mapPaths.length === 0 && (
+                <text x={MAP_WIDTH / 2} y={MAP_HEIGHT / 2} textAnchor="middle" className="map-loading-label">
+                  載入地圖資料中 / LOADING MAP DATA
+                </text>
+              )}
               <g className="map-latitude-lines" aria-hidden="true">
                 {[-60, -30, 0, 30, 60].map((lat) => { const p = project(0, lat, viewport); return <line key={lat} x1="0" x2={MAP_WIDTH} y1={p.y} y2={p.y} />; })}
               </g>

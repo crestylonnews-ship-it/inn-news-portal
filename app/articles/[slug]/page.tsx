@@ -40,9 +40,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const articleHtmlEn = renderMarkdown(article.contentEn || article.content);
 
   return (
-    <div className="min-h-screen bg-[#0a0b0f] text-white flex flex-col font-sans selection:bg-cyan-500 selection:text-black">
+    <div className="article-page min-h-screen text-white flex flex-col font-sans selection:bg-cyan-500 selection:text-black">
       <Navbar />
-      <main className="flex-grow w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 lg:py-16">
+      <main className="article-page-main flex-grow w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 lg:py-10">
         <div className="mx-auto max-w-3xl space-y-8 sm:space-y-10">
           <nav aria-label="麵包屑" className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-gray-400">
             <Link href="/" className="hover:text-cyan-400 transition-colors"><BilingualText zh="首頁" en="HOME" /></Link>

@@ -144,25 +144,20 @@ export function BilingualMarkup({ zhHtml, enHtml, className = '' }: { zhHtml: st
 }
 
 export function LanguageToggle() {
-  const toggleLanguage = () => {
-    const root = document.documentElement;
-    const current = root.dataset.language === 'en' ? 'en' : 'zh';
-    const next = current === 'zh' ? 'en' : 'zh';
-    root.dataset.language = next;
-    window.localStorage.setItem('inn-language', next);
-    window.dispatchEvent(new Event('inn-language-change'));
-  };
+  const { language, toggleLanguage } = useLanguage();
+  const nextLabel = language === 'zh' ? 'EN' : '中文';
+  const nextDescription = language === 'zh' ? '英文主導' : '中文主導';
 
   return (
     <button
       type="button"
       onClick={toggleLanguage}
-      className="language-toggle rounded-lg border border-cyan-400/30 bg-cyan-400/[0.06] px-3 py-2 font-mono text-[10px] tracking-[0.18em] text-cyan-300 transition-all hover:border-cyan-300 hover:bg-cyan-400/15 focus:outline-none focus:ring-2 focus:ring-cyan-400/50"
+      className="language-toggle"
       aria-label="切換中文或英文閱讀模式"
       title="Switch language"
     >
-      <span className="bilingual-language-zh">EN / 英文主導</span>
-      <span className="bilingual-language-en">中 / 中文主導</span>
+      <span className="language-toggle-code">{nextLabel}</span>
+      <span className="language-toggle-copy">{nextDescription}</span>
     </button>
   );
 }

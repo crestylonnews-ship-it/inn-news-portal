@@ -3469,3 +3469,205 @@ html[data-language='en'] .bilingual-markup .bilingual-block {
     width: 100%;
   }
 }
+
+/* Article-language hierarchy: show both translations in articles, with the
+   chosen reading language first and the companion translation as support. */
+.article-bilingual-pair,
+.bilingual-markup .bilingual-block {
+  flex-direction: column;
+  max-inline-size: 100%;
+}
+
+/* English reading mode: English leads; Chinese follows as the smaller aid. */
+html[data-language='en'] .article-bilingual-pair > .bilingual-language-en,
+html[data-language='en'] .bilingual-markup .bilingual-block > .bilingual-language-en {
+  order: 1;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: inherit;
+  font-size: 1em;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: rgb(241 245 249);
+  opacity: 1;
+}
+
+html[data-language='en'] .article-bilingual-pair > .bilingual-language-zh,
+html[data-language='en'] .bilingual-markup .bilingual-block > .bilingual-language-zh {
+  order: 2;
+  margin-top: .62rem;
+  padding-left: 1rem;
+  border-left: 2px solid rgb(34 211 238 / .24);
+  font-family: inherit;
+  font-size: .84em;
+  font-weight: 400;
+  line-height: 1.78;
+  letter-spacing: normal;
+  color: rgb(148 163 184 / .94);
+  opacity: 1;
+}
+
+html[data-language='en'] .article-bilingual-pair > .bilingual-language-zh {
+  font-size: .56em;
+  line-height: 1.42;
+  letter-spacing: .015em;
+}
+
+/* Keep Chinese reading mode Chinese-first and make English a compact support line. */
+html[data-language='zh'] .article-bilingual-pair > .bilingual-language-zh,
+html[data-language='zh'] .bilingual-markup .bilingual-block > .bilingual-language-zh {
+  order: 1;
+}
+
+html[data-language='zh'] .article-bilingual-pair > .bilingual-language-en,
+html[data-language='zh'] .bilingual-markup .bilingual-block > .bilingual-language-en {
+  order: 2;
+}
+
+/* Horizontal overflow guardrails, especially for long English headlines and URLs. */
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.article-shell,
+.article-shell *,
+.markdown-body,
+.markdown-body * {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+.article-title,
+.article-title *,
+.prime-headline-title,
+.prime-headline-title *,
+.markdown-body :is(h1, h2, h3, h4, p, li, blockquote, a) {
+  overflow-wrap: anywhere;
+  word-break: normal;
+  hyphens: auto;
+}
+
+.markdown-body pre,
+.markdown-body table {
+  display: block;
+  max-inline-size: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+@media (max-width: 767px) {
+  .site-nav > div {
+    gap: .5rem;
+    padding-inline: .75rem;
+  }
+
+  .nav-brand {
+    min-width: 0;
+    max-width: calc(100% - 9.5rem);
+  }
+
+  .nav-brand > div,
+  .nav-brand .bilingual-text,
+  .nav-brand .bilingual-primary,
+  .nav-brand .bilingual-secondary,
+  #mobile-navigation > a {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .nav-brand .bilingual-primary {
+    font-size: .78rem;
+    line-height: 1.2;
+  }
+
+  .nav-brand .bilingual-secondary {
+    font-size: .48rem;
+    letter-spacing: .035em;
+    line-height: 1.22;
+  }
+
+  #mobile-navigation {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #mobile-navigation > a {
+    padding-inline: .65rem;
+    font-size: .78rem;
+  }
+
+  .article-title {
+    font-size: clamp(1.45rem, 7.5vw, 2rem);
+    line-height: 1.17;
+    text-wrap: pretty;
+  }
+
+  .article-bilingual-pair > .bilingual-secondary,
+  html[data-language='en'] .article-bilingual-pair > .bilingual-language-zh {
+    margin-top: .42rem;
+    padding-left: .7rem;
+    font-size: .58em;
+    line-height: 1.38;
+  }
+
+  .bilingual-markup .bilingual-block {
+    gap: .44rem;
+    margin-bottom: 1.28rem;
+  }
+
+  .bilingual-markup .bilingual-block > .bilingual-secondary,
+  html[data-language='en'] .bilingual-markup .bilingual-block > .bilingual-language-zh {
+    margin-top: .44rem;
+    padding-left: .7rem;
+    font-size: .82em;
+    line-height: 1.72;
+  }
+
+  .article-shell {
+    padding-inline: 1rem;
+  }
+
+  .markdown-body {
+    font-size: clamp(.94rem, 4.25vw, 1rem);
+    line-height: 1.82;
+  }
+}
+
+@media (max-width: 380px) {
+  .site-nav > div {
+    padding-inline: .6rem;
+  }
+
+  .nav-brand {
+    max-width: calc(100% - 8.6rem);
+  }
+
+  .language-toggle {
+    padding-inline: .42rem;
+    letter-spacing: .1em;
+  }
+
+  .article-title {
+    font-size: clamp(1.35rem, 7.25vw, 1.65rem);
+  }
+
+  .article-shell {
+    padding-inline: .85rem;
+  }
+}
+
+/* Override the earlier legacy reverse rule: in English mode, English remains the first flex item. */
+html[data-language='en'] .article-bilingual-pair,
+html[data-language='en'] .bilingual-markup .bilingual-block {
+  flex-direction: column;
+}
+
+/* BilingualText receives a generic Tailwind `block` utility on article titles.
+   Force the article-specific pair back to a flex container so language order applies. */
+.article-bilingual-pair {
+  display: flex !important;
+}

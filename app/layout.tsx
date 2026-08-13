@@ -24,6 +24,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <style>{`
           html[data-language="zh"] .bilingual-language-en { display: none !important; }
           html[data-language="en"] .bilingual-language-zh { display: none !important; }
+          /* 文章內文永遠提供主文與對照文；其他介面仍依閱讀語言單獨顯示。 */
+          html[data-language="zh"] .article-bilingual-pair > .bilingual-language-en,
+          html[data-language="zh"] .bilingual-markup .bilingual-block > .bilingual-language-en,
+          html[data-language="en"] .article-bilingual-pair > .bilingual-language-zh,
+          html[data-language="en"] .bilingual-markup .bilingual-block > .bilingual-language-zh { display: block !important; }
           .bilingual-language-zh, .bilingual-language-en { min-width: 0; }
         `}</style>
       </head>

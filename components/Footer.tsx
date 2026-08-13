@@ -5,6 +5,7 @@ const footerLinks = [
   { href: '/tags', zh: '標籤分類', en: 'TAGS' },
   { href: '/timeline', zh: '時間線歸檔', en: 'TIMELINE' },
   { href: '/opinion', zh: '社論與評論', en: 'OPINION' },
+  { href: '/acknowledgements', zh: '特別感謝', en: 'ACKNOWLEDGEMENTS' },
 ];
 
 export default function Footer() {

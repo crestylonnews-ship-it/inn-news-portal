@@ -128,26 +128,13 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section className="about-thanks-section mt-6 sm:mt-8" aria-labelledby="earth-volunteer-thanks">
-          <div className="about-link-section-header">
-            <div>
-              <p className="eyebrow-label">SPECIAL ACKNOWLEDGEMENT // EARTH</p>
-              <h2 id="earth-volunteer-thanks"><BilingualText zh="特別感謝：地球志願參與者" en="SPECIAL THANKS: EARTH VOLUNTEER PARTICIPANTS" /></h2>
-            </div>
-            <p className="about-link-section-copy"><BilingualText zh="感謝以下地球志願參與者，為資訊交流與記錄工作提供支持。" en="With gratitude to the following Earth volunteer participants for their support of information exchange and record-keeping." block /></p>
+        <section className="about-thanks-directory mt-6 sm:mt-8" aria-labelledby="acknowledgements-directory-title">
+          <div>
+            <p className="eyebrow-label">ACKNOWLEDGEMENTS ARCHIVE</p>
+            <h2 id="acknowledgements-directory-title"><BilingualText zh="特別感謝，獨立歸檔" en="SPECIAL ACKNOWLEDGEMENTS, SEPARATELY ARCHIVED" /></h2>
+            <p><BilingualText zh="所有支撐、閱讀、分享與協作的力量，皆已收錄於獨立的特別感謝頁面。" en="Every force of support, readership, sharing and collaboration is recorded on the dedicated acknowledgements page." block /></p>
           </div>
-          <div className="about-external-link-grid about-thanks-link-grid">
-            <a href="https://sungyan-workshop.pages.dev/" target="_blank" rel="noreferrer" className="about-external-link about-thanks-link" aria-label="Sungyan Workshop">
-              <span className="about-link-platform">SUNGYAN WORKSHOP</span>
-              <span className="about-link-handle">sungyan-workshop.pages.dev</span>
-              <span className="about-link-arrow" aria-hidden="true">↗</span>
-            </a>
-            <a href="https://auditors-archive.pages.dev/" target="_blank" rel="noreferrer" className="about-external-link about-thanks-link" aria-label="Auditors Archive">
-              <span className="about-link-platform">AUDITORS ARCHIVE</span>
-              <span className="about-link-handle">auditors-archive.pages.dev</span>
-              <span className="about-link-arrow" aria-hidden="true">↗</span>
-            </a>
-          </div>
+          <Link href="/acknowledgements" className="portal-card about-thanks-directory-link"><BilingualText zh="前往特別感謝" en="OPEN ACKNOWLEDGEMENTS" /> <span aria-hidden="true">→</span></Link>
         </section>
       </main>
       <Footer />

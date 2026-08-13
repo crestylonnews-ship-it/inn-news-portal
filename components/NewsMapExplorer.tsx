@@ -132,6 +132,7 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
   const [dragging, setDragging] = useState(false);
   const [selectedRegionKey, setSelectedRegionKey] = useState<string | null>(null);
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+  const [isDetailTopicMenuOpen, setIsDetailTopicMenuOpen] = useState(false);
   const [activeRegion, setActiveRegion] = useState('全球');
   const { language, setLanguage } = useLanguage();
   const dragStart = useRef<{ x: number; y: number; viewport: Viewport } | null>(null);
@@ -342,6 +343,7 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
   };
 
   const handleRegionPointClick = (regionKey: string) => {
+    setIsDetailTopicMenuOpen(false);
     setSelectedRegionKey(regionKey);
     window.requestAnimationFrame(() => {
       window.setTimeout(() => regionDetailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
@@ -623,29 +625,41 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
                 </span>
               ))}
             </div>
-            <div className="map-detail-topic-controls" aria-label="區域新聞領域篩選">
-              <span className="map-detail-topic-label"><BilingualText zh="調整此區域領域" en="REFINE THIS REGION" /></span>
-              <button type="button" className={`map-category-chip map-category-chip-button ${isShowingAllTopics ? 'is-active' : ''}`} onClick={clearTopicSelection} aria-pressed={isShowingAllTopics}>
-                <i aria-hidden="true" className="map-category-all-dot" />
-                <BilingualText zh="全部" en="ALL" />
+            <div className="map-detail-topic-controls-shell">
+              <button
+                type="button"
+                className={`map-detail-filter-toggle ${isDetailTopicMenuOpen ? 'is-open' : ''}`}
+                onClick={() => setIsDetailTopicMenuOpen((current) => !current)}
+                aria-expanded={isDetailTopicMenuOpen}
+                aria-controls="map-detail-topic-controls"
+              >
+                <BilingualText zh="篩選此區新聞" en="FILTER THIS REGION" />
+                <span aria-hidden="true">⌄</span>
               </button>
-              {categoryLegend.map((category) => {
-                const isSelected = selectedTopics.includes(category.key);
-                return (
-                  <button
-                    key={`detail-${category.key}`}
-                    type="button"
-                    className={`map-category-chip map-category-chip-button ${isSelected ? 'is-selected' : ''}`}
-                    onClick={() => toggleTopic(category.key)}
-                    aria-pressed={isSelected}
-                    style={isSelected ? { borderColor: category.color, color: category.color } : undefined}
-                  >
-                    <i aria-hidden="true" style={{ backgroundColor: category.color }} />
-                    {isSelected && <span aria-hidden="true" className="map-topic-check">✓</span>}
-                    <BilingualText zh={category.label} en={category.labelEn} />
-                  </button>
-                );
-              })}
+              <div id="map-detail-topic-controls" className={`map-detail-topic-controls ${isDetailTopicMenuOpen ? 'is-open' : ''}`} aria-label="區域新聞領域篩選">
+                <span className="map-detail-topic-label"><BilingualText zh="調整此區域領域" en="REFINE THIS REGION" /></span>
+                <button type="button" className={`map-category-chip map-category-chip-button ${isShowingAllTopics ? 'is-active' : ''}`} onClick={clearTopicSelection} aria-pressed={isShowingAllTopics}>
+                  <i aria-hidden="true" className="map-category-all-dot" />
+                  <BilingualText zh="全部" en="ALL" />
+                </button>
+                {categoryLegend.map((category) => {
+                  const isSelected = selectedTopics.includes(category.key);
+                  return (
+                    <button
+                      key={`detail-${category.key}`}
+                      type="button"
+                      className={`map-category-chip map-category-chip-button ${isSelected ? 'is-selected' : ''}`}
+                      onClick={() => toggleTopic(category.key)}
+                      aria-pressed={isSelected}
+                      style={isSelected ? { borderColor: category.color, color: category.color } : undefined}
+                    >
+                      <i aria-hidden="true" style={{ backgroundColor: category.color }} />
+                      {isSelected && <span aria-hidden="true" className="map-topic-check">✓</span>}
+                      <BilingualText zh={category.label} en={category.labelEn} />
+                    </button>
+                  );
+                })}
+              </div>
             </div>
             <div className="map-region-detail-list">
               {selectedRegionEntries.map(({ article, geo }) => (

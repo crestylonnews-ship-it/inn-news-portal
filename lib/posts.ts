@@ -127,6 +127,19 @@ function stripTrailingSourceSection(content: string): string {
     .trim();
 }
 
+function stripLegacyBilingualSectionHeading(content: string): string {
+  // Older generated articles contain this repeated section marker in the
+  // article body. It duplicates the page's bilingual context without adding
+  // content, so omit it at render time while leaving the source Markdown intact.
+  return String(content || '')
+    .replace(
+      /^\s{0,3}#{1,6}\s+(?:(?:繁體中文(?:深度)?報導)\s*\/\s*Chinese\s+Report|Chinese\s+Report\s*\/\s*(?:繁體中文(?:深度)?報導))\s*$/gim,
+      '',
+    )
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 function splitLongParagraph(block: string, language: 'zh' | 'en'): string {
   // Keep Chinese segments short enough to match the structured English
   // translation one paragraph at a time while remaining comfortable to read.
@@ -174,7 +187,7 @@ function parseArticle(filename: string, fileContents: string): Article {
   const slug = filename.replace(/\.md$/, '');
   const { data, content } = matter(sanitizeFrontmatter(fileContents)) as { data: ArticleFrontmatter; content: string };
   const legacyContent = splitLegacyBilingualContent(content);
-  const primaryContent = normalizeReadableContent(stripTrailingSourceSection(legacyContent?.zh || content), 'zh');
+  const primaryContent = normalizeReadableContent(stripLegacyBilingualSectionHeading(stripTrailingSourceSection(legacyContent?.zh || content)), 'zh');
   const title = String(data.title || '無標題新聞');
   const titleEn = String(data.titleEn || 'English edition unavailable');
   const date = String(data.date || new Date().toISOString().split('T')[0]);
@@ -182,7 +195,7 @@ function parseArticle(filename: string, fileContents: string): Article {
   const plainText = markdownToText(primaryContent);
   const excerpt = String(data.excerpt || `${plainText.substring(0, 140)}${plainText.length > 140 ? '…' : ''}`);
   const excerptEn = String(data.excerptEn || 'The English edition of this article is temporarily unavailable.');
-  const contentEn = normalizeReadableContent(stripTrailingSourceSection(String(data.contentEn || legacyContent?.en || '# English edition unavailable\n\nThe English edition of this article is temporarily unavailable.')), 'en');
+  const contentEn = normalizeReadableContent(stripLegacyBilingualSectionHeading(stripTrailingSourceSection(String(data.contentEn || legacyContent?.en || '# English edition unavailable\n\nThe English edition of this article is temporarily unavailable.'))), 'en');
 
   return {
     slug,

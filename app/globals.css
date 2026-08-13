@@ -4721,3 +4721,83 @@ html[data-language='en'] .article-page-main .article-title .bilingual-language-z
   .nav-search input { font-size: 0.72rem; }
   .nav-search button { font-size: 0.67rem; }
 }
+
+/* Quiet reading background: keep only small, static star points. */
+.stellar-field {
+  background: #04070d !important;
+}
+
+.stellar-nebula,
+.stellar-frame,
+.site-shell::before,
+.site-shell::after,
+.article-page::before {
+  display: none !important;
+}
+
+.site-shell {
+  background-image: none !important;
+  background-color: rgba(5, 9, 16, 0.88) !important;
+}
+
+.stellar-star,
+.stellar-star:nth-of-type(3n) {
+  width: 1.5px;
+  height: 1.5px;
+  opacity: 0.48;
+  box-shadow: none;
+  transform: none !important;
+  will-change: auto;
+}
+
+.stellar-star:nth-of-type(3n) {
+  width: 2px;
+  height: 2px;
+  opacity: 0.65;
+}
+
+.map-detail-filter-toggle {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .map-detail-topic-controls-shell {
+    border-bottom: 1px solid rgba(103, 232, 249, 0.1);
+    background: rgba(3, 10, 19, 0.22);
+  }
+
+  .map-detail-filter-toggle {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.72rem 1rem;
+    color: rgba(165, 243, 252, 0.88);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-align: left;
+  }
+
+  .map-detail-filter-toggle > span:last-child {
+    flex: 0 0 auto;
+    font-size: 1rem;
+    line-height: 1;
+    transition: transform 160ms ease;
+  }
+
+  .map-detail-filter-toggle.is-open > span:last-child {
+    transform: rotate(180deg);
+  }
+
+  .map-detail-topic-controls {
+    display: none;
+    padding: 0.72rem 1rem 0.82rem;
+    border-bottom: 0;
+  }
+
+  .map-detail-topic-controls.is-open {
+    display: flex;
+  }
+}

@@ -3,10 +3,20 @@
 import { useEffect, useState } from 'react';
 import BilingualText from '@/components/BilingualText';
 
+const OPENING_SESSION_KEY = 'inn-home-opening-played';
+
 export default function OpeningAnimation() {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const hasPlayed = window.sessionStorage.getItem(OPENING_SESSION_KEY) === 'true';
+
+    if (reduceMotion || hasPlayed) return;
+
+    window.sessionStorage.setItem(OPENING_SESSION_KEY, 'true');
+    setVisible(true);
+
     const timer = window.setTimeout(() => setVisible(false), 1700);
     return () => window.clearTimeout(timer);
   }, []);
@@ -14,7 +24,7 @@ export default function OpeningAnimation() {
   if (!visible) return null;
 
   return (
-    <div className="opening-screen" role="status" aria-live="polite" aria-label="INN 新聞終端正在啟動">
+    <div className="opening-screen" role="status" aria-live="polite" aria-label="INN 星際聯邦新聞終端正在啟動">
       <div className="opening-grid" aria-hidden="true" />
       <div className="opening-scanline" aria-hidden="true" />
       <div className="opening-content">

@@ -136,6 +136,19 @@ function isWithinLastSevenDays(article: Article) {
   return timestamp >= start.getTime() && timestamp <= end.getTime();
 }
 
+function formatTerminalTime(value: Date) {
+  return new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Asia/Taipei',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hourCycle: 'h23',
+  }).format(value).replace(' ', ' // ');
+}
+
 export default function NewsMapExplorer({ articles, compact = false, home = false }: Props) {
   const [viewport, setViewport] = useState<Viewport>({ centerLon: 20, centerLat: 18, zoom: 1.05 });
   const [geoJson] = useState<GeoCollection>(() => worldCountries as GeoCollection);
@@ -144,6 +157,7 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [isDetailTopicMenuOpen, setIsDetailTopicMenuOpen] = useState(false);
   const [activeRegion, setActiveRegion] = useState('全球');
+  const [terminalTime, setTerminalTime] = useState('');
   const { language, setLanguage } = useLanguage();
   const dragStart = useRef<{ x: number; y: number; viewport: Viewport } | null>(null);
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
@@ -190,6 +204,15 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
       .sort((a, b) => b.entries.length - a.entries.length)
       .slice(0, 6);
   }, [articles, entries]);
+
+  useEffect(() => {
+    if (!home) return;
+
+    const refreshTerminalTime = () => setTerminalTime(formatTerminalTime(new Date()));
+    refreshTerminalTime();
+    const timer = window.setInterval(refreshTerminalTime, 1000);
+    return () => window.clearInterval(timer);
+  }, [home]);
 
   useEffect(() => {
     const svg = mapSvgRef.current;
@@ -391,24 +414,23 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
     <section id="map-explorer" className={`map-explorer space-y-6 ${compact ? 'map-home-preview' : ''} ${home ? 'map-home-explorer' : ''}`} aria-labelledby={home ? undefined : 'map-explorer-title'} aria-label={home ? '地圖新聞探索 / Map news exploration' : undefined}>
       {home && (
         <>
-          <section className="map-home-guide" aria-labelledby="map-home-guide-title">
-            <div className="map-home-guide-heading">
-              <span className="map-home-guide-eyebrow"><BilingualText zh="開始探索" en="QUICK START" /></span>
-              <h2 id="map-home-guide-title"><BilingualText zh="三步使用地圖新聞" en="USE THE NEWS MAP IN 3 STEPS" /></h2>
+          <section className="map-home-terminal" aria-labelledby="map-home-terminal-title">
+            <div className="map-home-terminal-identity">
+              <span className="map-home-terminal-eyebrow"><BilingualText zh="即時新聞終端 // 地圖索引" en="LIVE NEWS TERMINAL // MAP INDEX" /></span>
+              <h2 id="map-home-terminal-title"><BilingualText zh="INN 星際聯邦新聞網" en="INN STELLAR FEDERATION NEWS" /></h2>
+              <p><BilingualText zh="空間及索引，把選擇權還給你" en="SPACE, INDEX, AND THE CHOICE IS YOURS" /></p>
             </div>
-            <ol className="map-home-guide-steps">
-              <li>
-                <span aria-hidden="true">01</span>
-                <BilingualText zh="點擊彩色節點，開啟該區近七日新聞。" en="CLICK A COLORED NODE TO OPEN RECENT REGIONAL REPORTS." block />
-              </li>
-              <li>
-                <span aria-hidden="true">02</span>
-                <BilingualText zh="點選上方領域，可複選篩出想看的新聞。" en="SELECT TOPICS ABOVE TO FILTER THE SIGNALS YOU WANT." block />
-              </li>
-              <li>
-                <span aria-hidden="true">03</span>
-                <BilingualText zh="使用 FOCUS 快速鎖定中東、非洲或其他地區。" en="USE FOCUS TO JUMP TO THE MIDDLE EAST, AFRICA, OR ANY REGION." block />
-              </li>
+
+            <div className="map-home-terminal-clock" aria-live="polite">
+              <span><i aria-hidden="true" /> <BilingualText zh="即時星際標準時間" en="LIVE STELLAR STANDARD TIME" /></span>
+              <time dateTime={terminalTime || undefined}>{terminalTime || 'SYNCING // --:--:--'}</time>
+              <small>UTC+08 // SIGNAL ONLINE</small>
+            </div>
+
+            <ol className="map-home-terminal-guide" aria-label="地圖使用方式">
+              <li><b>01</b><BilingualText zh="節點：開啟區域新聞" en="NODE: OPEN REGIONAL NEWS" /></li>
+              <li><b>02</b><BilingualText zh="領域：複選篩選訊號" en="TOPICS: FILTER SIGNALS" /></li>
+              <li><b>03</b><BilingualText zh="FOCUS：快速鎖定區域" en="FOCUS: JUMP TO A REGION" /></li>
             </ol>
           </section>
 

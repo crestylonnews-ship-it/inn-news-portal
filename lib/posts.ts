@@ -65,7 +65,7 @@ function inferTags(title: string, content: string, category: string, explicitTag
   return Array.from(new Set([...explicitTags, ...inferred, ...fallback])).slice(0, 8);
 }
 
-function sanitizeFrontmatter(raw: string): string {
+export function sanitizeFrontmatter(raw: string): string {
   if (!raw.startsWith('---')) return raw;
   const closingMarker = raw.indexOf('\n---', 3);
   if (closingMarker === -1) return raw;
@@ -115,7 +115,7 @@ function splitLegacyBilingualContent(content: string): { zh: string; en: string 
   return { zh, en };
 }
 
-function stripTrailingSourceSection(content: string): string {
+export function stripTrailingSourceSection(content: string): string {
   // Every article page renders Frontmatter sources in a dedicated bilingual
   // aside. Strip a trailing Markdown source section before BilingualMarkup so
   // generated articles do not render the same citations twice.
@@ -170,7 +170,7 @@ function splitLongParagraph(block: string, language: 'zh' | 'en'): string {
   return paragraphs.join('\n\n');
 }
 
-function normalizeReadableContent(content: string, language: 'zh' | 'en'): string {
+export function normalizeReadableContent(content: string, language: 'zh' | 'en'): string {
   const headingNormalized = language === 'en'
     ? content
       .replace(/^(#\s+[^\n]+?)\s+(##\s+)/m, '$1\n\n$2')
@@ -183,7 +183,7 @@ function normalizeReadableContent(content: string, language: 'zh' | 'en'): strin
     .join('\n\n');
 }
 
-function parseArticle(filename: string, fileContents: string): Article {
+export function parseArticle(filename: string, fileContents: string): Article {
   const slug = filename.replace(/\.md$/, '');
   const { data, content } = matter(sanitizeFrontmatter(fileContents)) as { data: ArticleFrontmatter; content: string };
   const legacyContent = splitLegacyBilingualContent(content);

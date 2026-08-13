@@ -53,7 +53,7 @@ export default function BilingualText({
   );
 }
 
-function splitMarkupBlocks(html: string): string[] {
+export function splitMarkupBlocks(html: string): string[] {
   const value = String(html || '').trim();
   if (!value) return [];
   const pattern = /<(h[1-6]|p|blockquote|ul|ol|pre|table|hr)(?:\s[^>]*)?>[\s\S]*?<\/\1>|<hr\s*\/?\s*>/gi;
@@ -85,21 +85,7 @@ function takeLeading(blocks: string[], matcher: (block: string) => boolean): { l
   return { leading: '', remaining: blocks };
 }
 
-function groupBlocks(blocks: string[], groupCount: number): string[] {
-  if (!blocks.length || groupCount <= 0) return [];
-  const groups: string[] = [];
-  let cursor = 0;
-  for (let group = 0; group < groupCount && cursor < blocks.length; group += 1) {
-    const remainingBlocks = blocks.length - cursor;
-    const remainingGroups = groupCount - group;
-    const take = Math.max(1, Math.ceil(remainingBlocks / remainingGroups));
-    groups.push(blocks.slice(cursor, cursor + take).join('\n'));
-    cursor += take;
-  }
-  return groups;
-}
-
-function alignMarkupBlocks(zhHtml: string, enHtml: string): BilingualBlockPair[] {
+export function alignMarkupBlocks(zhHtml: string, enHtml: string): BilingualBlockPair[] {
   const zhSections = splitSourceSection(splitMarkupBlocks(zhHtml));
   const enSections = splitSourceSection(splitMarkupBlocks(enHtml));
   const pairs: BilingualBlockPair[] = [];
@@ -112,12 +98,11 @@ function alignMarkupBlocks(zhHtml: string, enHtml: string): BilingualBlockPair[]
   const enExcerpt = takeLeading(enTitle.remaining, block => isTag(block, 'blockquote'));
   if (zhExcerpt.leading || enExcerpt.leading) pairs.push({ zh: zhExcerpt.leading, en: enExcerpt.leading, kind: 'excerpt' });
 
-  const pairCount = Math.max(1, Math.min(zhExcerpt.remaining.length || 1, enExcerpt.remaining.length || 1));
-  const zhBodyGroups = groupBlocks(zhExcerpt.remaining, pairCount);
-  const enBodyGroups = groupBlocks(enExcerpt.remaining, pairCount);
-  const bodyCount = Math.max(zhBodyGroups.length, enBodyGroups.length);
+  // 嚴格維持每一個 Markdown 區塊的索引。若資料異常，保留空白的另一側
+  // 讓測試與渲染都能看見差異，而非將多段合併以偽造一對一配對。
+  const bodyCount = Math.max(zhExcerpt.remaining.length, enExcerpt.remaining.length);
   for (let index = 0; index < bodyCount; index += 1) {
-    pairs.push({ zh: zhBodyGroups[index] || '', en: enBodyGroups[index] || '', kind: 'body' });
+    pairs.push({ zh: zhExcerpt.remaining[index] || '', en: enExcerpt.remaining[index] || '', kind: 'body' });
   }
 
   if (zhSections.sources.length || enSections.sources.length) {

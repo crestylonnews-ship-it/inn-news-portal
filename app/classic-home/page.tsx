@@ -42,10 +42,15 @@ export default async function ClassicHomePage() {
               {[0, 1].map(copy => (
                 <div key={copy} className="ticker-group flex shrink-0 items-center gap-8 pr-8" aria-hidden={copy === 1}>
                   {latestArticles.map(a => (
-                    <span key={`${a.slug}-${copy}`} className="flex min-w-0 shrink-0 items-center">
-                      <span className="mr-2 text-red-500">✦</span>
-                      {a.title} / {a.titleEn}
-                    </span>
+                    <Link
+                      key={`${a.slug}-${copy}`}
+                      href={`/articles/${a.slug}`}
+                      className="ticker-item flex min-w-0 shrink-0 items-center"
+                      aria-label={`閱讀：${a.title}`}
+                    >
+                      <span className="mr-2 text-red-500" aria-hidden="true">✦</span>
+                      <span>{a.title} / {a.titleEn}</span>
+                    </Link>
                   ))}
                 </div>
               ))}
@@ -60,17 +65,17 @@ export default async function ClassicHomePage() {
           {primeHeadline && (
             <div className="lg:col-span-8 group">
               <Link href={`/articles/${primeHeadline.slug}`} className="block space-y-6">
-                <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-cyan-500/20 bg-gradient-to-br from-cyan-900/20 to-purple-900/20 group-hover:border-cyan-400/50 transition-all duration-500">
-                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-                  <div className="absolute inset-0 flex items-center justify-center">
+                <div className="prime-headline-panel relative flex aspect-[16/9] min-h-[22rem] flex-col justify-end overflow-hidden rounded-2xl border border-cyan-500/20 bg-gradient-to-br from-cyan-900/20 to-purple-900/20 p-5 sm:min-h-[28rem] sm:p-8 xl:p-10 group-hover:border-cyan-400/50 transition-all duration-500">
+                  <div className="pointer-events-none absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                     <div className="text-cyan-500/10 font-black text-9xl select-none">INN</div>
                   </div>
-                  <div className="absolute top-6 left-6 flex items-center gap-3">
-                    <span className="px-3 py-1 bg-red-600 text-white text-[10px] font-bold rounded tracking-widest uppercase">Prime Headline</span>
-                    <span className="text-xs font-mono text-cyan-400/60">{primeHeadline.date}</span>
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-[#0a0b0f] via-[#0a0b0f]/80 to-transparent">
-                    <h2 className="prime-headline-title text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black font-orbitron text-white leading-tight group-hover:text-cyan-400 transition-colors">
+                  <div className="prime-headline-content relative z-10 min-w-0 max-w-full bg-gradient-to-t from-[#0a0b0f] via-[#0a0b0f]/88 to-transparent pt-12">
+                    <div className="mb-3 flex flex-wrap items-center gap-2.5 sm:gap-3">
+                      <span className="px-3 py-1 bg-red-600 text-white text-[10px] font-bold rounded tracking-widest uppercase">Prime Headline</span>
+                      <span className="text-xs font-mono text-cyan-400/60">{primeHeadline.date}</span>
+                    </div>
+                    <h2 className="prime-headline-title min-w-0 max-w-full font-black font-orbitron text-white leading-tight group-hover:text-cyan-400 transition-colors">
                       <BilingualText zh={primeHeadline.title} en={primeHeadline.titleEn} block />
                     </h2>
                   </div>

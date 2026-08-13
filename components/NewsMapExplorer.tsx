@@ -390,28 +390,51 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
   return (
     <section id="map-explorer" className={`map-explorer space-y-6 ${compact ? 'map-home-preview' : ''} ${home ? 'map-home-explorer' : ''}`} aria-labelledby={home ? undefined : 'map-explorer-title'} aria-label={home ? '地圖新聞探索 / Map news exploration' : undefined}>
       {home && (
-        <section className="map-headline-ticker" aria-label="近期新聞標題跑馬燈 / Recent headline ticker">
-          <span className="map-headline-ticker-label">{language === 'zh' ? '最新新聞' : 'LATEST NEWS'}</span>
-          <div className="map-headline-ticker-window">
-            <div className="map-headline-ticker-track">
-              {[0, 1].map((copy) => (
-                <div className="map-headline-ticker-group" aria-hidden={copy === 1} key={`ticker-copy-${copy}`}>
-                  {recentEntries.slice(0, 14).map(({ article, geo }) => {
-                    const category = getCategoryMeta(article.category);
-                    const headline = language === 'en' ? article.titleEn || article.title : article.title;
-                    return (
-                      <Link key={`${copy}-${article.slug}`} href={`/articles/${article.slug}`} className="map-headline-ticker-item">
-                        <i aria-hidden="true" style={{ backgroundColor: category.color }} />
-                        <span className="map-headline-ticker-region">{geo.label}</span>
-                        <span>{headline}</span>
-                      </Link>
-                    );
-                  })}
-                </div>
-              ))}
+        <>
+          <section className="map-home-guide" aria-labelledby="map-home-guide-title">
+            <div className="map-home-guide-heading">
+              <span className="map-home-guide-eyebrow"><BilingualText zh="開始探索" en="QUICK START" /></span>
+              <h2 id="map-home-guide-title"><BilingualText zh="三步使用地圖新聞" en="USE THE NEWS MAP IN 3 STEPS" /></h2>
             </div>
-          </div>
-        </section>
+            <ol className="map-home-guide-steps">
+              <li>
+                <span aria-hidden="true">01</span>
+                <BilingualText zh="點擊彩色節點，開啟該區近七日新聞。" en="CLICK A COLORED NODE TO OPEN RECENT REGIONAL REPORTS." block />
+              </li>
+              <li>
+                <span aria-hidden="true">02</span>
+                <BilingualText zh="點選上方領域，可複選篩出想看的新聞。" en="SELECT TOPICS ABOVE TO FILTER THE SIGNALS YOU WANT." block />
+              </li>
+              <li>
+                <span aria-hidden="true">03</span>
+                <BilingualText zh="使用 FOCUS 快速鎖定中東、非洲或其他地區。" en="USE FOCUS TO JUMP TO THE MIDDLE EAST, AFRICA, OR ANY REGION." block />
+              </li>
+            </ol>
+          </section>
+
+          <section className="map-headline-ticker" aria-label="近期新聞標題跑馬燈 / Recent headline ticker">
+            <span className="map-headline-ticker-label">{language === 'zh' ? '最新新聞' : 'LATEST NEWS'}</span>
+            <div className="map-headline-ticker-window">
+              <div className="map-headline-ticker-track">
+                {[0, 1].map((copy) => (
+                  <div className="map-headline-ticker-group" aria-hidden={copy === 1} key={`ticker-copy-${copy}`}>
+                    {recentEntries.slice(0, 14).map(({ article, geo }) => {
+                      const category = getCategoryMeta(article.category);
+                      const headline = language === 'en' ? article.titleEn || article.title : article.title;
+                      return (
+                        <Link key={`${copy}-${article.slug}`} href={`/articles/${article.slug}`} className="map-headline-ticker-item">
+                          <i aria-hidden="true" style={{ backgroundColor: category.color }} />
+                          <span className="map-headline-ticker-region">{geo.label}</span>
+                          <span>{headline}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </>
       )}
 
       {!home && (

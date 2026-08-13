@@ -4976,3 +4976,98 @@ html[data-language='zh'] .prime-headline-title .bilingual-language-en {
     font-size: 0.6rem;
   }
 }
+
+/* Home map quick start: concise guidance before the live signal rail. */
+.map-home-guide {
+  display: grid;
+  grid-template-columns: minmax(10.5rem, 0.8fr) minmax(0, 2.2fr);
+  gap: 1rem;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(34, 211, 238, 0.18);
+  border-radius: 0.7rem;
+  background: linear-gradient(100deg, rgba(7, 20, 33, 0.82), rgba(13, 16, 33, 0.56));
+  padding: 0.8rem 1rem;
+}
+
+.map-home-guide-heading {
+  min-width: 0;
+  border-right: 1px solid rgba(103, 232, 249, 0.16);
+  padding-right: 1rem;
+}
+
+.map-home-guide-eyebrow {
+  display: block;
+  color: rgba(103, 232, 249, 0.78);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.map-home-guide h2 {
+  margin-top: 0.24rem;
+  color: rgba(240, 249, 255, 0.94);
+  font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
+  font-size: clamp(0.8rem, 1.1vw, 1rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+}
+
+.map-home-guide-steps {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.map-home-guide-steps li {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.38rem;
+  align-items: start;
+  color: rgba(203, 213, 225, 0.8);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 0.63rem;
+  line-height: 1.45;
+}
+
+.map-home-guide-steps li > span:first-child {
+  color: rgba(165, 243, 252, 0.86);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 760px) {
+  .map-home-guide {
+    grid-template-columns: 1fr;
+    gap: 0.58rem;
+    padding: 0.7rem 0.8rem;
+  }
+
+  .map-home-guide-heading {
+    border-right: 0;
+    border-bottom: 1px solid rgba(103, 232, 249, 0.13);
+    padding-right: 0;
+    padding-bottom: 0.5rem;
+  }
+
+  .map-home-guide h2 {
+    font-size: 0.8rem;
+  }
+
+  .map-home-guide-steps {
+    grid-template-columns: 1fr;
+    gap: 0.38rem;
+  }
+
+  .map-home-guide-steps li {
+    font-size: 0.61rem;
+  }
+}

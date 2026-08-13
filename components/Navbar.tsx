@@ -29,12 +29,18 @@ export default function Navbar() {
   return (
     <header className="site-nav">
       <div className="nav-frame">
-        <Link href="/" className="nav-brand" aria-label="INN NEWS 首頁 / Home">
-          <span className="nav-brand-name">INN NEWS</span>
-          <span className="nav-brand-subtitle nav-brand-subtitle-zh">星際聯邦官方新聞網</span>
-          <span className="nav-brand-subtitle nav-brand-subtitle-en">Stellar Federation News Network</span>
-          <span className="nav-choice-tagline">空間及索引，把選擇權還給你</span>
-        </Link>
+        <div className="nav-brand-cluster">
+          <Link href="/" className="nav-brand" aria-label="INN NEWS 首頁 / Home">
+            <span className="nav-brand-name">INN NEWS</span>
+            <span className="nav-brand-subtitle nav-brand-subtitle-zh">星際聯邦官方新聞網</span>
+            <span className="nav-brand-subtitle nav-brand-subtitle-en">Stellar Federation News Network</span>
+            <span className="nav-choice-tagline">空間及索引，把選擇權還給你</span>
+          </Link>
+          <Link href="/acknowledgements" className="nav-acknowledgements-link" aria-label={language === 'zh' ? '前往特別感謝' : 'Open acknowledgements'}>
+            <span>{language === 'zh' ? '特別感謝' : 'ACKNOWLEDGEMENTS'}</span>
+            <i aria-hidden="true">↗</i>
+          </Link>
+        </div>
 
         <div className="nav-controls">
           <form onSubmit={handleSearch} className="nav-search" role="search">

@@ -61,6 +61,13 @@ const freeResources = [
   }
 ];
 
+const aiContributors = [
+  { name: 'DEEPSEEK', url: 'https://www.deepseek.com/' },
+  { name: 'CHATGPT', url: 'https://chatgpt.com/' },
+  { name: 'GEMINI', url: 'https://gemini.google.com/' },
+  { name: 'META', url: 'https://www.meta.ai/' }
+];
+
 const developers = [
   {
     name: 'SUNGYAN WORKSHOP',
@@ -111,6 +118,14 @@ export default function AcknowledgementsPage() {
                   <div key={resource.code} className="hero-resource-item">{content}</div>
                 );
               })}
+            </div>
+            <div className="hero-ai-contributors" aria-label="AI 協作工具致謝">
+              <span><BilingualText zh="感謝協作 AI 工具" en="AI COLLABORATORS THANKED" /></span>
+              <div className="hero-ai-contributor-list">
+                {aiContributors.map((contributor) => (
+                  <a key={contributor.name} href={contributor.url} target="_blank" rel="noreferrer">{contributor.name}<i aria-hidden="true">↗</i></a>
+                ))}
+              </div>
             </div>
           </aside>
         </section>

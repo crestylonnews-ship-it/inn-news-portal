@@ -6,6 +6,14 @@ import BilingualText from '@/components/BilingualText';
 const acknowledgements = [
   {
     code: '01',
+    label: 'EARTH // CIVILIZATION',
+    title: '地球的每位公民',
+    titleEn: 'EVERY CITIZEN OF EARTH',
+    text: '感謝地球上的每一位公民。你們的貢獻讓地球發展至今日的高度，也讓銀河軌道情報局得以觀測這顆行星的文明與變化。',
+    textEn: 'Thank you to every citizen of Earth. Your contributions have carried the planet to its present heights and enabled the Galactic Orbital Intelligence Bureau to observe its civilization and change.'
+  },
+  {
+    code: '02',
     label: 'AUDIENCE // WITNESSES',
     title: '所有觀看者',
     titleEn: 'EVERY VIEWER',
@@ -13,7 +21,7 @@ const acknowledgements = [
     textEn: 'Thank you to every viewer who pauses to read, compare and reflect. You turn each recorded signal into public memory that can be understood.'
   },
   {
-    code: '02',
+    code: '03',
     label: 'OUTREACH // SIGNAL RELAY',
     title: '協助推廣者',
     titleEn: 'COMMUNITY PROMOTERS',

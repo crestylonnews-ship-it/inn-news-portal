@@ -6,14 +6,6 @@ import BilingualText from '@/components/BilingualText';
 const acknowledgements = [
   {
     code: '01',
-    label: 'INFRASTRUCTURE // FOUNDATION',
-    title: 'Cloudflare 免費層',
-    titleEn: 'CLOUDFLARE FREE TIER',
-    text: '感謝 Cloudflare 免費層提供穩定的起點，讓這座新聞檔案庫能持續向每一位讀者開放。',
-    textEn: 'Thank you to the Cloudflare Free Tier for providing a dependable starting point that keeps this news archive open to every reader.'
-  },
-  {
-    code: '02',
     label: 'AUDIENCE // WITNESSES',
     title: '所有觀看者',
     titleEn: 'EVERY VIEWER',
@@ -21,13 +13,20 @@ const acknowledgements = [
     textEn: 'Thank you to every viewer who pauses to read, compare and reflect. You turn each recorded signal into public memory that can be understood.'
   },
   {
-    code: '03',
+    code: '02',
     label: 'OUTREACH // SIGNAL RELAY',
     title: '協助推廣者',
     titleEn: 'COMMUNITY PROMOTERS',
     text: '感謝所有協助分享、轉傳與介紹 INN 的推廣者，讓值得被看見的事件跨越原本的資訊邊界。',
     textEn: 'Thank you to everyone who shares, relays and introduces INN, helping events that deserve attention cross their original information boundaries.'
   }
+];
+
+const platformResources = [
+  { name: 'CLOUDFLARE PAGES', url: 'https://pages.cloudflare.com/' },
+  { name: 'GITHUB REPOSITORY', url: 'https://github.com/crestylonnews-ship-it/inn-news-portal' },
+  { name: 'GOOGLE', url: 'https://www.google.com/' },
+  { name: 'AWS', url: 'https://aws.amazon.com/' }
 ];
 
 const freeResources = [
@@ -111,8 +110,15 @@ export default function AcknowledgementsPage() {
             <p className="acknowledgements-lede"><BilingualText zh="每一則抵達讀者眼前的訊號，都承載著基礎服務、閱讀、分享與協作的善意。" en="Every signal that reaches a reader carries the goodwill of infrastructure, attention, sharing and collaboration." block /></p>
           </div>
           <aside className="acknowledgements-hero-resources" aria-labelledby="hero-resources-title">
-            <p className="hero-resources-kicker">THE OPEN COMMONS // GRATITUDE</p>
-            <h2 id="hero-resources-title"><BilingualText zh="開源與免費資源" en="OPEN-SOURCE & FREE RESOURCES" /></h2>
+            <p className="hero-resources-kicker">PLATFORMS, COMMONS & GRATITUDE</p>
+            <h2 id="hero-resources-title"><BilingualText zh="平台、開源與免費資源" en="PLATFORMS, OPEN-SOURCE & FREE RESOURCES" /></h2>
+            <div className="hero-platform-resource-list" aria-label="平台資源">
+              {platformResources.map((resource) => (
+                <a key={resource.name} href={resource.url} target="_blank" rel="noreferrer" className="hero-platform-resource">
+                  <strong>{resource.name}</strong><i aria-hidden="true">↗</i>
+                </a>
+              ))}
+            </div>
             <div className="hero-resource-list">
               {freeResources.map((resource) => {
                 const content = <>
@@ -176,6 +182,18 @@ export default function AcknowledgementsPage() {
                 <span className="developer-arrow" aria-hidden="true">↗</span>
               </a>
             ))}
+          </div>
+        </section>
+
+        <section className="acknowledgements-feedback mt-6 sm:mt-8" aria-labelledby="acknowledgements-feedback-title">
+          <div>
+            <p className="eyebrow-label">BOOKMARK · USE · IMPROVE</p>
+            <h2 id="acknowledgements-feedback-title"><BilingualText zh="願意收藏並使用 INN 嗎？" en="BOOKMARKING AND USING INN?" /></h2>
+            <p><BilingualText zh="歡迎將 INN 收藏並善加利用；若你有任何能讓新聞網更清晰、穩定或好用的想法，歡迎私訊開發團隊。也歡迎有興趣一起創作、測試與優化的你加入開發團隊，讓下一次更新更接近讀者的需要。" en="Please bookmark and make use of INN. If you have ideas that can make the news network clearer, more stable or more useful, message our development team. We also welcome people interested in creating, testing and improving together to join the development team and help shape the next update." block /></p>
+          </div>
+          <div className="acknowledgements-feedback-actions">
+            <a href="https://www.instagram.com/inn.crestylon/" target="_blank" rel="noreferrer" className="acknowledgements-feedback-link"><BilingualText zh="私訊開發團隊" en="MESSAGE THE DEVELOPMENT TEAM" /> <span aria-hidden="true">↗</span></a>
+            <a href="mailto:crestylon.news@gmail.com" className="acknowledgements-feedback-link acknowledgements-feedback-email"><BilingualText zh="歡迎加入開發團隊" en="JOIN THE DEVELOPMENT TEAM" /> <small>crestylon.news@gmail.com</small><span aria-hidden="true">↗</span></a>
           </div>
         </section>
 

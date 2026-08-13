@@ -432,12 +432,8 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
           <section className="map-home-terminal" aria-labelledby="map-home-terminal-title">
             <div className="map-home-terminal-identity">
               <span className="map-home-terminal-eyebrow"><BilingualText zh="即時新聞終端 // 地圖索引" en="LIVE NEWS TERMINAL // MAP INDEX" /></span>
-              <div className="map-home-terminal-title-row">
-                <h2 id="map-home-terminal-title"><BilingualText zh="INN 星際聯邦新聞網" en="INN STELLAR FEDERATION NEWS" /></h2>
-                <Link href="/acknowledgements" className="map-home-acknowledgements-link"><BilingualText zh="特別感謝" en="ACKNOWLEDGEMENTS" /> <span aria-hidden="true">↗</span></Link>
-              </div>
+              <h2 id="map-home-terminal-title"><BilingualText zh="INN 星際聯邦新聞網" en="INN STELLAR FEDERATION NEWS" /></h2>
               <p><BilingualText zh="空間及索引，把選擇權還給你" en="SPACE, INDEX, AND THE CHOICE IS YOURS" /></p>
-              <a href="https://www.cloudflare.com/" target="_blank" rel="noreferrer" className="map-home-cloudflare-link"><span>CLOUDFLARE</span> <BilingualText zh="免費層支持" en="FREE TIER SUPPORT" /> <i aria-hidden="true">↗</i></a>
             </div>
 
             <div className="map-home-terminal-clock" aria-live="polite">

@@ -30,6 +30,37 @@ const acknowledgements = [
   }
 ];
 
+const freeResources = [
+  {
+    code: 'OPEN',
+    label: 'COMMONS // OPEN TECHNOLOGY',
+    title: '所有開源與免費技術',
+    titleEn: 'OPEN-SOURCE & FREE TECHNOLOGY',
+    text: '感謝所有開源專案、免費工具與公開技術社群。每一個被共享、維護與改良的基礎元件，都讓獨立資訊工作有更多可行的起點。',
+    textEn: 'Thank you to every open-source project, free tool and public technology community. Each shared, maintained and improved building block gives independent information work more possible starting points.'
+  },
+  {
+    code: 'SEARCH',
+    label: 'DISCOVERY // SEARCH RESOURCE',
+    title: 'DuckDuckGo',
+    titleEn: 'DUCKDUCKGO',
+    text: '感謝 DuckDuckGo 等搜尋資源，協助資訊查找、議題探索與來源發現。',
+    textEn: 'Thank you to DuckDuckGo and other search resources that support information lookup, topic discovery and source finding.',
+    url: 'https://duckduckgo.com/',
+    domain: 'duckduckgo.com'
+  },
+  {
+    code: 'NEWS',
+    label: 'SIGNAL // NEWS DATA RESOURCE',
+    title: 'NewsAPI',
+    titleEn: 'NEWSAPI',
+    text: '感謝 NewsAPI 等新聞與資料資源，讓即時訊號得以被彙整、追蹤與持續理解。',
+    textEn: 'Thank you to NewsAPI and other news and data resources that help real-time signals be gathered, tracked and continuously understood.',
+    url: 'https://newsapi.org/',
+    domain: 'newsapi.org'
+  }
+];
+
 const developers = [
   {
     name: 'SUNGYAN WORKSHOP',
@@ -72,6 +103,34 @@ export default function AcknowledgementsPage() {
               <p><BilingualText zh={item.text} en={item.textEn} block /></p>
             </article>
           ))}
+        </section>
+
+        <section className="free-resource-section mt-6 sm:mt-8" aria-labelledby="free-resources-title">
+          <div className="free-resource-heading">
+            <div>
+              <p className="eyebrow-label">THE OPEN COMMONS // GRATITUDE</p>
+              <h2 id="free-resources-title"><BilingualText zh="開源與免費資源" en="OPEN-SOURCE & FREE RESOURCES" /></h2>
+            </div>
+            <p><BilingualText zh="致謝每一項降低資訊取得門檻、讓獨立工作得以延續的公開技術與免費資源。" en="In gratitude for every public technology and free resource that lowers barriers to information and sustains independent work." block /></p>
+          </div>
+          <div className="free-resource-grid">
+            {freeResources.map((resource) => {
+              const content = <>
+                <span className="free-resource-meta"><span>{resource.code}</span><span>{resource.label}</span></span>
+                <h3><BilingualText zh={resource.title} en={resource.titleEn} /></h3>
+                <p><BilingualText zh={resource.text} en={resource.textEn} block /></p>
+                {resource.domain && <span className="free-resource-domain">{resource.domain}</span>}
+                {resource.url && <span className="free-resource-arrow" aria-hidden="true">↗</span>}
+              </>;
+              return resource.url ? (
+                <a key={resource.code} href={resource.url} target="_blank" rel="noreferrer" className="free-resource-card" aria-label={resource.titleEn}>
+                  {content}
+                </a>
+              ) : (
+                <article key={resource.code} className="free-resource-card">{content}</article>
+              );
+            })}
+          </div>
         </section>
 
         <section className="developer-thanks-section mt-6 sm:mt-8" aria-labelledby="developer-thanks-title">

@@ -1872,6 +1872,20 @@ main,
 .acknowledgement-card-meta span:first-child { color: rgba(251,146,60,.9); font-size: .8rem; }
 .acknowledgement-card h2 { margin: 1.25rem 0 .75rem; color: #f1f5f9; font-family: var(--font-orbitron, ui-sans-serif, sans-serif); font-size: 1.06rem; line-height: 1.45; }
 .acknowledgement-card p { margin: 0; color: rgba(203,213,225,.72); font-family: ui-serif, Georgia, serif; font-size: .94rem; line-height: 1.8; }
+.free-resource-section { padding: clamp(1.25rem, 3vw, 1.75rem); border: 1px solid rgba(167,139,250,.3); border-radius: 1.25rem; background: linear-gradient(135deg, rgba(29,24,48,.62), rgba(14,20,32,.74)); box-shadow: inset 0 1px rgba(255,255,255,.04), 0 18px 45px rgba(0,0,0,.18); }
+.free-resource-heading { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(167,139,250,.2); }
+.free-resource-heading h2 { max-width: 40rem; margin: .7rem 0 0; color: #f5f3ff; font-family: var(--font-orbitron, ui-sans-serif, sans-serif); font-size: clamp(1.2rem, 2.4vw, 1.85rem); line-height: 1.32; }
+.free-resource-heading > p { max-width: 32rem; margin: 0; color: rgba(226,232,240,.72); font-family: ui-serif, Georgia, serif; font-size: .92rem; line-height: 1.75; }
+.free-resource-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .85rem; margin-top: 1rem; }
+.free-resource-card { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 13.5rem; padding: 1.1rem; border: 1px solid rgba(167,139,250,.22); border-radius: 1rem; background: rgba(10,13,24,.5); color: inherit; text-decoration: none; }
+.free-resource-card[href]:hover { border-color: rgba(167,139,250,.75); background: rgba(35,28,59,.6); }
+.free-resource-card:focus-visible { outline: 2px solid #a78bfa; outline-offset: 3px; }
+.free-resource-meta { display: flex; align-items: center; justify-content: space-between; gap: .65rem; color: rgba(196,181,253,.66); font-family: var(--font-mono, ui-monospace, monospace); font-size: .6rem; letter-spacing: .055em; }
+.free-resource-meta span:first-child { color: rgba(251,146,60,.88); font-size: .72rem; }
+.free-resource-card h3 { margin: 1.15rem 0 .65rem; color: #ede9fe; font-family: var(--font-orbitron, ui-sans-serif, sans-serif); font-size: 1rem; line-height: 1.42; }
+.free-resource-card p { margin: 0; color: rgba(203,213,225,.7); font-family: ui-serif, Georgia, serif; font-size: .9rem; line-height: 1.75; }
+.free-resource-domain { margin-top: auto; padding-top: .75rem; color: rgba(196,181,253,.64); font-family: var(--font-mono, ui-monospace, monospace); font-size: .65rem; overflow-wrap: anywhere; }
+.free-resource-arrow { position: absolute; right: 1rem; bottom: .85rem; color: #a78bfa; font-size: 1.05rem; }
 .developer-thanks-section { padding: clamp(1.25rem, 3vw, 1.75rem); border: 1px solid rgba(251,146,60,.3); border-radius: 1.25rem; background: linear-gradient(135deg, rgba(42,27,25,.58), rgba(18,21,32,.74)); box-shadow: inset 0 1px rgba(255,255,255,.04), 0 18px 45px rgba(0,0,0,.18); }
 .developer-thanks-heading { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(251,146,60,.2); }
 .developer-thanks-heading h2 { max-width: 40rem; margin: .7rem 0 0; color: #fff7ed; font-family: var(--font-orbitron, ui-sans-serif, sans-serif); font-size: clamp(1.2rem, 2.4vw, 1.85rem); line-height: 1.32; }
@@ -1900,8 +1914,8 @@ main,
   .orbit-ring-one { width: 7rem; height: 3.1rem; }
   .orbit-ring-two { width: 8.5rem; height: 4.5rem; }
   .orbit-core { width: 3.7rem; height: 3.7rem; font-size: 1rem; }
-  .protocol-grid, .about-external-link-grid, .about-thanks-link-grid, .acknowledgement-grid, .developer-thanks-grid { grid-template-columns: 1fr; }
-  .section-heading-line, .about-footer-cta, .about-link-section-header, .about-thanks-directory, .developer-thanks-heading, .acknowledgements-return { align-items: flex-start; flex-direction: column; }
+  .protocol-grid, .about-external-link-grid, .about-thanks-link-grid, .acknowledgement-grid, .free-resource-grid, .developer-thanks-grid { grid-template-columns: 1fr; }
+  .section-heading-line, .about-footer-cta, .about-link-section-header, .about-thanks-directory, .free-resource-heading, .developer-thanks-heading, .acknowledgements-return { align-items: flex-start; flex-direction: column; }
   .about-footer-cta, .about-link-section, .about-thanks-section, .about-thanks-directory { padding: 1.25rem; }
   .about-cta-links, .about-thanks-directory-link, .acknowledgements-return-link { width: 100%; min-width: 0; }
 }

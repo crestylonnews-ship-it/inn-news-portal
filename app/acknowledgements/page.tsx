@@ -58,6 +58,16 @@ const freeResources = [
     textEn: 'Thank you to NewsAPI and other news and data resources that help real-time signals be gathered, tracked and continuously understood.',
     url: 'https://newsapi.org/',
     domain: 'newsapi.org'
+  },
+  {
+    code: 'REPO',
+    label: 'REPOSITORY // COLLABORATION',
+    title: 'GitHub 倉庫功能',
+    titleEn: 'GITHUB REPOSITORY FEATURES',
+    text: '感謝 GitHub 倉庫功能支援版本管理、內容協作與部署流程，讓這座新聞網的更新可以被持續維護與追溯。',
+    textEn: 'Thank you to GitHub repository features for supporting version control, content collaboration and deployment workflows, keeping this news network maintainable and traceable over time.',
+    url: 'https://github.com/crestylonnews-ship-it/inn-news-portal',
+    domain: 'github.com/crestylonnews-ship-it/inn-news-portal'
   }
 ];
 

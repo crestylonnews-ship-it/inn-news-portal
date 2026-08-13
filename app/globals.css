@@ -4937,3 +4937,42 @@ html[data-language='zh'] .prime-headline-title .bilingual-language-en {
     inline-size: 100%;
   }
 }
+
+/* Full global focus catalogue: every available news geography stays reachable. */
+.map-region-bar {
+  column-gap: 0.42rem;
+  row-gap: 0.48rem;
+}
+
+.map-region-chip {
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .map-region-bar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    padding-block: 0.7rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(167, 139, 250, 0.45) transparent;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .map-region-label {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    width: auto;
+    margin-right: 0.1rem;
+    padding-right: 0.22rem;
+    background: rgba(4, 10, 18, 0.96);
+    flex: 0 0 auto;
+  }
+
+  .map-region-chip {
+    flex: 0 0 auto;
+    padding: 0.42rem 0.66rem;
+    font-size: 0.6rem;
+  }
+}

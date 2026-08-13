@@ -30,9 +30,19 @@ const MAX_ZOOM = 4.4;
 const RECENT_DAYS = 7;
 const REGIONS = [
   { label: '東亞', labelEn: 'EAST ASIA', lon: 122, lat: 30, zoom: 2.7 },
+  { label: '東北亞', labelEn: 'NORTHEAST ASIA', lon: 130, lat: 42, zoom: 2.8 },
   { label: '東南亞', labelEn: 'SOUTHEAST ASIA', lon: 106, lat: 7, zoom: 3.1 },
+  { label: '南亞', labelEn: 'SOUTH ASIA', lon: 78, lat: 22, zoom: 2.6 },
+  { label: '中亞', labelEn: 'CENTRAL ASIA', lon: 67, lat: 42, zoom: 2.6 },
+  { label: '中東', labelEn: 'MIDDLE EAST', lon: 44, lat: 29, zoom: 2.7 },
+  { label: '亞太', labelEn: 'ASIA-PACIFIC', lon: 132, lat: 20, zoom: 2.0 },
   { label: '歐洲', labelEn: 'EUROPE', lon: 15, lat: 50, zoom: 2.8 },
+  { label: '歐亞', labelEn: 'EURASIA', lon: 72, lat: 52, zoom: 2.0 },
+  { label: '非洲', labelEn: 'AFRICA', lon: 20, lat: 4, zoom: 1.9 },
   { label: '北美', labelEn: 'NORTH AMERICA', lon: -100, lat: 38, zoom: 2.1 },
+  { label: '中美洲', labelEn: 'CENTRAL AMERICA', lon: -86, lat: 15, zoom: 2.4 },
+  { label: '南美', labelEn: 'SOUTH AMERICA', lon: -60, lat: -17, zoom: 2.2 },
+  { label: '大洋洲', labelEn: 'OCEANIA', lon: 145, lat: -24, zoom: 2.0 },
 ];
 
 const CATEGORY_META: CategoryMeta[] = [

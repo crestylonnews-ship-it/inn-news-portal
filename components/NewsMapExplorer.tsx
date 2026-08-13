@@ -17,6 +17,7 @@ type CategoryMeta = {
   label: string;
   labelEn: string;
   short: string;
+  shortEn: string;
   color: string;
   keywords: string[];
 };
@@ -46,14 +47,14 @@ const REGIONS = [
 ];
 
 const CATEGORY_META: CategoryMeta[] = [
-  { key: 'politics', label: '政治與國際', labelEn: 'POLITICS & WORLD', short: '政', color: '#fb7185', keywords: ['政治', '國際', '政府', '外交', '司法', '選舉', '安全', '戰爭', '地緣', 'politic', 'government', 'election', 'security', 'war', 'world', 'international'] },
-  { key: 'technology', label: '科技與數位', labelEn: 'TECH & DIGITAL', short: '科', color: '#38bdf8', keywords: ['科技', '資訊', '資安', '人工智慧', '軟體', '數位', 'technology', 'software', 'cyber', 'digital', 'artificial intelligence', 'ai'] },
-  { key: 'business', label: '經濟與商業', labelEn: 'BUSINESS & ECONOMY', short: '經', color: '#f59e0b', keywords: ['金融', '銀行', '保險', '能源', '物流', '零售', '電商', '經濟', '商業', '財經', '產業', '市場', 'business', 'economy', 'finance', 'energy', 'retail', 'market'] },
-  { key: 'society', label: '社會與生活', labelEn: 'SOCIETY & LIFE', short: '社', color: '#a78bfa', keywords: ['社會', '教育', '青少年', '勞動', '薪資', '住宅', '居住', '民生', '弱勢', '長照', '街友', '貧富', 'social', 'education', 'labor', 'housing', 'community'] },
-  { key: 'health', label: '醫療與健康', labelEn: 'HEALTH & MEDICINE', short: '醫', color: '#34d399', keywords: ['醫療', '健康', '生技', 'medical', 'health', 'biotech'] },
-  { key: 'environment', label: '環境與氣候', labelEn: 'CLIMATE & ENVIRONMENT', short: '環', color: '#2dd4bf', keywords: ['環境', '氣候', '永續', '公害', '交通', 'environment', 'climate', 'sustainability', 'pollution'] },
-  { key: 'culture', label: '文化與媒體', labelEn: 'CULTURE & MEDIA', short: '文', color: '#f472b6', keywords: ['媒體', '新聞', '出版', '文化', '體育', '運動', 'media', 'culture', 'sports', 'publishing'] },
-  { key: 'other', label: '其他', labelEn: 'OTHER SIGNALS', short: '他', color: '#94a3b8', keywords: [] },
+  { key: 'politics', label: '政治與國際', labelEn: 'POLITICS & WORLD', short: '政', shortEn: 'POL', color: '#fb7185', keywords: ['政治', '國際', '政府', '外交', '司法', '選舉', '安全', '戰爭', '地緣', 'politic', 'government', 'election', 'security', 'war', 'world', 'international'] },
+  { key: 'technology', label: '科技與數位', labelEn: 'TECH & DIGITAL', short: '科', shortEn: 'TEC', color: '#38bdf8', keywords: ['科技', '資訊', '資安', '人工智慧', '軟體', '數位', 'technology', 'software', 'cyber', 'digital', 'artificial intelligence', 'ai'] },
+  { key: 'business', label: '經濟與商業', labelEn: 'BUSINESS & ECONOMY', short: '經', shortEn: 'ECO', color: '#f59e0b', keywords: ['金融', '銀行', '保險', '能源', '物流', '零售', '電商', '經濟', '商業', '財經', '產業', '市場', 'business', 'economy', 'finance', 'energy', 'retail', 'market'] },
+  { key: 'society', label: '社會與生活', labelEn: 'SOCIETY & LIFE', short: '社', shortEn: 'SOC', color: '#a78bfa', keywords: ['社會', '教育', '青少年', '勞動', '薪資', '住宅', '居住', '民生', '弱勢', '長照', '街友', '貧富', 'social', 'education', 'labor', 'housing', 'community'] },
+  { key: 'health', label: '醫療與健康', labelEn: 'HEALTH & MEDICINE', short: '醫', shortEn: 'HLT', color: '#34d399', keywords: ['醫療', '健康', '生技', 'medical', 'health', 'biotech'] },
+  { key: 'environment', label: '環境與氣候', labelEn: 'CLIMATE & ENVIRONMENT', short: '環', shortEn: 'ENV', color: '#2dd4bf', keywords: ['環境', '氣候', '永續', '公害', '交通', 'environment', 'climate', 'sustainability', 'pollution'] },
+  { key: 'culture', label: '文化與媒體', labelEn: 'CULTURE & MEDIA', short: '文', shortEn: 'CUL', color: '#f472b6', keywords: ['媒體', '新聞', '出版', '文化', '體育', '運動', 'media', 'culture', 'sports', 'publishing'] },
+  { key: 'other', label: '其他', labelEn: 'OTHER SIGNALS', short: '他', shortEn: 'OTH', color: '#94a3b8', keywords: [] },
 ];
 
 function clamp(value: number, min: number, max: number) {
@@ -120,6 +121,20 @@ function featureToPaths(feature: GeoFeature, viewport: Viewport) {
 function getCategoryMeta(category: string) {
   const normalized = category.toLowerCase();
   return CATEGORY_META.find((meta) => meta.keywords.some((keyword) => normalized.includes(keyword.toLowerCase()))) || CATEGORY_META[CATEGORY_META.length - 1];
+}
+
+function displayGeoLabel(geo: GeoEntry['geo'], language: string) {
+  return language === 'en' ? geo.labelEn : geo.label;
+}
+
+function displayRegionLabel(region: string, language: string) {
+  if (region === '全球') return language === 'en' ? 'GLOBAL' : '全球';
+  const configuredRegion = REGIONS.find((item) => item.label === region);
+  return language === 'en' && configuredRegion ? configuredRegion.labelEn : region;
+}
+
+function displayCategoryLabel(category: CategoryMeta, language: string) {
+  return language === 'en' ? category.labelEn : category.label;
 }
 
 function isWithinLastSevenDays(article: Article) {
@@ -446,7 +461,7 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
                       return (
                         <Link key={`${copy}-${article.slug}`} href={`/articles/${article.slug}`} className="map-headline-ticker-item">
                           <i aria-hidden="true" style={{ backgroundColor: category.color }} />
-                          <span className="map-headline-ticker-region">{geo.label}</span>
+                          <span className="map-headline-ticker-region">{displayGeoLabel(geo, language)}</span>
                           <span>{headline}</span>
                         </Link>
                       );
@@ -577,7 +592,7 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
                       data-selected={isSelected}
                       role="button"
                       tabIndex={0}
-                      aria-label={`${geo.label} ${category.label} ${count} 篇近七日新聞`}
+                      aria-label={`${displayGeoLabel(geo, language)} ${displayCategoryLabel(category, language)} ${count} ${language === 'en' ? 'recent reports' : '篇近七日新聞'}`}
                       onPointerDown={(event) => event.stopPropagation()}
                       onClick={(event) => { event.stopPropagation(); handleRegionPointClick(geo.key); }}
                       onKeyDown={(event) => {
@@ -588,7 +603,7 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
                       }}
                     >
                       <circle r={radius} className="map-point-core" />
-                      <text y={-radius - 5} textAnchor="middle" className="map-point-label">{geo.label} · {category.short}</text>
+                      <text y={-radius - 5} textAnchor="middle" className="map-point-label">{displayGeoLabel(geo, language)} · {language === 'en' ? category.shortEn : category.short}</text>
                       <text y={radius + 14} textAnchor="middle" className="map-point-count">{count}</text>
                     </g>
                   );
@@ -640,13 +655,13 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
             <span className="map-result-count">{visibleEntries.length}</span>
           </div>
           <div className="map-region-summary">
-            {regionSummaries.slice(0, 5).map(({ geo, count }) => <span key={geo.key}>{geo.label} <b>{count}</b></span>)}
+            {regionSummaries.slice(0, 5).map(({ geo, count }) => <span key={geo.key}>{displayGeoLabel(geo, language)} <b>{count}</b></span>)}
             {regionSummaries.length === 0 && <span><BilingualText zh="此視窗目前沒有近七日定位訊號" en="NO RECENT GEO SIGNAL IN THIS VIEW" /></span>}
           </div>
           <div className="map-result-list">
             {visibleEntries.slice(0, compact ? 4 : 6).map(({ article, geo }) => (
               <Link key={article.slug} href={`/articles/${article.slug}`} className="map-result-item">
-                <span className="map-result-meta">{geo.label} · {article.date} · {getCategoryMeta(article.category).label}</span>
+                <span className="map-result-meta">{displayGeoLabel(geo, language)} · {article.date} · {displayCategoryLabel(getCategoryMeta(article.category), language)}</span>
                 <strong>{article.title}</strong>
                 <span>{article.titleEn}</span>
               </Link>
@@ -671,7 +686,7 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
         {selectedRegionGeo ? (
           <div className="map-region-details-body">
             <div className="map-region-detail-summary">
-              <span className="map-detail-location">{selectedRegionGeo.label} · {selectedRegionGeo.region}</span>
+              <span className="map-detail-location">{displayGeoLabel(selectedRegionGeo, language)} · {displayRegionLabel(selectedRegionGeo.region, language)}</span>
               <span className="map-detail-filter-status"><BilingualText zh={isShowingAllTopics ? '目前顯示全部領域' : `沿用 ${selectedTopics.length} 個已選領域`} en={isShowingAllTopics ? 'SHOWING ALL TOPICS' : `KEEPING ${selectedTopics.length} SELECTED TOPICS`} /></span>
               {selectedCategorySummary.map(({ category, count }) => (
                 <span key={category.key} className="map-detail-category">
@@ -719,7 +734,7 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
             <div className="map-region-detail-list">
               {selectedRegionEntries.map(({ article, geo }) => (
                 <Link key={article.slug} href={`/articles/${article.slug}`} className="map-region-detail-item">
-                  <span className="map-result-meta">{article.date} · {getCategoryMeta(article.category).label}</span>
+                  <span className="map-result-meta">{article.date} · {displayCategoryLabel(getCategoryMeta(article.category), language)}</span>
                   <strong>{article.title}</strong>
                   <span>{article.titleEn}</span>
                 </Link>

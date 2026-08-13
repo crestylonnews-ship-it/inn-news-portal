@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Suspense, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import ArticleCard from '@/components/ArticleCard';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
@@ -10,14 +11,11 @@ import BilingualText from '@/components/BilingualText';
 import { tagToEnglish } from '@/lib/i18n';
 
 function TagsContent() {
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const selectedTag = searchParams.get('tag');
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAllTags, setShowAllTags] = useState(false);
-
-  useEffect(() => {
-    setSelectedTag(new URLSearchParams(window.location.search).get('tag'));
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -64,15 +62,17 @@ function TagsContent() {
 
   useEffect(() => {
     if (!selectedTag || loading) return;
-    const timer = window.setTimeout(() => {
+
+    const frame = window.requestAnimationFrame(() => {
       const target = document.getElementById('filtered-results');
       if (!target) return;
       const offset = window.innerWidth <= 620 ? 76 : 96;
       const top = target.getBoundingClientRect().top + window.scrollY - offset;
       window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
-    }, 180);
-    return () => window.clearTimeout(timer);
-  }, [selectedTag, loading]);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [selectedTag, loading, filteredArticles.length]);
 
   return (
     <div className="space-y-8 sm:space-y-10">

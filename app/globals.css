@@ -1860,12 +1860,25 @@ main,
 .about-thanks-directory p { max-width: 45rem; margin: 0; color: rgba(226,232,240,.72); font-family: ui-serif, Georgia, serif; font-size: .94rem; line-height: 1.75; }
 .about-thanks-directory-link { display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: 1rem; min-width: 13rem; padding: .9rem 1rem; color: rgba(255,247,237,.9); font-family: var(--font-mono, ui-monospace, monospace); font-size: .72rem; }
 .about-thanks-directory-link span { color: #fb923c; font-size: 1rem; }
-.acknowledgements-hero { position: relative; overflow: hidden; padding: clamp(1.5rem, 4vw, 3rem); border: 1px solid rgba(103,232,249,.24); border-radius: 1.25rem; background: radial-gradient(circle at 88% 14%, rgba(34,211,238,.12), transparent 22rem), linear-gradient(135deg, rgba(8,22,36,.94), rgba(14,17,31,.9)); box-shadow: inset 0 1px rgba(255,255,255,.05), 0 22px 60px rgba(0,0,0,.2); }
+.acknowledgements-hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(18rem, .82fr); gap: clamp(1.25rem, 3vw, 2.5rem); overflow: hidden; padding: clamp(1.5rem, 4vw, 3rem); border: 1px solid rgba(103,232,249,.24); border-radius: 1.25rem; background: radial-gradient(circle at 88% 14%, rgba(34,211,238,.12), transparent 22rem), linear-gradient(135deg, rgba(8,22,36,.94), rgba(14,17,31,.9)); box-shadow: inset 0 1px rgba(255,255,255,.05), 0 22px 60px rgba(0,0,0,.2); }
 .acknowledgements-hero::after { position: absolute; inset: 0; pointer-events: none; content: ''; opacity: .32; background-image: linear-gradient(rgba(103,232,249,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(103,232,249,.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(125deg, #000, transparent 76%); }
 .acknowledgements-hero > * { position: relative; z-index: 1; }
+.acknowledgements-hero-copy { align-self: center; min-width: 0; }
 .acknowledgements-title { max-width: 54rem; margin: .75rem 0 1rem; color: #f8fafc; font-family: var(--font-orbitron, ui-sans-serif, sans-serif); font-size: clamp(2.1rem, 5.6vw, 4.2rem); line-height: 1.04; letter-spacing: -.035em; }
 .acknowledgements-title [lang='zh'] { color: #67e8f9; }
 .acknowledgements-lede { max-width: 44rem; margin: 0; color: rgba(226,232,240,.76); font-family: ui-serif, Georgia, serif; font-size: clamp(1rem, 2vw, 1.18rem); line-height: 1.82; }
+.acknowledgements-hero-resources { align-self: stretch; padding: 1.1rem; border: 1px solid rgba(167,139,250,.58); border-radius: 1rem; background: linear-gradient(145deg, rgba(52,39,86,.74), rgba(14,19,33,.84)); box-shadow: inset 0 1px rgba(255,255,255,.06), 0 0 30px rgba(167,139,250,.08); }
+.hero-resources-kicker { margin: 0; color: rgba(196,181,253,.76); font-family: var(--font-mono, ui-monospace, monospace); font-size: .6rem; letter-spacing: .08em; }
+.acknowledgements-hero-resources h2 { margin: .55rem 0 .85rem; color: #f5f3ff; font-family: var(--font-orbitron, ui-sans-serif, sans-serif); font-size: clamp(1rem, 1.7vw, 1.3rem); line-height: 1.35; }
+.hero-resource-list { display: grid; gap: .55rem; }
+.hero-resource-item { display: grid; grid-template-columns: 2.35rem minmax(0, 1fr) auto; gap: .55rem; align-items: center; min-height: 3.45rem; padding: .65rem .7rem; border: 1px solid rgba(196,181,253,.2); border-radius: .7rem; background: rgba(8,11,21,.48); color: inherit; text-decoration: none; }
+a.hero-resource-item:hover { border-color: rgba(196,181,253,.8); background: rgba(64,48,105,.62); }
+a.hero-resource-item:focus-visible { outline: 2px solid #c4b5fd; outline-offset: 3px; }
+.hero-resource-code { color: rgba(251,146,60,.9); font-family: var(--font-mono, ui-monospace, monospace); font-size: .61rem; letter-spacing: .05em; }
+.hero-resource-copy { display: grid; min-width: 0; gap: .18rem; }
+.hero-resource-copy strong { color: #f5f3ff; font-family: var(--font-orbitron, ui-sans-serif, sans-serif); font-size: .72rem; line-height: 1.35; overflow-wrap: anywhere; }
+.hero-resource-copy small { color: rgba(196,181,253,.7); font-family: var(--font-mono, ui-monospace, monospace); font-size: .58rem; overflow-wrap: anywhere; }
+.hero-resource-arrow { color: #c4b5fd; font-size: 1rem; }
 .acknowledgement-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .85rem; }
 .acknowledgement-card { min-height: 15rem; padding: 1.25rem; border: 1px solid rgba(103,232,249,.18); border-radius: 1rem; background: linear-gradient(145deg, rgba(15,35,49,.68), rgba(12,16,26,.72)); box-shadow: inset 0 1px rgba(255,255,255,.035), 0 14px 32px rgba(0,0,0,.15); }
 .acknowledgement-card-meta { display: flex; align-items: center; justify-content: space-between; gap: .75rem; color: rgba(103,232,249,.62); font-family: var(--font-mono, ui-monospace, monospace); font-size: .62rem; letter-spacing: .065em; }
@@ -1908,7 +1921,7 @@ main,
 @media (max-width: 720px) {
   .mission-strip { grid-template-columns: 1fr; gap: .65rem; padding: 1rem; }
   .mission-strip-link { justify-self: start; }
-  .about-hero-grid, .about-manifesto-grid { grid-template-columns: 1fr; }
+  .about-hero-grid, .about-manifesto-grid, .acknowledgements-hero { grid-template-columns: 1fr; }
   .about-hero-grid { padding: 2rem .5rem .75rem; }
   .about-orbit-mark { width: 9rem; height: 9rem; margin: .5rem auto 0; }
   .orbit-ring-one { width: 7rem; height: 3.1rem; }

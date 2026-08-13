@@ -86,10 +86,33 @@ export default function AcknowledgementsPage() {
       <Navbar />
       <main className="content-shell flex-grow mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-14">
         <section className="acknowledgements-hero" aria-labelledby="acknowledgements-title">
-          <p className="page-hero-kicker">INN // ACKNOWLEDGEMENTS ARCHIVE</p>
-          <p className="eyebrow-label">SIGNALS ARE NEVER CARRIED ALONE</p>
-          <h1 id="acknowledgements-title" className="acknowledgements-title"><BilingualText zh="特別感謝" en="SPECIAL ACKNOWLEDGEMENTS" block /></h1>
-          <p className="acknowledgements-lede"><BilingualText zh="每一則抵達讀者眼前的訊號，都承載著基礎服務、閱讀、分享與協作的善意。" en="Every signal that reaches a reader carries the goodwill of infrastructure, attention, sharing and collaboration." block /></p>
+          <div className="acknowledgements-hero-copy">
+            <p className="page-hero-kicker">INN // ACKNOWLEDGEMENTS ARCHIVE</p>
+            <p className="eyebrow-label">SIGNALS ARE NEVER CARRIED ALONE</p>
+            <h1 id="acknowledgements-title" className="acknowledgements-title"><BilingualText zh="特別感謝" en="SPECIAL ACKNOWLEDGEMENTS" block /></h1>
+            <p className="acknowledgements-lede"><BilingualText zh="每一則抵達讀者眼前的訊號，都承載著基礎服務、閱讀、分享與協作的善意。" en="Every signal that reaches a reader carries the goodwill of infrastructure, attention, sharing and collaboration." block /></p>
+          </div>
+          <aside className="acknowledgements-hero-resources" aria-labelledby="hero-resources-title">
+            <p className="hero-resources-kicker">THE OPEN COMMONS // GRATITUDE</p>
+            <h2 id="hero-resources-title"><BilingualText zh="開源與免費資源" en="OPEN-SOURCE & FREE RESOURCES" /></h2>
+            <div className="hero-resource-list">
+              {freeResources.map((resource) => {
+                const content = <>
+                  <span className="hero-resource-code">{resource.code}</span>
+                  <span className="hero-resource-copy">
+                    <strong><BilingualText zh={resource.title} en={resource.titleEn} /></strong>
+                    {resource.domain && <small>{resource.domain}</small>}
+                  </span>
+                  {resource.url && <span className="hero-resource-arrow" aria-hidden="true">↗</span>}
+                </>;
+                return resource.url ? (
+                  <a key={resource.code} href={resource.url} target="_blank" rel="noreferrer" className="hero-resource-item" aria-label={resource.titleEn}>{content}</a>
+                ) : (
+                  <div key={resource.code} className="hero-resource-item">{content}</div>
+                );
+              })}
+            </div>
+          </aside>
         </section>
 
         <section className="acknowledgement-grid mt-6 sm:mt-8" aria-label="特別感謝項目">
@@ -103,34 +126,6 @@ export default function AcknowledgementsPage() {
               <p><BilingualText zh={item.text} en={item.textEn} block /></p>
             </article>
           ))}
-        </section>
-
-        <section className="free-resource-section mt-6 sm:mt-8" aria-labelledby="free-resources-title">
-          <div className="free-resource-heading">
-            <div>
-              <p className="eyebrow-label">THE OPEN COMMONS // GRATITUDE</p>
-              <h2 id="free-resources-title"><BilingualText zh="開源與免費資源" en="OPEN-SOURCE & FREE RESOURCES" /></h2>
-            </div>
-            <p><BilingualText zh="致謝每一項降低資訊取得門檻、讓獨立工作得以延續的公開技術與免費資源。" en="In gratitude for every public technology and free resource that lowers barriers to information and sustains independent work." block /></p>
-          </div>
-          <div className="free-resource-grid">
-            {freeResources.map((resource) => {
-              const content = <>
-                <span className="free-resource-meta"><span>{resource.code}</span><span>{resource.label}</span></span>
-                <h3><BilingualText zh={resource.title} en={resource.titleEn} /></h3>
-                <p><BilingualText zh={resource.text} en={resource.textEn} block /></p>
-                {resource.domain && <span className="free-resource-domain">{resource.domain}</span>}
-                {resource.url && <span className="free-resource-arrow" aria-hidden="true">↗</span>}
-              </>;
-              return resource.url ? (
-                <a key={resource.code} href={resource.url} target="_blank" rel="noreferrer" className="free-resource-card" aria-label={resource.titleEn}>
-                  {content}
-                </a>
-              ) : (
-                <article key={resource.code} className="free-resource-card">{content}</article>
-              );
-            })}
-          </div>
         </section>
 
         <section className="developer-thanks-section mt-6 sm:mt-8" aria-labelledby="developer-thanks-title">

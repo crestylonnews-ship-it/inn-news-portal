@@ -20,7 +20,7 @@ type CategoryMeta = {
   keywords: string[];
 };
 
-type Props = { articles: Article[]; compact?: boolean };
+type Props = { articles: Article[]; compact?: boolean; home?: boolean };
 
 const MAP_WIDTH = 1000;
 const MAP_HEIGHT = 540;
@@ -125,7 +125,7 @@ function isWithinLastSevenDays(article: Article) {
   return timestamp >= start.getTime() && timestamp <= end.getTime();
 }
 
-export default function NewsMapExplorer({ articles, compact = false }: Props) {
+export default function NewsMapExplorer({ articles, compact = false, home = false }: Props) {
   const [viewport, setViewport] = useState<Viewport>({ centerLon: 20, centerLat: 18, zoom: 1.05 });
   const [geoJson, setGeoJson] = useState<GeoCollection | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -143,6 +143,40 @@ export default function NewsMapExplorer({ articles, compact = false }: Props) {
   );
   const isShowingAllTopics = selectedTopics.length === 0;
   const bounds = useMemo(() => getBounds(viewport), [viewport]);
+  const todayRegionBriefs = useMemo(() => {
+    const dateKey = new Date().toISOString().slice(0, 10);
+    const todayEntries = entries.filter(({ article }) => {
+      const sourceDate = article.publishedAt || article.date;
+      return article.date === dateKey || sourceDate.startsWith(dateKey);
+    });
+    const sourceEntries = todayEntries.length > 0 ? todayEntries : entries.filter(({ article }) => article.date === articles[0]?.date);
+    const groups = new Map<string, GeoEntry[]>();
+    sourceEntries.forEach((entry) => {
+      const group = groups.get(entry.geo.region) || [];
+      groups.set(entry.geo.region, [...group, entry]);
+    });
+
+    return Array.from(groups.entries())
+      .map(([region, regionEntries]) => {
+        const ordered = [...regionEntries].sort((a, b) => new Date(b.article.date).getTime() - new Date(a.article.date).getTime());
+        const anchor = ordered[0]?.geo;
+        const categoryCounts = new Map<string, { category: CategoryMeta; count: number }>();
+        ordered.forEach(({ article }) => {
+          const category = getCategoryMeta(article.category);
+          const current = categoryCounts.get(category.key);
+          categoryCounts.set(category.key, current ? { ...current, count: current.count + 1 } : { category, count: 1 });
+        });
+        return {
+          region,
+          anchor,
+          entries: ordered,
+          categories: Array.from(categoryCounts.values()).sort((a, b) => b.count - a.count).slice(0, 2),
+        };
+      })
+      .filter((brief) => Boolean(brief.anchor))
+      .sort((a, b) => b.entries.length - a.entries.length)
+      .slice(0, 6);
+  }, [articles, entries]);
 
   useEffect(() => {
     let cancelled = false;
@@ -269,6 +303,21 @@ export default function NewsMapExplorer({ articles, compact = false }: Props) {
 
   const clearTopicSelection = () => setSelectedTopics([]);
 
+  const focusTodayBrief = (brief: typeof todayRegionBriefs[number]) => {
+    if (!brief.anchor) return;
+    if (brief.region === '全球') {
+      resetViewport();
+      return;
+    }
+    const quickRegion = REGIONS.find((region) => region.label === brief.region);
+    focusRegion(
+      brief.region,
+      quickRegion?.lon ?? brief.anchor.lon,
+      quickRegion?.lat ?? brief.anchor.lat,
+      quickRegion?.zoom ?? 2.35,
+    );
+  };
+
   const handleRegionPointClick = (regionKey: string) => {
     setSelectedRegionKey(regionKey);
     window.setTimeout(() => regionDetailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
@@ -307,7 +356,33 @@ export default function NewsMapExplorer({ articles, compact = false }: Props) {
   };
 
   return (
-    <section id="map-explorer" className={`map-explorer space-y-6 ${compact ? 'map-home-preview' : ''}`} aria-labelledby="map-explorer-title">
+    <section id="map-explorer" className={`map-explorer space-y-6 ${compact ? 'map-home-preview' : ''} ${home ? 'map-home-explorer' : ''}`} aria-labelledby="map-explorer-title">
+      {home && (
+        <section className="map-today-briefs" aria-labelledby="map-today-briefs-title">
+          <div className="map-today-briefs-header">
+            <div>
+              <p className="map-eyebrow"><BilingualText zh="今日地區事件摘要" en="TODAY'S REGIONAL BRIEFINGS" /></p>
+              <h2 id="map-today-briefs-title" className="font-orbitron text-lg font-bold text-cyan-50 sm:text-xl"><BilingualText zh="今天，哪一區正在發生什麼？" en="WHAT IS HAPPENING IN EACH REGION TODAY?" /></h2>
+            </div>
+            <span className="map-today-date">{new Date().toLocaleDateString('zh-TW', { month: '2-digit', day: '2-digit' })}</span>
+          </div>
+          <div className="map-today-brief-grid">
+            {todayRegionBriefs.map((brief) => (
+              <button key={brief.region} type="button" className="map-today-brief-card" onClick={() => focusTodayBrief(brief)}>
+                <span className="map-today-brief-region"><BilingualText zh={brief.region} en={brief.anchor?.region === '全球' ? 'GLOBAL' : brief.anchor?.labelEn || brief.region} /></span>
+                <span className="map-today-brief-count">{brief.entries.length}</span>
+                <span className="map-today-brief-topics">
+                  {brief.categories.map(({ category }) => <i key={category.key} style={{ backgroundColor: category.color }} title={category.label} />)}
+                </span>
+                <strong>{brief.entries[0]?.article.title}</strong>
+                <small>{brief.entries[0]?.article.titleEn}</small>
+              </button>
+            ))}
+            {todayRegionBriefs.length === 0 && <p className="map-empty"><BilingualText zh="今日尚無可定位的地區事件，請從近七日地圖探索。" en="No mappable regional brief is available for today. Explore the last 7 days on the map." block /></p>}
+          </div>
+        </section>
+      )}
+
       <div className="flex flex-col gap-4 border-b border-cyan-400/20 pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div className="space-y-2">
           <p className="map-eyebrow"><BilingualText zh={compact ? '首頁探索空間 // 近七日地理新聞' : '完整地圖空間 // 近七日地理新聞索引'} en={compact ? 'HOME EXPLORATION SPACE // LAST 7 DAYS' : 'FULL MAP SPACE // LAST 7 DAYS INDEX'} /></p>
@@ -402,7 +477,8 @@ export default function NewsMapExplorer({ articles, compact = false }: Props) {
               </g>
               <g className="map-points" aria-label="近七日新聞地理節點">
                 {groupedPoints.map(({ geo, category, count, totalCount, offsetX, offsetY }) => {
-                  const point = project(geo.lon, geo.lat, viewport);
+                  const isGlobalData = geo.region === '全球';
+                  const point = isGlobalData ? { x: 78, y: MAP_HEIGHT - 70 } : project(geo.lon, geo.lat, viewport);
                   const zoomScale = clamp(Math.pow(viewport.zoom, 0.45), 1, 1.9);
                   const baseRadius = Math.min(26, 6.5 + Math.sqrt(count) * 2.8 + Math.log2(totalCount + 1) * 1.2);
                   const radius = clamp(baseRadius * zoomScale, 6, 42);
@@ -438,6 +514,10 @@ export default function NewsMapExplorer({ articles, compact = false }: Props) {
               </g>
             </svg>
             <div className="map-overlay-label map-overlay-label-top"><BilingualText zh="拖曳平移 · 滾輪縮放 · 點擊節點看區域新聞" en="DRAG · ZOOM · CLICK A NODE FOR REGIONAL NEWS" /></div>
+            <div className="map-global-anchor" aria-label="全球資料固定位置">
+              <span><BilingualText zh="全球資料" en="GLOBAL DATA" /></span>
+              <small><BilingualText zh="跨區訊號" en="CROSS-REGION" /></small>
+            </div>
             <div className="map-overlay-label map-overlay-label-bottom">LAT {viewport.centerLat.toFixed(1)}° / LON {viewport.centerLon.toFixed(1)}° / Z{viewport.zoom.toFixed(1)}</div>
             <div className="map-controls" aria-label="地圖控制">
               <button type="button" onClick={() => updateZoom(1)} aria-label="放大地圖">+</button>
@@ -459,7 +539,7 @@ export default function NewsMapExplorer({ articles, compact = false }: Props) {
           </div>
           {compact && (
             <div className="map-home-link">
-              <Link href="/map-test" className="map-home-link-button">
+              <Link href="/" className="map-home-link-button">
                 <BilingualText zh="開啟完整空間索引 →" en="OPEN FULL SPACE INDEX →" />
               </Link>
             </div>

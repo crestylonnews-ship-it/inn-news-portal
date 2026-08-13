@@ -3684,3 +3684,277 @@ html[data-language='en'] .bilingual-markup .bilingual-block {
 .article-bilingual-pair {
   display: flex !important;
 }
+
+/* --------------------------------------------------------------------------
+   Map-first opening page: regional briefings and persistent global signal
+   -------------------------------------------------------------------------- */
+.map-home-shell {
+  max-width: 96rem;
+}
+
+.map-home-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(1.2rem, 4vw, 3rem);
+  align-items: end;
+  margin-bottom: clamp(1rem, 2vw, 1.75rem);
+  padding: clamp(1.1rem, 2.6vw, 2rem);
+  border: 1px solid rgba(103, 232, 249, 0.17);
+  border-radius: 1.25rem;
+  background:
+    linear-gradient(110deg, rgba(8, 22, 35, 0.96), rgba(8, 13, 23, 0.78)),
+    radial-gradient(circle at 83% 10%, rgba(45, 212, 191, 0.16), transparent 33%);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.05), 0 18px 48px rgba(0, 0, 0, 0.18);
+}
+
+.map-home-hero-copy {
+  min-width: 0;
+}
+
+.map-home-title {
+  max-width: 18ch;
+  overflow-wrap: anywhere;
+}
+
+.map-home-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.55rem;
+}
+
+.map-home-action {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.4rem;
+  border: 1px solid rgba(103, 232, 249, 0.22);
+  border-radius: 0.72rem;
+  padding: 0.5rem 0.72rem;
+  color: rgba(165, 243, 252, 0.9);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.map-home-action:hover,
+.map-home-action:focus-visible {
+  border-color: rgba(165, 243, 252, 0.8);
+  background: rgba(34, 211, 238, 0.12);
+  transform: translateY(-1px);
+}
+
+.map-home-action-primary {
+  border-color: rgba(45, 212, 191, 0.45);
+  background: rgba(45, 212, 191, 0.1);
+  color: #ccfbf1;
+}
+
+.map-home-explorer {
+  border-color: rgba(45, 212, 191, 0.26);
+}
+
+.map-today-briefs {
+  padding: 1rem;
+  border: 1px solid rgba(45, 212, 191, 0.17);
+  border-radius: 1rem;
+  background:
+    linear-gradient(120deg, rgba(11, 29, 37, 0.72), rgba(9, 15, 26, 0.5)),
+    radial-gradient(circle at 94% 12%, rgba(45, 212, 191, 0.09), transparent 36%);
+}
+
+.map-today-briefs-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.map-today-date {
+  flex: 0 0 auto;
+  color: rgba(153, 246, 228, 0.8);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+}
+
+.map-today-brief-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.map-today-brief-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.36rem 0.5rem;
+  min-width: 0;
+  padding: 0.72rem;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 0.78rem;
+  background: rgba(2, 11, 20, 0.5);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.map-today-brief-card:hover,
+.map-today-brief-card:focus-visible {
+  border-color: rgba(45, 212, 191, 0.6);
+  background: rgba(20, 69, 77, 0.22);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.map-today-brief-region {
+  min-width: 0;
+  color: #a5f3fc;
+  font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.map-today-brief-count {
+  color: #99f6e4;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.map-today-brief-topics {
+  display: flex;
+  grid-column: 1 / -1;
+  gap: 0.25rem;
+}
+
+.map-today-brief-topics i {
+  width: 0.38rem;
+  height: 0.38rem;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.map-today-brief-card strong,
+.map-today-brief-card small {
+  display: block;
+  grid-column: 1 / -1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.map-today-brief-card strong {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #f1f5f9;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.map-today-brief-card small {
+  display: -webkit-box;
+  overflow: hidden;
+  color: rgba(148, 163, 184, 0.78);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.57rem;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.map-global-anchor {
+  position: absolute;
+  z-index: 1;
+  bottom: 0.72rem;
+  left: 0.85rem;
+  display: grid;
+  gap: 0.08rem;
+  padding: 0.34rem 0.48rem;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 0.5rem;
+  background: rgba(4, 13, 24, 0.82);
+  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.28);
+  color: #dbeafe;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.09em;
+  pointer-events: none;
+  text-transform: uppercase;
+}
+
+.map-global-anchor small {
+  color: rgba(148, 163, 184, 0.72);
+  font-size: 0.48rem;
+}
+
+@media (max-width: 920px) {
+  .map-home-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .map-home-hero-actions {
+    justify-content: flex-start;
+  }
+
+  .map-today-brief-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .map-home-shell {
+    padding: 0.75rem;
+  }
+
+  .map-home-hero {
+    padding: 1rem;
+    border-radius: 1rem;
+  }
+
+  .map-home-title {
+    max-width: none;
+    font-size: clamp(1.68rem, 8.4vw, 2.15rem);
+    line-height: 1.18;
+  }
+
+  .map-home-hero-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .map-home-action-primary {
+    grid-column: 1 / -1;
+  }
+
+  .map-today-briefs {
+    padding: 0.78rem;
+  }
+
+  .map-today-briefs-header {
+    align-items: start;
+  }
+
+  .map-today-brief-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .map-today-brief-card {
+    padding: 0.64rem;
+  }
+
+  .map-global-anchor {
+    bottom: 0.52rem;
+    left: 0.55rem;
+    font-size: 0.5rem;
+  }
+
+  .map-home-explorer .map-stage,
+  .map-home-explorer .world-map {
+    min-height: 20.5rem;
+  }
+}

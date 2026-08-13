@@ -569,13 +569,13 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
               </g>
               {mapPaths.length === 0 && (
                 <text x={MAP_WIDTH / 2} y={MAP_HEIGHT / 2} textAnchor="middle" className="map-loading-label">
-                  載入地圖資料中 / LOADING MAP DATA
+                  {language === 'en' ? 'LOADING MAP DATA' : '載入地圖資料中'}
                 </text>
               )}
               <g className="map-latitude-lines" aria-hidden="true">
                 {[-60, -30, 0, 30, 60].map((lat) => { const p = project(0, lat, viewport); return <line key={lat} x1="0" x2={MAP_WIDTH} y1={p.y} y2={p.y} />; })}
               </g>
-              <g className="map-points" aria-label="近七日新聞地理節點">
+              <g className="map-points" aria-label={language === 'en' ? 'GEOGRAPHIC NEWS NODES FROM THE LAST 7 DAYS' : '近七日新聞地理節點'}>
                 {groupedPoints.map(({ geo, category, count, totalCount, offsetX, offsetY }) => {
                   const isGlobalData = geo.region === '全球';
                   const point = isGlobalData ? { x: 78, y: MAP_HEIGHT - 70 } : project(geo.lon, geo.lat, viewport);
@@ -585,7 +585,7 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
                   const isSelected = selectedRegionKey === geo.key;
                   return (
                     <g
-                      key={`${geo.key}:${category.key}`}
+                      key={`${geo.key}:${category.key}:${language}`}
                       transform={`translate(${point.x + offsetX * zoomScale} ${point.y + offsetY * zoomScale})`}
                       className={`map-point ${isSelected ? 'is-selected' : ''}`}
                       style={{ color: category.color }}
@@ -603,7 +603,7 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
                       }}
                     >
                       <circle r={radius} className="map-point-core" />
-                      <text y={-radius - 5} textAnchor="middle" className="map-point-label">{displayGeoLabel(geo, language)} · {language === 'en' ? category.shortEn : category.short}</text>
+                      <text key={`label-${language}`} y={-radius - 5} textAnchor="middle" className="map-point-label">{displayGeoLabel(geo, language)} · {language === 'en' ? category.shortEn : category.short}</text>
                       <text y={radius + 14} textAnchor="middle" className="map-point-count">{count}</text>
                     </g>
                   );
@@ -614,15 +614,15 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
               </g>
             </svg>
             {!home && <div className="map-overlay-label map-overlay-label-top"><BilingualText zh="拖曳平移 · 滾輪縮放 · 點擊節點看區域新聞" en="DRAG · ZOOM · CLICK A NODE FOR REGIONAL NEWS" /></div>}
-            <div className="map-global-anchor" aria-label="全球資料固定位置">
-              <span><BilingualText zh="全球資料" en="GLOBAL DATA" /></span>
-              <small><BilingualText zh="跨區訊號" en="CROSS-REGION" /></small>
+            <div className="map-global-anchor" aria-label={language === 'en' ? 'GLOBAL DATA FIXED POSITION' : '全球資料固定位置'}>
+              <span>{language === 'en' ? 'GLOBAL DATA' : '全球資料'}</span>
+              <small>{language === 'en' ? 'CROSS-REGION' : '跨區訊號'}</small>
             </div>
             <div className="map-overlay-label map-overlay-label-bottom">LAT {viewport.centerLat.toFixed(1)}° / LON {viewport.centerLon.toFixed(1)}° / Z{viewport.zoom.toFixed(1)}</div>
-            <div className="map-controls" aria-label="地圖控制">
-              <button type="button" onClick={() => updateZoom(1)} aria-label="放大地圖">+</button>
-              <button type="button" onClick={() => updateZoom(-1)} aria-label="縮小地圖">−</button>
-              <button type="button" onClick={resetViewport} aria-label="重設地圖視窗">⌂</button>
+            <div className="map-controls" aria-label={language === 'en' ? 'MAP CONTROLS' : '地圖控制'}>
+              <button type="button" onClick={() => updateZoom(1)} aria-label={language === 'en' ? 'ZOOM IN' : '放大地圖'}>+</button>
+              <button type="button" onClick={() => updateZoom(-1)} aria-label={language === 'en' ? 'ZOOM OUT' : '縮小地圖'}>−</button>
+              <button type="button" onClick={resetViewport} aria-label={language === 'en' ? 'RESET MAP VIEW' : '重設地圖視窗'}>⌂</button>
             </div>
           </div>
 

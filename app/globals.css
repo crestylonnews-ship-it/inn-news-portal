@@ -3327,7 +3327,8 @@ main,
 /* Article bilingual reading: pair each matching block and let the selected
    language lead, rather than rendering one complete language after another. */
 .article-bilingual-pair,
-.bilingual-markup .bilingual-block {
+.bilingual-markup .bilingual-block,
+aside h2 .bilingual-pair {
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -3378,7 +3379,19 @@ main,
 }
 
 html[data-language='en'] .article-bilingual-pair,
-html[data-language='en'] .bilingual-markup .bilingual-block {
+html[data-language='en'] .bilingual-markup .bilingual-block,
+html[data-language='en'] aside h2 .bilingual-pair {
+  flex-direction: column-reverse;
+}
+
+/* The title's general block rule has greater selector specificity than the
+   generic pair rule, so restate the flex container here for language reversal. */
+.article-title .article-bilingual-pair {
+  display: flex;
+  flex-direction: column;
+}
+
+html[data-language='en'] .article-title .article-bilingual-pair {
   flex-direction: column-reverse;
 }
 

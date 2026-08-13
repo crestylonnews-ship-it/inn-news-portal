@@ -82,6 +82,12 @@ function sanitizeFrontmatter(raw: string): string {
       literalBlock = true;
       return line;
     }
+    if (literalBlock && /^\s*[A-Za-z_][\w-]*:\s+.+$/.test(line)) {
+      // A new top-level YAML key ends contentEn: |. Do not turn metadata such
+      // as date/category/author into English article content.
+      literalBlock = false;
+      return line;
+    }
     if (literalBlock && line.trim() && !/^\s{2,}/.test(line)) {
       // contentEn: | 後方常有未縮排的 HTML；將它收回 YAML 字串區塊。
       return `  ${line}`;
@@ -109,12 +115,31 @@ function splitLegacyBilingualContent(content: string): { zh: string; en: string 
   return { zh, en };
 }
 
+function stripTrailingSourceSection(content: string): string {
+  // Every article page renders Frontmatter sources in a dedicated bilingual
+  // aside. Strip a trailing Markdown source section before BilingualMarkup so
+  // generated articles do not render the same citations twice.
+  return String(content || '')
+    .replace(
+      /\n{0,2}#{1,6}\s*(?:來源整理|資料來源(?:與引用)?|sources?(?:\s*(?:&|and)\s*citations?)?|citations?)\s*\n[\s\S]*$/i,
+      '',
+    )
+    .trim();
+}
+
 function splitLongParagraph(block: string, language: 'zh' | 'en'): string {
-  const limit = language === 'zh' ? 260 : 620;
+  // Keep Chinese segments short enough to match the structured English
+  // translation one paragraph at a time while remaining comfortable to read.
+  const limit = language === 'zh' ? 140 : 620;
   if (block.length <= limit || /^(#{1,6}\s|>|[-*+]\s|<)/.test(block)) return block;
+  const protectedBlock = language === 'en'
+    // A naïve sentence splitter treats the second stop in `U.S.` as a sentence
+    // boundary and can drop the leading words when adjacent groups are joined.
+    ? block.replace(/\b(?:U\.S\.|U\.K\.|e\.g\.|i\.e\.|Mr\.|Mrs\.|Ms\.|Dr\.)/g, abbreviation => abbreviation.replace(/\./g, '\uE000'))
+    : block;
   const sentences = language === 'zh'
     ? block.match(/[^。！？]+[。！？]+|[^。！？]+$/g)
-    : block.match(/[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/g);
+    : protectedBlock.match(/[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/g)?.map(sentence => sentence.replace(/\uE000/g, '.'));
   if (!sentences || sentences.length < 2) return block;
 
   const paragraphs: string[] = [];
@@ -149,7 +174,7 @@ function parseArticle(filename: string, fileContents: string): Article {
   const slug = filename.replace(/\.md$/, '');
   const { data, content } = matter(sanitizeFrontmatter(fileContents)) as { data: ArticleFrontmatter; content: string };
   const legacyContent = splitLegacyBilingualContent(content);
-  const primaryContent = normalizeReadableContent(legacyContent?.zh || content, 'zh');
+  const primaryContent = normalizeReadableContent(stripTrailingSourceSection(legacyContent?.zh || content), 'zh');
   const title = String(data.title || '無標題新聞');
   const titleEn = String(data.titleEn || 'English edition unavailable');
   const date = String(data.date || new Date().toISOString().split('T')[0]);
@@ -157,7 +182,7 @@ function parseArticle(filename: string, fileContents: string): Article {
   const plainText = markdownToText(primaryContent);
   const excerpt = String(data.excerpt || `${plainText.substring(0, 140)}${plainText.length > 140 ? '…' : ''}`);
   const excerptEn = String(data.excerptEn || 'The English edition of this article is temporarily unavailable.');
-  const contentEn = normalizeReadableContent(String(data.contentEn || legacyContent?.en || '# English edition unavailable\n\nThe English edition of this article is temporarily unavailable.'), 'en');
+  const contentEn = normalizeReadableContent(stripTrailingSourceSection(String(data.contentEn || legacyContent?.en || '# English edition unavailable\n\nThe English edition of this article is temporarily unavailable.')), 'en');
 
   return {
     slug,

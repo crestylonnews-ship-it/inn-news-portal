@@ -100,6 +100,55 @@ export default function AboutPage() {
             <Link href="/timeline" className="portal-card about-cta-card"><BilingualText zh="查看時間線歸檔" en="OPEN TIMELINE ARCHIVE" /> <span>→</span></Link>
           </div>
         </section>
+
+        <section className="about-link-section mt-6 sm:mt-8" aria-labelledby="inn-official-channels">
+          <div className="about-link-section-header">
+            <div>
+              <p className="eyebrow-label">INN // OFFICIAL CHANNELS</p>
+              <h2 id="inn-official-channels"><BilingualText zh="INN 官方連結" en="INN OFFICIAL CHANNELS" /></h2>
+            </div>
+            <p className="about-link-section-copy"><BilingualText zh="追蹤 INN 的官方社群帳號，接收最新訊號與公告。" en="Follow INN’s official channels for the latest signals and announcements." block /></p>
+          </div>
+          <div className="about-external-link-grid">
+            <a href="https://www.instagram.com/inn.crestylon/" target="_blank" rel="noreferrer" className="about-external-link" aria-label="INN Instagram">
+              <span className="about-link-platform">INSTAGRAM</span>
+              <span className="about-link-handle">@inn.crestylon</span>
+              <span className="about-link-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a href="https://www.threads.com/@inn.crestylon?hl=zh-tw" target="_blank" rel="noreferrer" className="about-external-link" aria-label="INN Threads">
+              <span className="about-link-platform">THREADS</span>
+              <span className="about-link-handle">@inn.crestylon</span>
+              <span className="about-link-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a href="https://x.com/crestylon_news" target="_blank" rel="noreferrer" className="about-external-link" aria-label="INN X">
+              <span className="about-link-platform">X</span>
+              <span className="about-link-handle">@crestylon_news</span>
+              <span className="about-link-arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </section>
+
+        <section className="about-thanks-section mt-6 sm:mt-8" aria-labelledby="earth-volunteer-thanks">
+          <div className="about-link-section-header">
+            <div>
+              <p className="eyebrow-label">SPECIAL ACKNOWLEDGEMENT // EARTH</p>
+              <h2 id="earth-volunteer-thanks"><BilingualText zh="特別感謝：地球志願參與者" en="SPECIAL THANKS: EARTH VOLUNTEER PARTICIPANTS" /></h2>
+            </div>
+            <p className="about-link-section-copy"><BilingualText zh="感謝以下地球志願參與者，為資訊交流與記錄工作提供支持。" en="With gratitude to the following Earth volunteer participants for their support of information exchange and record-keeping." block /></p>
+          </div>
+          <div className="about-external-link-grid about-thanks-link-grid">
+            <a href="https://sungyan-workshop.pages.dev/" target="_blank" rel="noreferrer" className="about-external-link about-thanks-link" aria-label="Sungyan Workshop">
+              <span className="about-link-platform">SUNGYAN WORKSHOP</span>
+              <span className="about-link-handle">sungyan-workshop.pages.dev</span>
+              <span className="about-link-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a href="https://auditors-archive.pages.dev/" target="_blank" rel="noreferrer" className="about-external-link about-thanks-link" aria-label="Auditors Archive">
+              <span className="about-link-platform">AUDITORS ARCHIVE</span>
+              <span className="about-link-handle">auditors-archive.pages.dev</span>
+              <span className="about-link-arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </section>
       </main>
       <Footer />
     </div>

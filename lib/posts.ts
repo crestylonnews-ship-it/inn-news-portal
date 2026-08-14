@@ -140,36 +140,6 @@ function stripLegacyBilingualSectionHeading(content: string): string {
     .trim();
 }
 
-function splitLongParagraph(block: string, language: 'zh' | 'en'): string {
-  // Keep Chinese segments short enough to match the structured English
-  // translation one paragraph at a time while remaining comfortable to read.
-  const limit = language === 'zh' ? 140 : 620;
-  if (block.length <= limit || /^(#{1,6}\s|>|[-*+]\s|<)/.test(block)) return block;
-  const protectedBlock = language === 'en'
-    // A naïve sentence splitter treats the second stop in `U.S.` as a sentence
-    // boundary and can drop the leading words when adjacent groups are joined.
-    ? block.replace(/\b(?:U\.S\.|U\.K\.|e\.g\.|i\.e\.|Mr\.|Mrs\.|Ms\.|Dr\.)/g, abbreviation => abbreviation.replace(/\./g, '\uE000'))
-    : block;
-  const sentences = language === 'zh'
-    ? block.match(/[^。！？]+[。！？]+|[^。！？]+$/g)
-    : protectedBlock.match(/[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/g)?.map(sentence => sentence.replace(/\uE000/g, '.'));
-  if (!sentences || sentences.length < 2) return block;
-
-  const paragraphs: string[] = [];
-  let paragraph = '';
-  for (const sentence of sentences) {
-    const next = `${paragraph}${sentence}`.trim();
-    if (paragraph && next.length > limit) {
-      paragraphs.push(paragraph.trim());
-      paragraph = sentence.trim();
-    } else {
-      paragraph = next;
-    }
-  }
-  if (paragraph) paragraphs.push(paragraph.trim());
-  return paragraphs.join('\n\n');
-}
-
 export function normalizeReadableContent(content: string, language: 'zh' | 'en'): string {
   const headingNormalized = language === 'en'
     ? content
@@ -178,7 +148,10 @@ export function normalizeReadableContent(content: string, language: 'zh' | 'en')
     : content;
   return headingNormalized
     .split(/\n{2,}/)
-    .map(block => splitLongParagraph(block.trim(), language))
+    // The publisher owns paired Markdown paragraph boundaries. Browser line
+    // wrapping handles readability; splitting only one language here creates
+    // a false 1:1 visual match and can misalign the actual translations.
+    .map(block => block.trim())
     .filter(Boolean)
     .join('\n\n');
 }

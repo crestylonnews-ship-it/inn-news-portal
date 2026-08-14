@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { LanguageProvider } from '@/components/BilingualText';
 import StellarField from '@/components/StellarField';
+import { ReadingLocaleProvider } from '@/components/ReadingLocaleProvider';
 
 export const metadata: Metadata = {
   title: 'INN 星際聯邦官方新聞網 | Stellar Federation Official News Network',
@@ -30,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="bg-[#0a0b0f] text-white antialiased">
         <StellarField />
-        <LanguageProvider>{children}</LanguageProvider>
+        <LanguageProvider><ReadingLocaleProvider>{children}</ReadingLocaleProvider></LanguageProvider>
       </body>
     </html>
   );

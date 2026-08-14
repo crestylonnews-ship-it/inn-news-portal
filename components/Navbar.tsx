@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { LanguageToggle, useLanguage } from '@/components/BilingualText';
+import { ReadingLocaleSettingsButton } from '@/components/ReadingLocaleProvider';
 
 const navItems = [
   { href: '/', zh: '地圖首頁', en: 'MAP HOME' },
@@ -55,6 +56,7 @@ export default function Navbar() {
             <button type="submit" aria-label={searchLabel}>{searchLabel}</button>
           </form>
           <LanguageToggle />
+          <ReadingLocaleSettingsButton compact />
           <button
             type="button"
             className="nav-menu-toggle"

@@ -470,11 +470,21 @@ export function ReadingLocaleProvider({ children }: { children: ReactNode }) {
     setPanelLanguage(nextLocale.translationTarget);
     setConfigured(true);
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextLocale));
+    window.localStorage.setItem('inn-language', nextLocale.primaryLanguage);
     document.documentElement.dataset.language = nextLocale.primaryLanguage;
     document.documentElement.dataset.readingLanguage = nextLocale.translationTarget;
     window.dispatchEvent(new Event('inn-language-change'));
     window.dispatchEvent(new Event('inn-reading-locale-change'));
   };
+
+  useEffect(() => {
+    const syncFromStorage = () => {
+      const stored = readStoredLocale();
+      if (stored) setLocaleState(stored);
+    };
+    window.addEventListener('inn-reading-locale-change', syncFromStorage);
+    return () => window.removeEventListener('inn-reading-locale-change', syncFromStorage);
+  }, []);
 
   const openSettings = () => setDialogOpen(true);
   const value = useMemo(() => ({ locale, configured, setLocale, openSettings }), [locale, configured]);

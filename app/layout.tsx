@@ -11,8 +11,14 @@ export const metadata: Metadata = {
 
 const languageBootstrapScript = `
   try {
-    const stored = window.localStorage.getItem('inn-language');
-    document.documentElement.dataset.language = stored === 'en' ? 'en' : 'zh';
+    const readingLocale = JSON.parse(window.localStorage.getItem('inn-reading-locale') || 'null');
+    const legacyLanguage = window.localStorage.getItem('inn-language');
+    // The new primary layer is authoritative. A legacy locale only held a
+    // translation target, so it is migrated deterministically on first load.
+    const primary = readingLocale?.primaryLanguage === 'en' || readingLocale?.primaryLanguage === 'zh'
+      ? readingLocale.primaryLanguage
+      : readingLocale?.language === 'en' ? 'en' : readingLocale?.language ? 'zh' : legacyLanguage === 'en' ? 'en' : 'zh';
+    document.documentElement.dataset.language = primary;
   } catch (_) {
     document.documentElement.dataset.language = 'zh';
   }

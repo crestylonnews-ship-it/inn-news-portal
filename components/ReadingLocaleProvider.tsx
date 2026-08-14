@@ -117,6 +117,75 @@ const COPY: Record<ReadingLanguage, DialogCopy> = {
 const FALLBACK_COPY = COPY['zh-Hant'];
 const ENGLISH_COPY = COPY.en;
 
+type ExternalToolCopy = {
+  title: string;
+  description: string;
+  browser: string;
+  chrome: string;
+  tencent: string;
+  privacy: string;
+};
+
+/** These links are offers only. They never install software or transmit article text automatically. */
+const EXTERNAL_TOOL_COPY: Record<ReadingLanguage, ExternalToolCopy> = {
+  'zh-Hant': { title: '需要時使用外部翻譯工具', description: '請自行選擇要開啟的官方工具；點選後才會在新分頁離開本站。', browser: '開啟 Google 翻譯網頁', chrome: '前往 Chrome 的官方翻譯選項', tencent: '開啟騰訊翻譯君官方頁面', privacy: '外部服務依其自身隱私政策處理內容；INN NEWS 不會自動傳送文章。' },
+  en: { title: 'Use an external translator when needed', description: 'Choose an official tool yourself. It opens in a new tab only after you click it.', browser: 'Open Google Translate', chrome: 'View Chrome’s official translation option', tencent: 'Open official Tencent Translator', privacy: 'External services apply their own privacy policies. INN NEWS never sends article text automatically.' },
+  ja: { title: '必要に応じて外部翻訳ツールを使用', description: '公式ツールを自分で選択してください。クリックしたときだけ新しいタブで開きます。', browser: 'Google 翻訳を開く', chrome: 'Chrome の公式翻訳オプションを表示', tencent: '公式 Tencent Translator を開く', privacy: '外部サービスには各社のプライバシーポリシーが適用されます。INN NEWS が記事を自動送信することはありません。' },
+  ko: { title: '필요할 때 외부 번역 도구 사용', description: '공식 도구를 직접 선택하세요. 클릭한 경우에만 새 탭에서 열립니다.', browser: 'Google 번역 열기', chrome: 'Chrome 공식 번역 옵션 보기', tencent: '공식 Tencent Translator 열기', privacy: '외부 서비스에는 각 서비스의 개인정보처리방침이 적용됩니다. INN NEWS는 기사 텍스트를 자동 전송하지 않습니다.' },
+  th: { title: 'ใช้เครื่องมือแปลภายนอกเมื่อจำเป็น', description: 'เลือกใช้เครื่องมือทางการด้วยตนเอง ระบบจะเปิดแท็บใหม่เมื่อคุณกดเท่านั้น', browser: 'เปิด Google แปลภาษา', chrome: 'ดูตัวเลือกการแปลทางการของ Chrome', tencent: 'เปิด Tencent Translator อย่างเป็นทางการ', privacy: 'บริการภายนอกใช้นโยบายความเป็นส่วนตัวของตนเอง INN NEWS จะไม่ส่งเนื้อหาบทความโดยอัตโนมัติ' },
+  vi: { title: 'Dùng công cụ dịch bên ngoài khi cần', description: 'Hãy tự chọn công cụ chính thức. Công cụ chỉ mở ở thẻ mới sau khi bạn nhấn.', browser: 'Mở Google Dịch', chrome: 'Xem tuỳ chọn dịch chính thức của Chrome', tencent: 'Mở Tencent Translator chính thức', privacy: 'Dịch vụ bên ngoài áp dụng chính sách riêng. INN NEWS không tự động gửi nội dung bài viết.' },
+  id: { title: 'Gunakan alat terjemahan eksternal bila perlu', description: 'Pilih sendiri alat resminya. Alat hanya dibuka di tab baru setelah Anda mengeklik.', browser: 'Buka Google Translate', chrome: 'Lihat opsi terjemahan resmi Chrome', tencent: 'Buka Tencent Translator resmi', privacy: 'Layanan eksternal memakai kebijakannya sendiri. INN NEWS tidak mengirim teks artikel secara otomatis.' },
+  ms: { title: 'Gunakan alat terjemahan luaran apabila perlu', description: 'Pilih sendiri alat rasmi. Ia hanya dibuka dalam tab baharu selepas anda mengklik.', browser: 'Buka Google Translate', chrome: 'Lihat pilihan terjemahan rasmi Chrome', tencent: 'Buka Tencent Translator rasmi', privacy: 'Perkhidmatan luaran menggunakan dasar mereka sendiri. INN NEWS tidak menghantar teks artikel secara automatik.' },
+  ar: { title: 'استخدم أداة ترجمة خارجية عند الحاجة', description: 'اختر الأداة الرسمية بنفسك؛ ولا تُفتح في علامة تبويب جديدة إلا بعد النقر.', browser: 'فتح Google Translate', chrome: 'عرض خيار الترجمة الرسمي في Chrome', tencent: 'فتح Tencent Translator الرسمي', privacy: 'تطبّق الخدمات الخارجية سياساتها الخاصة. لا ترسل INN NEWS نص المقال تلقائيًا.' },
+  hi: { title: 'ज़रूरत होने पर बाहरी अनुवाद उपकरण इस्तेमाल करें', description: 'आधिकारिक उपकरण स्वयं चुनें। यह आपके क्लिक करने पर ही नए टैब में खुलेगा।', browser: 'Google Translate खोलें', chrome: 'Chrome का आधिकारिक अनुवाद विकल्प देखें', tencent: 'आधिकारिक Tencent Translator खोलें', privacy: 'बाहरी सेवाओं की अपनी गोपनीयता नीतियाँ लागू होती हैं। INN NEWS लेख का पाठ अपने आप नहीं भेजता।' },
+  bn: { title: 'প্রয়োজনে বাহ্যিক অনুবাদ টুল ব্যবহার করুন', description: 'নিজে অফিসিয়াল টুলটি বেছে নিন। ক্লিক করলেই শুধু নতুন ট্যাবে খুলবে।', browser: 'Google Translate খুলুন', chrome: 'Chrome-এর অফিসিয়াল অনুবাদ বিকল্প দেখুন', tencent: 'অফিসিয়াল Tencent Translator খুলুন', privacy: 'বাহ্যিক সেবার নিজস্ব গোপনীয়তা নীতি প্রযোজ্য। INN NEWS স্বয়ংক্রিয়ভাবে নিবন্ধ পাঠায় না।' },
+  fr: { title: 'Utiliser un traducteur externe si nécessaire', description: 'Choisissez vous-même un outil officiel. Il ne s’ouvre dans un nouvel onglet qu’après votre clic.', browser: 'Ouvrir Google Traduction', chrome: 'Voir l’option de traduction officielle de Chrome', tencent: 'Ouvrir Tencent Translator officiel', privacy: 'Les services externes appliquent leurs propres règles de confidentialité. INN NEWS n’envoie jamais automatiquement le texte des articles.' },
+  de: { title: 'Bei Bedarf einen externen Übersetzer nutzen', description: 'Wählen Sie ein offizielles Werkzeug selbst. Es öffnet sich erst nach Ihrem Klick in einem neuen Tab.', browser: 'Google Übersetzer öffnen', chrome: 'Offizielle Übersetzungsoption von Chrome anzeigen', tencent: 'Offiziellen Tencent Translator öffnen', privacy: 'Für externe Dienste gelten deren eigene Datenschutzrichtlinien. INN NEWS überträgt Artikeltexte niemals automatisch.' },
+  es: { title: 'Usar un traductor externo cuando sea necesario', description: 'Elige tú mismo una herramienta oficial. Solo se abre en una pestaña nueva después de hacer clic.', browser: 'Abrir Google Traductor', chrome: 'Ver la opción oficial de traducción de Chrome', tencent: 'Abrir Tencent Translator oficial', privacy: 'Los servicios externos aplican sus propias políticas de privacidad. INN NEWS nunca envía texto de artículos automáticamente.' },
+  pt: { title: 'Use um tradutor externo quando necessário', description: 'Escolha você mesmo uma ferramenta oficial. Ela abre em uma nova aba somente após o seu clique.', browser: 'Abrir Google Tradutor', chrome: 'Ver a opção oficial de tradução do Chrome', tencent: 'Abrir Tencent Translator oficial', privacy: 'Serviços externos aplicam suas próprias políticas de privacidade. A INN NEWS nunca envia texto de artigos automaticamente.' },
+  ru: { title: 'При необходимости используйте внешний переводчик', description: 'Выберите официальный инструмент самостоятельно. Он откроется в новой вкладке только после нажатия.', browser: 'Открыть Google Переводчик', chrome: 'Посмотреть официальную функцию перевода Chrome', tencent: 'Открыть официальный Tencent Translator', privacy: 'Внешние сервисы применяют собственные политики конфиденциальности. INN NEWS не отправляет текст статей автоматически.' },
+  it: { title: 'Usa un traduttore esterno quando necessario', description: 'Scegli tu uno strumento ufficiale. Si aprirà in una nuova scheda solo dopo il clic.', browser: 'Apri Google Traduttore', chrome: 'Vedi l’opzione di traduzione ufficiale di Chrome', tencent: 'Apri Tencent Translator ufficiale', privacy: 'I servizi esterni applicano le proprie politiche sulla privacy. INN NEWS non invia mai automaticamente il testo degli articoli.' },
+  nl: { title: 'Gebruik indien nodig een externe vertaler', description: 'Kies zelf een officiële tool. Deze opent pas na uw klik in een nieuw tabblad.', browser: 'Google Translate openen', chrome: 'Officiële vertaaloptie van Chrome bekijken', tencent: 'Officiële Tencent Translator openen', privacy: 'Voor externe diensten gelden hun eigen privacyregels. INN NEWS verstuurt artikeltekst nooit automatisch.' },
+  pl: { title: 'W razie potrzeby użyj zewnętrznego tłumacza', description: 'Samodzielnie wybierz oficjalne narzędzie. Otworzy się ono w nowej karcie dopiero po kliknięciu.', browser: 'Otwórz Tłumacza Google', chrome: 'Zobacz oficjalną opcję tłumaczenia Chrome', tencent: 'Otwórz oficjalny Tencent Translator', privacy: 'Usługi zewnętrzne stosują własne zasady prywatności. INN NEWS nigdy nie wysyła tekstu artykułu automatycznie.' },
+  tr: { title: 'Gerektiğinde harici çeviri aracı kullanın', description: 'Resmî aracı kendiniz seçin. Yalnızca tıkladıktan sonra yeni sekmede açılır.', browser: 'Google Çeviri’yi aç', chrome: 'Chrome’un resmî çeviri seçeneğini görüntüle', tencent: 'Resmî Tencent Translator’ı aç', privacy: 'Harici hizmetler kendi gizlilik politikalarını uygular. INN NEWS makale metnini otomatik olarak göndermez.' },
+  uk: { title: 'За потреби скористайтеся зовнішнім перекладачем', description: 'Самостійно виберіть офіційний інструмент. Він відкриється в новій вкладці лише після натискання.', browser: 'Відкрити Google Перекладач', chrome: 'Переглянути офіційну функцію перекладу Chrome', tencent: 'Відкрити офіційний Tencent Translator', privacy: 'Зовнішні служби застосовують власні політики конфіденційності. INN NEWS ніколи не надсилає текст статей автоматично.' },
+};
+
+const GOOGLE_LANGUAGE_CODES: Partial<Record<ReadingLanguage, string>> = { 'zh-Hant': 'zh-TW' };
+const GOOGLE_TRANSLATE_EXTENSION = 'https://chromewebstore.google.com/detail/google-translate/aapbdbdomjkkjkaonfhkkikfgjllcleb';
+const GOOGLE_TRANSLATE_WEB = 'https://translate.google.com/';
+const TENCENT_TRANSLATOR_WEB = 'https://fanyi.qq.com/';
+
+function ExternalTranslatorOptions({ region, language, panelLanguage }: { region: ReadingRegion; language: ReadingLanguage; panelLanguage: PanelLanguage }) {
+  const localized: ReadingLanguage = panelLanguage === 'bilingual' ? 'zh-Hant' : panelLanguage;
+  const copy = EXTERNAL_TOOL_COPY[localized as ReadingLanguage] ?? EXTERNAL_TOOL_COPY.en;
+  const fallback = panelLanguage === 'bilingual' ? EXTERNAL_TOOL_COPY.en : null;
+  const targetLanguage = GOOGLE_LANGUAGE_CODES[language] ?? language;
+  const googleUrl = `${GOOGLE_TRANSLATE_WEB}?sl=auto&tl=${encodeURIComponent(targetLanguage)}&op=translate`;
+  const recommendTencent = region === 'taiwan' || region === 'east-asia' || region === 'southeast-asia';
+  const links = [
+    { key: 'google', href: googleUrl, name: 'Google Translate', label: copy.browser, recommended: !recommendTencent },
+    { key: 'chrome', href: GOOGLE_TRANSLATE_EXTENSION, name: 'Chrome', label: copy.chrome, recommended: false },
+    { key: 'tencent', href: TENCENT_TRANSLATOR_WEB, name: 'Tencent Translator', label: copy.tencent, recommended: recommendTencent },
+  ];
+
+  return (
+    <section className="reading-locale-external-tools" aria-label={copy.title}>
+      <h3>{copy.title}{fallback && <span className="reading-locale-english">{fallback.title}</span>}</h3>
+      <p>{copy.description}{fallback && <span className="reading-locale-english">{fallback.description}</span>}</p>
+      <div className="reading-locale-tool-grid">
+        {links.map(link => (
+          <a key={link.key} className={`reading-locale-tool-link${link.recommended ? ' is-recommended' : ''}`} href={link.href} target="_blank" rel="noopener noreferrer">
+            <strong>{link.name}{link.recommended && <em>RECOMMENDED</em>}</strong>
+            <span>{link.label}{fallback && <span className="reading-locale-english">{link.key === 'google' ? fallback.browser : link.key === 'chrome' ? fallback.chrome : fallback.tencent}</span>}</span>
+          </a>
+        ))}
+      </div>
+      <p className="reading-locale-external-note">{copy.privacy}{fallback && <span className="reading-locale-english">{fallback.privacy}</span>}</p>
+    </section>
+  );
+}
+
 const ReadingLocaleContext = createContext<ReadingLocaleContextValue | null>(null);
 
 function isReadingLanguage(value: unknown): value is ReadingLanguage {
@@ -228,6 +297,8 @@ function LocaleDialog({
           <strong>{readingLanguageNativeName(language)} · {readingLanguageLabel(language, 'en')}</strong>
           <span>{text(copy => copy.modelNotice)}</span>
         </div>
+
+        <ExternalTranslatorOptions region={region} language={language} panelLanguage={panelLanguage} />
 
         <button type="button" className="reading-locale-save" onClick={() => onSave({ region, language })}>
           {text(copy => copy.save)}

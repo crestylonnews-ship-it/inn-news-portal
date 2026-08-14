@@ -5958,3 +5958,104 @@ html[data-language='zh'] .prime-headline-title .bilingual-language-en {
     font-size: 0.63em;
   }
 }
+
+
+/* Optional third-party translation tools: explicit visitor choice only. */
+.reading-locale-external-tools {
+  margin-top: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 0.85rem;
+  padding: 0.8rem;
+  background: rgba(2, 9, 18, 0.45);
+}
+
+.reading-locale-external-tools h3 {
+  margin: 0;
+  color: #e0f2fe;
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.reading-locale-external-tools > p {
+  margin: 0.38rem 0 0;
+  color: rgba(203, 213, 225, 0.76);
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.reading-locale-tool-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.72rem;
+}
+
+.reading-locale-tool-link {
+  display: grid;
+  min-width: 0;
+  gap: 0.28rem;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 0.65rem;
+  padding: 0.58rem;
+  background: rgba(15, 23, 42, 0.65);
+  color: rgba(226, 232, 240, 0.9);
+  text-decoration: none;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.reading-locale-tool-link strong {
+  display: flex;
+  align-items: center;
+  gap: 0.32rem;
+  color: #f8fafc;
+  font-size: 0.7rem;
+  line-height: 1.2;
+}
+
+.reading-locale-tool-link strong em {
+  border: 1px solid rgba(103, 232, 249, 0.55);
+  border-radius: 999px;
+  padding: 0.08rem 0.25rem;
+  color: #a5f3fc;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.45rem;
+  font-style: normal;
+  letter-spacing: 0.06em;
+}
+
+.reading-locale-tool-link > span {
+  color: rgba(186, 230, 253, 0.78);
+  font-size: 0.66rem;
+  line-height: 1.42;
+}
+
+.reading-locale-tool-link.is-recommended {
+  border-color: rgba(103, 232, 249, 0.55);
+  background: linear-gradient(130deg, rgba(8, 145, 178, 0.18), rgba(67, 56, 202, 0.16));
+}
+
+.reading-locale-tool-link:hover,
+.reading-locale-tool-link:focus-visible {
+  border-color: rgba(103, 232, 249, 0.88);
+  background: rgba(8, 47, 73, 0.6);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.reading-locale-external-tools .reading-locale-external-note {
+  margin-top: 0.7rem;
+  color: rgba(148, 163, 184, 0.76);
+  font-size: 0.68rem;
+}
+
+@media (max-width: 560px) {
+  .reading-locale-tool-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reading-locale-tool-link {
+    grid-template-columns: minmax(5.4rem, 0.65fr) minmax(0, 1fr);
+    align-items: center;
+  }
+}

@@ -101,8 +101,9 @@ function splitLegacyBilingualContent(content: string): { zh: string; en: string 
   const archiveStart = content.search(/\n---\s*\n(?:###\s*\n---\s*\n)?## Global Archive\s*\/\s*英文存檔/i);
   if (archiveStart === -1) return null;
   const zh = content.slice(0, archiveStart)
-    .replace(/^##\s+[A-Za-z][^\n]*\n/gm, '')
-    .replace(/^>\s*\*[A-Za-z][^\n]*\*\s*$/gm, '')
+    .replace(/^#{1,6}\s+.*\(Stellar Archive\)\s*\n?/gmi, '')
+    .replace(/^#{1,6}\s+[A-Za-z][^\n]*\n?/gm, '')
+    .replace(/^>\s*\*?[A-Za-z][^\n]*\*?\s*$/gm, '')
     .trim();
   const en = content.slice(archiveStart)
     .replace(/^\n---\s*\n(?:###\s*\n---\s*\n)?## Global Archive\s*\/\s*英文存檔\s*\n?/i, '')
@@ -111,6 +112,7 @@ function splitLegacyBilingualContent(content: string): { zh: string; en: string 
     .replace(/<\/details>\s*\n?/gi, '')
     .replace(/^\*\*(原始來源|觀測站註記)[^\n]*\n?/gm, '')
     .replace(/^---\s*$/gm, '')
+    .replace(/^\*\*[A-Za-z][^\n]*\*\*\s*\n?/, '')
     .trim();
   return { zh, en };
 }

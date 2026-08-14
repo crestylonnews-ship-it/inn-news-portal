@@ -160,7 +160,17 @@ export function parseArticle(filename: string, fileContents: string): Article {
   const slug = filename.replace(/\.md$/, '');
   const { data, content } = matter(sanitizeFrontmatter(fileContents)) as { data: ArticleFrontmatter; content: string };
   const legacyContent = splitLegacyBilingualContent(content);
-  const primaryContent = normalizeReadableContent(stripLegacyBilingualSectionHeading(stripTrailingSourceSection(legacyContent?.zh || content)), 'zh');
+  // Some early articles stored both language layers inside the contentEn YAML
+  // scalar as a "Chinese Report / Global Archive" template. Extract those
+  // already-existing layers before choosing the reading language; otherwise
+  // the English panel receives an embedded Chinese report plus archive HTML.
+  const embeddedLegacyContent = splitLegacyBilingualContent(String(data.contentEn || ''));
+  const primarySource = legacyContent?.zh || embeddedLegacyContent?.zh || content;
+  const englishSource = embeddedLegacyContent?.en
+    || String(data.contentEn || '')
+    || legacyContent?.en
+    || '# English edition unavailable\n\nThe English edition of this article is temporarily unavailable.';
+  const primaryContent = normalizeReadableContent(stripLegacyBilingualSectionHeading(stripTrailingSourceSection(primarySource)), 'zh');
   const title = String(data.title || '無標題新聞');
   const titleEn = String(data.titleEn || 'English edition unavailable');
   const date = String(data.date || new Date().toISOString().split('T')[0]);
@@ -168,7 +178,7 @@ export function parseArticle(filename: string, fileContents: string): Article {
   const plainText = markdownToText(primaryContent);
   const excerpt = String(data.excerpt || `${plainText.substring(0, 140)}${plainText.length > 140 ? '…' : ''}`);
   const excerptEn = String(data.excerptEn || 'The English edition of this article is temporarily unavailable.');
-  const contentEn = normalizeReadableContent(stripLegacyBilingualSectionHeading(stripTrailingSourceSection(String(data.contentEn || legacyContent?.en || '# English edition unavailable\n\nThe English edition of this article is temporarily unavailable.'))), 'en');
+  const contentEn = normalizeReadableContent(stripLegacyBilingualSectionHeading(stripTrailingSourceSection(englishSource)), 'en');
 
   return {
     slug,

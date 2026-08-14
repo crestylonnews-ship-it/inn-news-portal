@@ -34,6 +34,7 @@ export default function ArticleLocalTranslation({
   const [deviceMemory, setDeviceMemory] = useState<number | null>(null);
 
   const targetLanguage = locale.translationTarget;
+  const translationIsPrimary = locale.primaryLanguage === 'target';
   const requiresLocalTranslation = configured && targetLanguage !== 'zh-Hant' && targetLanguage !== 'en';
   const canTryChrome = nativeAvailability === 'available' || nativeAvailability === 'downloadable' || nativeAvailability === 'downloading';
 
@@ -135,8 +136,8 @@ export default function ArticleLocalTranslation({
       <aside className="local-translation-panel" aria-live="polite">
         <div className="local-translation-copy">
           <span className="local-translation-kicker">CHROME ON-DEVICE TRANSLATION</span>
-          <strong>以本機翻譯閱讀 {languageName} · {nativeName}</strong>
-          <p>優先使用 Chrome 內建翻譯模型；文章文字只在你的裝置處理，不會傳送到翻譯 API 或第三方伺服器。</p>
+          <strong>{translationIsPrimary ? `以 ${nativeName} 譯文作文章主內容` : `以本機翻譯閱讀 ${languageName} · ${nativeName}`}</strong>
+          <p>{translationIsPrimary ? '開始翻譯後，選取的本機譯文會取代本頁原始中英正文成為主要閱讀內容；文章文字只在你的裝置處理。' : '優先使用 Chrome 內建翻譯模型；文章文字只在你的裝置處理，不會傳送到翻譯 API 或第三方伺服器。'}</p>
           <p className={`local-translation-engine-status${canTryChrome ? ' is-native' : ''}`}>
             {chromeReady && 'Chrome 原生翻譯語言包已就緒。'}
             {chromeDownload && '建議使用最新版桌面 Chrome；開始後會由 Chrome 下載並管理本機語言包。'}
@@ -151,7 +152,7 @@ export default function ArticleLocalTranslation({
         <div className="local-translation-actions">
           {!showTranslation ? (
             <button type="button" className="local-translation-primary" onClick={startTranslation} disabled={busy || nativeAvailability === 'checking'}>
-              {busy ? '正在本機翻譯…' : `${canTryChrome ? '使用 Chrome 本機翻譯' : '使用本機翻譯'}為 ${nativeName}`}
+              {busy ? '正在本機翻譯…' : translationIsPrimary ? `翻譯並以 ${nativeName} 作主內容` : `${canTryChrome ? '使用 Chrome 本機翻譯' : '使用本機翻譯'}為 ${nativeName}`}
             </button>
           ) : (
             <button type="button" className="local-translation-primary" onClick={() => setShowTranslation(false)}>

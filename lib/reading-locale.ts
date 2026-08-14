@@ -14,10 +14,12 @@ export type ReadingRegion =
   | 'oceania'
   | 'global';
 
+export type PrimaryReadingLanguage = SiteLanguage | 'target';
+
 export type ReadingLocale = {
   region: ReadingRegion;
-  /** Controls which existing bilingual layer leads throughout the site. */
-  primaryLanguage: SiteLanguage;
+  /** Controls whether the Chinese layer, English layer, or selected on-device translation leads. */
+  primaryLanguage: PrimaryReadingLanguage;
   /** Controls the optional on-device translation language on article pages. */
   translationTarget: ReadingLanguage;
 };
@@ -122,6 +124,11 @@ export function readingLocaleFromCountry(countryCode: string | null | undefined)
 
 export function primaryLanguageForTranslationTarget(language: ReadingLanguage): SiteLanguage {
   return language === 'en' ? 'en' : 'zh';
+}
+
+/** Existing site chrome has authored Chinese and English layers; translated text becomes primary inside article content. */
+export function siteLanguageForPrimary(primaryLanguage: PrimaryReadingLanguage): SiteLanguage {
+  return primaryLanguage === 'en' ? 'en' : 'zh';
 }
 
 export function readingLanguageLabel(language: ReadingLanguage, displayLanguage: 'zh' | 'en' = 'zh'): string {

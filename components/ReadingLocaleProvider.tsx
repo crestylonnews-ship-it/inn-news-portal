@@ -9,7 +9,9 @@ import {
   readingLanguageNativeName,
   primaryLanguageForTranslationTarget,
   readingLocaleFromCountry,
+  siteLanguageForPrimary,
   type PanelLanguage,
+  type PrimaryReadingLanguage,
   type ReadingLocale,
   type ReadingRegion,
 } from '@/lib/reading-locale';
@@ -255,7 +257,7 @@ function readStoredLocale(): ReadingLocale | null {
     const value = JSON.parse(raw) as Partial<ReadingLocale> & { language?: unknown };
     if (!isReadingRegion(value.region)) return null;
 
-    if (isReadingLanguage(value.translationTarget) && (value.primaryLanguage === 'zh' || value.primaryLanguage === 'en')) {
+    if (isReadingLanguage(value.translationTarget) && (value.primaryLanguage === 'zh' || value.primaryLanguage === 'en' || value.primaryLanguage === 'target')) {
       return {
         region: value.region,
         primaryLanguage: value.primaryLanguage,
@@ -318,7 +320,7 @@ function LocaleDialog({
   onClose: () => void;
 }) {
   const [region, setRegion] = useState<ReadingRegion>(initialLocale.region);
-  const [primaryLanguage, setPrimaryLanguage] = useState<SiteLanguage>(initialLocale.primaryLanguage);
+  const [primaryLanguage, setPrimaryLanguage] = useState<PrimaryReadingLanguage>(initialLocale.primaryLanguage);
   const [translationTarget, setTranslationTarget] = useState<ReadingLanguage>(initialLocale.translationTarget);
   const interfaceLanguage: ReadingLanguage = panelLanguage === 'bilingual' ? 'zh-Hant' : panelLanguage;
   const layerCopy = LAYER_COPY[interfaceLanguage] || LAYER_COPY.en;
@@ -370,6 +372,9 @@ function LocaleDialog({
             </button>
             <button type="button" className={`reading-locale-primary-card${primaryLanguage === 'en' ? ' is-selected' : ''}`} onClick={() => setPrimaryLanguage('en')} aria-pressed={primaryLanguage === 'en'}>
               <strong>English</strong><span>{layerCopy.primaryEnDescription}</span>
+            </button>
+            <button type="button" className={`reading-locale-primary-card reading-locale-primary-card--target${primaryLanguage === 'target' ? ' is-selected' : ''}`} onClick={() => setPrimaryLanguage('target')} aria-pressed={primaryLanguage === 'target'}>
+              <strong>{readingLanguageNativeName(translationTarget)}</strong><span>{interfaceLanguage === 'zh-Hant' ? '使用選取的本機譯文作文章主內容' : 'Use selected on-device translation as article primary'}</span>
             </button>
           </div>
         </section>
@@ -424,7 +429,7 @@ export function ReadingLocaleProvider({ children }: { children: ReactNode }) {
       setLocaleState(stored);
       setConfigured(true);
       setPanelLanguage(stored.translationTarget);
-      document.documentElement.dataset.language = stored.primaryLanguage;
+      document.documentElement.dataset.language = siteLanguageForPrimary(stored.primaryLanguage);
       document.documentElement.dataset.readingLanguage = stored.translationTarget;
     } else {
       let active = true;
@@ -470,8 +475,8 @@ export function ReadingLocaleProvider({ children }: { children: ReactNode }) {
     setPanelLanguage(nextLocale.translationTarget);
     setConfigured(true);
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextLocale));
-    window.localStorage.setItem('inn-language', nextLocale.primaryLanguage);
-    document.documentElement.dataset.language = nextLocale.primaryLanguage;
+    window.localStorage.setItem('inn-language', siteLanguageForPrimary(nextLocale.primaryLanguage));
+    document.documentElement.dataset.language = siteLanguageForPrimary(nextLocale.primaryLanguage);
     document.documentElement.dataset.readingLanguage = nextLocale.translationTarget;
     window.dispatchEvent(new Event('inn-language-change'));
     window.dispatchEvent(new Event('inn-reading-locale-change'));

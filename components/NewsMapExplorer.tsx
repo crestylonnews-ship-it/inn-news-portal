@@ -447,6 +447,12 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
               <li><b>02</b><BilingualText zh="領域：複選篩選訊號" en="TOPICS: FILTER SIGNALS" /></li>
               <li><b>03</b><BilingualText zh="FOCUS：快速鎖定區域" en="FOCUS: JUMP TO A REGION" /></li>
             </ol>
+
+            <div className="home-social-links" aria-label="INN 官方社群連結">
+              <span><BilingualText zh="追蹤 INN" en="FOLLOW INN" /></span>
+              <a href="https://www.instagram.com/inn.crestylon/" target="_blank" rel="noopener noreferrer">Instagram <i aria-hidden="true">↗</i></a>
+              <a href="https://www.threads.com/@inn.crestylon?hl=zh-tw" target="_blank" rel="noopener noreferrer">Threads <i aria-hidden="true">↗</i></a>
+            </div>
           </section>
 
           <section className="map-headline-ticker" aria-label="近期新聞標題跑馬燈 / Recent headline ticker">

@@ -38,17 +38,17 @@ function testMismatchedBlocksRemainVisible() {
   console.log('inn_bilingual_mismatch_is_not_grouped_or_hidden=ok');
 }
 
-function testEnglishAbbreviationAndReadabilityNormalization() {
+function testReaderPreservesPublisherParagraphBoundary() {
   const original = 'The U.S. policy update preserved the evidence boundary. A second sentence remains available for readers after normalization.';
   const normalized = normalizeReadableContent(original, 'en');
-  assert.match(normalized, /U\.S\. policy update/);
-  assert.match(normalized, /second sentence remains available/);
-  console.log('inn_bilingual_english_abbreviation_normalization=ok');
+  assert.equal(normalized, original);
+  assert.equal(normalizeReadableContent('甲段。\n\n乙段。', 'zh'), '甲段。\n\n乙段。');
+  console.log('inn_bilingual_reader_preserves_publisher_boundaries=ok');
 }
 
 async function main() {
   testMismatchedBlocksRemainVisible();
-  testEnglishAbbreviationAndReadabilityNormalization();
+  testReaderPreservesPublisherParagraphBoundary();
   for (const filename of ARTICLES) await testActualArticleParagraphPairs(filename);
 }
 

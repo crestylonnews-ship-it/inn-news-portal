@@ -18,6 +18,8 @@ export type ReadingLocale = {
   language: ReadingLanguage;
 };
 
+export type PanelLanguage = ReadingLanguage | 'bilingual';
+
 export const READING_LANGUAGES: Array<{
   code: ReadingLanguage;
   zh: string;
@@ -66,7 +68,49 @@ export const READING_REGIONS: Array<{
   { code: 'global', zh: '不依所在地區', en: 'No regional preference', defaultLanguage: 'en' },
 ];
 
-export const DEFAULT_READING_LOCALE: ReadingLocale = { region: 'taiwan', language: 'zh-Hant' };
+/** Used only before a visitor saves a preference. The setting dialog itself is bilingual in this case. */
+export const DEFAULT_READING_LOCALE: ReadingLocale = { region: 'global', language: 'en' };
+
+const COUNTRY_LOCALE_GROUPS: Array<{ countries: string[]; locale: ReadingLocale }> = [
+  { countries: ['TW', 'HK', 'MO'], locale: { region: 'taiwan', language: 'zh-Hant' } },
+  { countries: ['CN'], locale: { region: 'east-asia', language: 'zh-Hant' } },
+  { countries: ['JP'], locale: { region: 'east-asia', language: 'ja' } },
+  { countries: ['KR', 'KP'], locale: { region: 'east-asia', language: 'ko' } },
+  { countries: ['TH'], locale: { region: 'southeast-asia', language: 'th' } },
+  { countries: ['VN'], locale: { region: 'southeast-asia', language: 'vi' } },
+  { countries: ['ID'], locale: { region: 'southeast-asia', language: 'id' } },
+  { countries: ['MY', 'BN'], locale: { region: 'southeast-asia', language: 'ms' } },
+  { countries: ['SG', 'PH', 'KH', 'LA', 'MM', 'TL'], locale: { region: 'southeast-asia', language: 'en' } },
+  { countries: ['IN'], locale: { region: 'south-asia', language: 'hi' } },
+  { countries: ['BD'], locale: { region: 'south-asia', language: 'bn' } },
+  { countries: ['PK', 'LK', 'NP', 'BT', 'MV', 'AF'], locale: { region: 'south-asia', language: 'en' } },
+  { countries: ['TR'], locale: { region: 'middle-east', language: 'tr' } },
+  { countries: ['AE', 'BH', 'DZ', 'EG', 'IQ', 'JO', 'KW', 'LB', 'LY', 'MA', 'OM', 'PS', 'QA', 'SA', 'SD', 'SY', 'TN', 'YE'], locale: { region: 'middle-east', language: 'ar' } },
+  { countries: ['FR', 'BE', 'CH', 'LU', 'MC'], locale: { region: 'europe', language: 'fr' } },
+  { countries: ['DE', 'AT', 'LI'], locale: { region: 'europe', language: 'de' } },
+  { countries: ['ES', 'AD'], locale: { region: 'europe', language: 'es' } },
+  { countries: ['PT'], locale: { region: 'europe', language: 'pt' } },
+  { countries: ['RU', 'BY'], locale: { region: 'europe', language: 'ru' } },
+  { countries: ['UA'], locale: { region: 'europe', language: 'uk' } },
+  { countries: ['IT', 'SM', 'VA'], locale: { region: 'europe', language: 'it' } },
+  { countries: ['NL'], locale: { region: 'europe', language: 'nl' } },
+  { countries: ['PL'], locale: { region: 'europe', language: 'pl' } },
+  { countries: ['GB', 'IE', 'DK', 'FI', 'IS', 'NO', 'SE', 'EE', 'LV', 'LT', 'CZ', 'SK', 'HU', 'RO', 'BG', 'GR', 'HR', 'SI', 'RS', 'BA', 'ME', 'MK', 'AL', 'XK', 'MD', 'MT', 'CY'], locale: { region: 'europe', language: 'en' } },
+  { countries: ['MX', 'AR', 'BO', 'CL', 'CO', 'CR', 'CU', 'DO', 'EC', 'SV', 'GT', 'HN', 'NI', 'PA', 'PY', 'PE', 'PR', 'UY', 'VE'], locale: { region: 'latin-america', language: 'es' } },
+  { countries: ['BR'], locale: { region: 'latin-america', language: 'pt' } },
+  { countries: ['US', 'CA'], locale: { region: 'north-america', language: 'en' } },
+  { countries: ['AU', 'NZ', 'FJ', 'PG', 'SB', 'VU', 'WS', 'TO', 'TV', 'KI', 'NR', 'FM', 'MH', 'PW'], locale: { region: 'oceania', language: 'en' } },
+  { countries: ['AO', 'CV', 'GW', 'MZ', 'ST'], locale: { region: 'africa', language: 'pt' } },
+  { countries: ['BJ', 'BF', 'BI', 'CD', 'CF', 'CG', 'CI', 'CM', 'DJ', 'GA', 'GN', 'GQ', 'KM', 'MG', 'ML', 'NE', 'RW', 'SC', 'SN', 'TD', 'TG'], locale: { region: 'africa', language: 'fr' } },
+  { countries: ['ZA', 'NG', 'KE', 'GH', 'TZ', 'UG', 'ZW', 'ZM', 'MW', 'BW', 'NA', 'LS', 'SZ', 'LR', 'SL', 'GM', 'MU'], locale: { region: 'africa', language: 'en' } },
+];
+
+export function readingLocaleFromCountry(countryCode: string | null | undefined): ReadingLocale | null {
+  const normalized = countryCode?.trim().toUpperCase();
+  if (!normalized || !/^[A-Z]{2}$/.test(normalized)) return null;
+  const match = COUNTRY_LOCALE_GROUPS.find(group => group.countries.includes(normalized));
+  return match ? { ...match.locale } : { region: 'global', language: 'en' };
+}
 
 export function readingLanguageLabel(language: ReadingLanguage, displayLanguage: 'zh' | 'en' = 'zh'): string {
   const match = READING_LANGUAGES.find(item => item.code === language);

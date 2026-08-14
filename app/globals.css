@@ -5914,3 +5914,47 @@ html[data-language='zh'] .prime-headline-title .bilingual-language-en {
     transform: none;
   }
 }
+
+
+/* First-visit locale guidance: keep the no-location fallback legible in Chinese and English. */
+.reading-locale-detection {
+  margin: -0.55rem 0 1rem !important;
+  border-left: 2px solid rgba(167, 139, 250, 0.8);
+  padding: 0.45rem 0.65rem;
+  background: rgba(139, 92, 246, 0.08);
+  color: rgba(233, 213, 255, 0.9) !important;
+  font-size: 0.8rem !important;
+  line-height: 1.55 !important;
+}
+
+.reading-locale-english {
+  display: block;
+  margin-top: 0.2rem;
+  color: rgba(186, 230, 253, 0.88);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.88em;
+}
+
+.reading-locale-dialog h2 .reading-locale-english {
+  margin-top: 0.38rem;
+  color: rgba(186, 230, 253, 0.94);
+  font-size: 0.68em;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.reading-locale-field select option {
+  color: #e6faff;
+  background: #08111f;
+}
+
+@media (max-width: 760px) {
+  .reading-locale-detection {
+    margin-bottom: 0.85rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  .reading-locale-dialog h2 .reading-locale-english {
+    font-size: 0.63em;
+  }
+}

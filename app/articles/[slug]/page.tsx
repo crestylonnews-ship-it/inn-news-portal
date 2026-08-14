@@ -5,7 +5,6 @@ import { renderMarkdown } from '@/lib/markdown';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BilingualText, { BilingualMarkup } from '@/components/BilingualText';
-import ArticleLocalTranslation from '@/components/ArticleLocalTranslation';
 import { tagToEnglish } from '@/lib/i18n';
 
 interface ArticlePageProps {
@@ -93,9 +92,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </header>
 
           <article className="article-shell rounded-2xl border border-cyan-500/20 bg-[#121520]/80 backdrop-blur-xl px-5 py-7 sm:px-8 sm:py-10 lg:px-12 lg:py-12 shadow-[0_0_30px_rgba(0,191,255,0.05)]">
-            <ArticleLocalTranslation zhHtml={articleHtml}>
-              <BilingualMarkup zhHtml={articleHtml} enHtml={articleHtmlEn} className="markdown-body" />
-            </ArticleLocalTranslation>
+            <BilingualMarkup zhHtml={articleHtml} enHtml={articleHtmlEn} className="markdown-body" />
           </article>
 
           {article.sources.length > 0 && (

@@ -23,19 +23,6 @@ export function useLanguage() {
     document.documentElement.dataset.language = nextLanguage;
     window.localStorage.setItem('inn-language', nextLanguage);
 
-    // Keep the legacy quick toggle and the new language-layers panel in sync,
-    // without touching the independently selected on-device translation target.
-    try {
-      const raw = window.localStorage.getItem('inn-reading-locale');
-      const locale = raw ? JSON.parse(raw) : null;
-      if (locale && typeof locale === 'object') {
-        window.localStorage.setItem('inn-reading-locale', JSON.stringify({ ...locale, primaryLanguage: nextLanguage }));
-        window.dispatchEvent(new Event('inn-reading-locale-change'));
-      }
-    } catch {
-      // The visual language switch must remain usable even when storage is unavailable.
-    }
-
     window.dispatchEvent(new Event('inn-language-change'));
   };
 

@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { LanguageProvider } from '@/components/BilingualText';
 import StellarField from '@/components/StellarField';
-import { ReadingLocaleProvider } from '@/components/ReadingLocaleProvider';
 
 export const metadata: Metadata = {
   title: 'INN 星際聯邦官方新聞網 | Stellar Federation Official News Network',
@@ -11,14 +10,7 @@ export const metadata: Metadata = {
 
 const languageBootstrapScript = `
   try {
-    const readingLocale = JSON.parse(window.localStorage.getItem('inn-reading-locale') || 'null');
-    const legacyLanguage = window.localStorage.getItem('inn-language');
-    // The new primary layer is authoritative. A legacy locale only held a
-    // translation target, so it is migrated deterministically on first load.
-    const primary = readingLocale?.primaryLanguage === 'en' || readingLocale?.primaryLanguage === 'zh'
-      ? readingLocale.primaryLanguage
-      : readingLocale?.language === 'en' ? 'en' : readingLocale?.language ? 'zh' : legacyLanguage === 'en' ? 'en' : 'zh';
-    document.documentElement.dataset.language = primary;
+    document.documentElement.dataset.language = window.localStorage.getItem('inn-language') === 'en' ? 'en' : 'zh';
   } catch (_) {
     document.documentElement.dataset.language = 'zh';
   }
@@ -37,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="bg-[#0a0b0f] text-white antialiased">
         <StellarField />
-        <LanguageProvider><ReadingLocaleProvider>{children}</ReadingLocaleProvider></LanguageProvider>
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );

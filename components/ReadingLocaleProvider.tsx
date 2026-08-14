@@ -5,6 +5,7 @@ import {
   DEFAULT_READING_LOCALE,
   READING_LANGUAGES,
   READING_REGIONS,
+  readingLanguageFromBrowser,
   readingLanguageLabel,
   readingLanguageNativeName,
   readingLocaleFromCountry,
@@ -13,6 +14,7 @@ import {
   type ReadingRegion,
 } from '@/lib/reading-locale';
 import type { ReadingLanguage } from '@/lib/local-translation';
+import { supportsNativeTranslation } from '@/lib/native-translation';
 
 const STORAGE_KEY = 'inn-reading-locale';
 const OPEN_SETTINGS_EVENT = 'inn-reading-locale-settings';
@@ -40,7 +42,7 @@ const COPY: Record<ReadingLanguage, DialogCopy> = {
   'zh-Hant': {
     title: '先選擇你的所在地區與閱讀語言',
     description: '此設定只儲存在你的裝置。INN NEWS 不使用翻譯 API，也不會把文章文字傳送給翻譯服務。',
-    automaticHint: '已依你的網路所在地區預先建議；你可以立即更改。',
+    automaticHint: '已依你的瀏覽器語言與所在地區預先建議；你可以立即更改。',
     manualHint: '無法確認你的所在地區，請自行選擇。',
     regionLabel: '所在地區', languageLabel: '優先閱讀語言',
     modelNotice: '模型僅在你開始翻譯時下載，首次可能需要數十 MB；完成後由同一瀏覽器快取重用。',
@@ -49,17 +51,17 @@ const COPY: Record<ReadingLanguage, DialogCopy> = {
   en: {
     title: 'Choose your region and reading language',
     description: 'This setting stays on your device. INN NEWS does not use a translation API or send article text to a translation service.',
-    automaticHint: 'A suggestion was prepared from your network region. You can change it now.',
+    automaticHint: 'A suggestion was prepared from your browser language and network region. You can change it now.',
     manualHint: 'Your network region could not be determined. Please choose manually.',
     regionLabel: 'Your region', languageLabel: 'Reading language',
     modelNotice: 'Models download only when you ask to translate. The first download may be tens of MB and is reused from this browser cache.',
     save: 'Save and continue', settingsNote: 'You can change this any time through “Reading language” in the navigation.',
   },
   ja: {
-    title: '地域と言語を選択してください', description: 'この設定は端末内にのみ保存されます。INN NEWS は翻訳 API を使わず、記事本文を翻訳サービスに送信しません。', automaticHint: 'ネットワークの地域に基づく候補を選択しました。今すぐ変更できます。', manualHint: 'ネットワークの地域を確認できませんでした。手動で選択してください。', regionLabel: 'お住まいの地域', languageLabel: '読む言語', modelNotice: 'モデルは翻訳を開始したときだけダウンロードされます。初回は数十 MB になる場合があり、このブラウザーのキャッシュで再利用されます。', save: '保存して続ける', settingsNote: 'ナビゲーションの「Reading language」からいつでも変更できます。',
+    title: '地域と言語を選択してください', description: 'この設定は端末内にのみ保存されます。INN NEWS は翻訳 API を使わず、記事本文を翻訳サービスに送信しません。',     automaticHint: 'ブラウザー言語とネットワークの地域に基づく候補を選択しました。今すぐ変更できます。', manualHint: 'ネットワークの地域を確認できませんでした。手動で選択してください。', regionLabel: 'お住まいの地域', languageLabel: '読む言語', modelNotice: 'モデルは翻訳を開始したときだけダウンロードされます。初回は数十 MB になる場合があり、このブラウザーのキャッシュで再利用されます。', save: '保存して続ける', settingsNote: 'ナビゲーションの「Reading language」からいつでも変更できます。',
   },
   ko: {
-    title: '지역과 읽기 언어를 선택하세요', description: '이 설정은 기기에만 저장됩니다. INN NEWS는 번역 API를 사용하지 않으며 기사 본문을 번역 서비스로 보내지 않습니다.', automaticHint: '네트워크 지역을 바탕으로 추천을 준비했습니다. 지금 변경할 수 있습니다.', manualHint: '네트워크 지역을 확인할 수 없습니다. 직접 선택해 주세요.', regionLabel: '거주 지역', languageLabel: '읽기 언어', modelNotice: '번역을 시작할 때만 모델을 내려받습니다. 처음에는 수십 MB가 필요할 수 있으며 이 브라우저의 캐시에서 재사용됩니다.', save: '저장하고 계속하기', settingsNote: '탐색 메뉴의 “Reading language”에서 언제든 변경할 수 있습니다.',
+    title: '지역과 읽기 언어를 선택하세요', description: '이 설정은 기기에만 저장됩니다. INN NEWS는 번역 API를 사용하지 않으며 기사 본문을 번역 서비스로 보내지 않습니다.',     automaticHint: '브라우저 언어와 네트워크 지역을 바탕으로 추천을 준비했습니다. 지금 변경할 수 있습니다.', manualHint: '네트워크 지역을 확인할 수 없습니다. 직접 선택해 주세요.', regionLabel: '거주 지역', languageLabel: '읽기 언어', modelNotice: '번역을 시작할 때만 모델을 내려받습니다. 처음에는 수십 MB가 필요할 수 있으며 이 브라우저의 캐시에서 재사용됩니다.', save: '저장하고 계속하기', settingsNote: '탐색 메뉴의 “Reading language”에서 언제든 변경할 수 있습니다.',
   },
   th: {
     title: 'เลือกภูมิภาคและภาษาสำหรับการอ่าน', description: 'การตั้งค่านี้เก็บไว้ในอุปกรณ์ของคุณเท่านั้น INN NEWS ไม่ใช้ API แปลภาษา และไม่ส่งข้อความบทความไปยังบริการแปลภาษา', automaticHint: 'มีการแนะนำจากภูมิภาคเครือข่ายของคุณ และคุณเปลี่ยนได้ทันที', manualHint: 'ไม่สามารถระบุภูมิภาคเครือข่ายของคุณได้ โปรดเลือกด้วยตนเอง', regionLabel: 'ภูมิภาคของคุณ', languageLabel: 'ภาษาสำหรับการอ่าน', modelNotice: 'โมเดลจะดาวน์โหลดเมื่อคุณเริ่มแปลเท่านั้น ครั้งแรกอาจใช้หลายสิบ MB และใช้ซ้ำจากแคชของเบราว์เซอร์นี้ได้', save: 'บันทึกและดำเนินการต่อ', settingsNote: 'คุณเปลี่ยนได้ทุกเมื่อจาก “Reading language” ในเมนูนำทาง',
@@ -152,21 +154,30 @@ const EXTERNAL_TOOL_COPY: Record<ReadingLanguage, ExternalToolCopy> = {
 };
 
 const GOOGLE_LANGUAGE_CODES: Partial<Record<ReadingLanguage, string>> = { 'zh-Hant': 'zh-TW' };
-const GOOGLE_TRANSLATE_EXTENSION = 'https://chromewebstore.google.com/detail/google-translate/aapbdbdomjkkjkaonfhkkikfgjllcleb';
+const CHROME_BROWSER_DOWNLOAD = 'https://www.google.com/chrome/';
 const GOOGLE_TRANSLATE_WEB = 'https://translate.google.com/';
-const TENCENT_TRANSLATOR_WEB = 'https://fanyi.qq.com/';
 
-function ExternalTranslatorOptions({ region, language, panelLanguage }: { region: ReadingRegion; language: ReadingLanguage; panelLanguage: PanelLanguage }) {
+function ExternalTranslatorOptions({ language, panelLanguage }: { language: ReadingLanguage; panelLanguage: PanelLanguage }) {
   const localized: ReadingLanguage = panelLanguage === 'bilingual' ? 'zh-Hant' : panelLanguage;
   const copy = EXTERNAL_TOOL_COPY[localized as ReadingLanguage] ?? EXTERNAL_TOOL_COPY.en;
   const fallback = panelLanguage === 'bilingual' ? EXTERNAL_TOOL_COPY.en : null;
   const targetLanguage = GOOGLE_LANGUAGE_CODES[language] ?? language;
   const googleUrl = `${GOOGLE_TRANSLATE_WEB}?sl=auto&tl=${encodeURIComponent(targetLanguage)}&op=translate`;
-  const recommendTencent = region === 'taiwan' || region === 'east-asia' || region === 'southeast-asia';
+  const chromeNativeSupported = supportsNativeTranslation();
   const links = [
-    { key: 'google', href: googleUrl, name: 'Google Translate', label: copy.browser, recommended: !recommendTencent },
-    { key: 'chrome', href: GOOGLE_TRANSLATE_EXTENSION, name: 'Chrome', label: copy.chrome, recommended: false },
-    { key: 'tencent', href: TENCENT_TRANSLATOR_WEB, name: 'Tencent Translator', label: copy.tencent, recommended: recommendTencent },
+    {
+      key: 'chrome-native',
+      href: CHROME_BROWSER_DOWNLOAD,
+      name: 'Chrome built-in Translator',
+      label: chromeNativeSupported
+        ? '此瀏覽器已偵測到原生本機翻譯 · Native on-device translation is available in this browser'
+        : '建議使用最新版桌面 Chrome，以取得本機翻譯功能 · Recommended: latest desktop Chrome',
+      fallbackLabel: chromeNativeSupported
+        ? 'Native on-device translation is available in this browser'
+        : 'Recommended: latest desktop Chrome for on-device translation',
+      recommended: true,
+    },
+    { key: 'google', href: googleUrl, name: 'Google Translate', label: copy.browser, fallbackLabel: fallback?.browser, recommended: false },
   ];
 
   return (
@@ -177,7 +188,7 @@ function ExternalTranslatorOptions({ region, language, panelLanguage }: { region
         {links.map(link => (
           <a key={link.key} className={`reading-locale-tool-link${link.recommended ? ' is-recommended' : ''}`} href={link.href} target="_blank" rel="noopener noreferrer">
             <strong>{link.name}{link.recommended && <em>RECOMMENDED</em>}</strong>
-            <span>{link.label}{fallback && <span className="reading-locale-english">{link.key === 'google' ? fallback.browser : link.key === 'chrome' ? fallback.chrome : fallback.tencent}</span>}</span>
+            <span>{link.label}{fallback && link.fallbackLabel && <span className="reading-locale-english">{link.fallbackLabel}</span>}</span>
           </a>
         ))}
       </div>
@@ -298,7 +309,7 @@ function LocaleDialog({
           <span>{text(copy => copy.modelNotice)}</span>
         </div>
 
-        <ExternalTranslatorOptions region={region} language={language} panelLanguage={panelLanguage} />
+        <ExternalTranslatorOptions language={language} panelLanguage={panelLanguage} />
 
         <button type="button" className="reading-locale-save" onClick={() => onSave({ region, language })}>
           {text(copy => copy.save)}
@@ -325,22 +336,29 @@ export function ReadingLocaleProvider({ children }: { children: ReactNode }) {
       document.documentElement.dataset.readingLanguage = stored.language;
     } else {
       let active = true;
+      const browserLanguage = readingLanguageFromBrowser(navigator.languages);
       readCloudflareCountryCode()
         .then(countryCode => {
           if (!active) return;
-          const suggested = readingLocaleFromCountry(countryCode);
-          if (suggested) {
-            setLocaleState(suggested);
-            setPanelLanguage(suggested.language);
-            setDetected(true);
-          } else {
-            setPanelLanguage('bilingual');
-          }
+          const regionalSuggestion = readingLocaleFromCountry(countryCode);
+          const suggested: ReadingLocale = {
+            region: regionalSuggestion?.region || DEFAULT_READING_LOCALE.region,
+            language: browserLanguage || regionalSuggestion?.language || DEFAULT_READING_LOCALE.language,
+          };
+          setLocaleState(suggested);
+          setPanelLanguage(browserLanguage || 'bilingual');
+          setDetected(Boolean(browserLanguage || regionalSuggestion));
           setDialogOpen(true);
         })
         .catch(() => {
           if (!active) return;
-          setPanelLanguage('bilingual');
+          const suggested: ReadingLocale = {
+            region: DEFAULT_READING_LOCALE.region,
+            language: browserLanguage || DEFAULT_READING_LOCALE.language,
+          };
+          setLocaleState(suggested);
+          setPanelLanguage(browserLanguage || 'bilingual');
+          setDetected(Boolean(browserLanguage));
           setDialogOpen(true);
         });
       return () => { active = false; };

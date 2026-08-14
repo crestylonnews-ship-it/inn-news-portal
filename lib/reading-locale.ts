@@ -120,3 +120,22 @@ export function readingLanguageLabel(language: ReadingLanguage, displayLanguage:
 export function readingLanguageNativeName(language: ReadingLanguage): string {
   return READING_LANGUAGES.find(item => item.code === language)?.native || language;
 }
+
+
+/**
+ * Uses browser locale preferences only for the first-run panel language and reading-language suggestion.
+ * Country/IP is intentionally kept separate so VPN or network routing cannot decide the panel language.
+ */
+export function readingLanguageFromBrowser(locales: readonly string[] | undefined | null): ReadingLanguage | null {
+  if (!locales?.length) return null;
+
+  for (const locale of locales) {
+    const normalized = locale.trim().replace(/_/g, '-').toLowerCase();
+    if (!normalized) continue;
+    if (normalized === 'zh-hant' || normalized === 'zh-tw' || normalized === 'zh-hk' || normalized === 'zh-mo' || normalized.startsWith('zh-')) return 'zh-Hant';
+    const language = normalized.split('-')[0] as ReadingLanguage;
+    if (READING_LANGUAGES.some(option => option.code === language)) return language;
+  }
+
+  return null;
+}

@@ -6,14 +6,15 @@ import {
   READING_LANGUAGES,
   READING_REGIONS,
   readingLanguageFromBrowser,
-  readingLanguageLabel,
   readingLanguageNativeName,
+  primaryLanguageForTranslationTarget,
   readingLocaleFromCountry,
   type PanelLanguage,
   type ReadingLocale,
   type ReadingRegion,
 } from '@/lib/reading-locale';
 import type { ReadingLanguage } from '@/lib/local-translation';
+import type { SiteLanguage } from '@/components/BilingualText';
 import { supportsNativeTranslation } from '@/lib/native-translation';
 
 const STORAGE_KEY = 'inn-reading-locale';
@@ -36,6 +37,46 @@ type DialogCopy = {
   modelNotice: string;
   save: string;
   settingsNote: string;
+};
+
+type LayerCopy = {
+  primaryTitle: string;
+  primaryEnglish: string;
+  primaryZh: string;
+  primaryZhDescription: string;
+  primaryEnDescription: string;
+  targetTitle: string;
+  targetEnglish: string;
+  targetNote: string;
+  regionTitle: string;
+  regionEnglish: string;
+  reset: string;
+  externalTitle: string;
+  externalEnglish: string;
+};
+
+const LAYER_COPY: Record<ReadingLanguage, LayerCopy> = {
+  'zh-Hant': { primaryTitle: '主要閱讀語言', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: '中文為主，英文附屬', primaryEnDescription: '英文為主，中文附屬', targetTitle: '本機翻譯目標', targetEnglish: 'TRANSLATION TARGET', targetNote: '翻譯目標只決定本機 Translator API 的譯文；主要閱讀語言只決定中英內容的顯示順序。', regionTitle: '所在地區偏好', regionEnglish: 'REGION', reset: '恢復預設', externalTitle: '其他翻譯工具', externalEnglish: 'OTHER TOOLS' },
+  en: { primaryTitle: 'Primary reading language', primaryEnglish: 'PRIMARY', primaryZh: 'Traditional Chinese', primaryZhDescription: 'Chinese first, English secondary', primaryEnDescription: 'English first, Chinese secondary', targetTitle: 'On-device translation target', targetEnglish: 'TRANSLATION TARGET', targetNote: 'The translation target controls on-device Translator API output only. The primary language controls the order of the existing Chinese and English layers.', regionTitle: 'Regional preference', regionEnglish: 'REGION', reset: 'Reset defaults', externalTitle: 'Other translation tools', externalEnglish: 'OTHER TOOLS' },
+  ja: { primaryTitle: '主な閲覧言語', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: '中国語を主に、英語を補助表示', primaryEnDescription: '英語を主に、中国語を補助表示', targetTitle: '端末内翻訳の対象言語', targetEnglish: 'TRANSLATION TARGET', targetNote: '翻訳先は端末内 Translator API の出力だけを決めます。主な閲覧言語は既存の中国語・英語レイヤーの順番だけを決めます。', regionTitle: '地域の設定', regionEnglish: 'REGION', reset: '初期設定に戻す', externalTitle: 'その他の翻訳ツール', externalEnglish: 'OTHER TOOLS' },
+  ko: { primaryTitle: '주요 읽기 언어', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: '중국어 우선, 영어 보조', primaryEnDescription: '영어 우선, 중국어 보조', targetTitle: '기기 내 번역 대상', targetEnglish: 'TRANSLATION TARGET', targetNote: '번역 대상은 기기 내 Translator API의 출력만 결정합니다. 주요 읽기 언어는 기존 중국어·영어 레이어의 순서만 결정합니다.', regionTitle: '지역 선호', regionEnglish: 'REGION', reset: '기본값으로 복원', externalTitle: '기타 번역 도구', externalEnglish: 'OTHER TOOLS' },
+  th: { primaryTitle: 'ภาษาหลักสำหรับการอ่าน', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: 'จีนเป็นหลัก อังกฤษเป็นรอง', primaryEnDescription: 'อังกฤษเป็นหลัก จีนเป็นรอง', targetTitle: 'ภาษาเป้าหมายการแปลในอุปกรณ์', targetEnglish: 'TRANSLATION TARGET', targetNote: 'ภาษาเป้าหมายกำหนดเฉพาะผลลัพธ์ของ Translator API ในอุปกรณ์ ส่วนภาษาหลักกำหนดลำดับชั้นภาษาจีนและอังกฤษที่มีอยู่', regionTitle: 'การตั้งค่าภูมิภาค', regionEnglish: 'REGION', reset: 'คืนค่าเริ่มต้น', externalTitle: 'เครื่องมือแปลอื่น', externalEnglish: 'OTHER TOOLS' },
+  vi: { primaryTitle: 'Ngôn ngữ đọc chính', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: 'Ưu tiên tiếng Trung, kèm tiếng Anh', primaryEnDescription: 'Ưu tiên tiếng Anh, kèm tiếng Trung', targetTitle: 'Ngôn ngữ dịch trên thiết bị', targetEnglish: 'TRANSLATION TARGET', targetNote: 'Ngôn ngữ đích chỉ quyết định đầu ra của Translator API trên thiết bị. Ngôn ngữ đọc chính chỉ quyết định thứ tự lớp tiếng Trung và tiếng Anh sẵn có.', regionTitle: 'Tùy chọn khu vực', regionEnglish: 'REGION', reset: 'Khôi phục mặc định', externalTitle: 'Công cụ dịch khác', externalEnglish: 'OTHER TOOLS' },
+  id: { primaryTitle: 'Bahasa baca utama', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: 'Bahasa Tionghoa utama, Inggris pelengkap', primaryEnDescription: 'Bahasa Inggris utama, Tionghoa pelengkap', targetTitle: 'Target terjemahan di perangkat', targetEnglish: 'TRANSLATION TARGET', targetNote: 'Target terjemahan hanya menentukan keluaran Translator API di perangkat. Bahasa baca utama hanya menentukan urutan lapisan Tionghoa dan Inggris yang tersedia.', regionTitle: 'Preferensi wilayah', regionEnglish: 'REGION', reset: 'Pulihkan bawaan', externalTitle: 'Alat terjemahan lain', externalEnglish: 'OTHER TOOLS' },
+  ms: { primaryTitle: 'Bahasa bacaan utama', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: 'Bahasa Cina utama, Inggeris pelengkap', primaryEnDescription: 'Bahasa Inggeris utama, Cina pelengkap', targetTitle: 'Sasaran terjemahan pada peranti', targetEnglish: 'TRANSLATION TARGET', targetNote: 'Sasaran terjemahan hanya menentukan output Translator API pada peranti. Bahasa bacaan utama hanya menentukan susunan lapisan Cina dan Inggeris sedia ada.', regionTitle: 'Keutamaan rantau', regionEnglish: 'REGION', reset: 'Pulihkan lalai', externalTitle: 'Alat terjemahan lain', externalEnglish: 'OTHER TOOLS' },
+  ar: { primaryTitle: 'لغة القراءة الأساسية', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: 'الصينية أولاً والإنجليزية مرافقة', primaryEnDescription: 'الإنجليزية أولاً والصينية مرافقة', targetTitle: 'لغة الترجمة على الجهاز', targetEnglish: 'TRANSLATION TARGET', targetNote: 'تحدد لغة الهدف مخرجات Translator API على الجهاز فقط. تحدد لغة القراءة الأساسية ترتيب طبقتي الصينية والإنجليزية الموجودتين.', regionTitle: 'تفضيل المنطقة', regionEnglish: 'REGION', reset: 'استعادة الافتراضي', externalTitle: 'أدوات ترجمة أخرى', externalEnglish: 'OTHER TOOLS' },
+  hi: { primaryTitle: 'मुख्य पठन भाषा', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: 'चीनी मुख्य, अंग्रेज़ी सहायक', primaryEnDescription: 'अंग्रेज़ी मुख्य, चीनी सहायक', targetTitle: 'डिवाइस पर अनुवाद लक्ष्य', targetEnglish: 'TRANSLATION TARGET', targetNote: 'अनुवाद लक्ष्य केवल डिवाइस पर Translator API आउटपुट तय करता है। मुख्य पठन भाषा केवल मौजूदा चीनी और अंग्रेज़ी परतों का क्रम तय करती है।', regionTitle: 'क्षेत्रीय प्राथमिकता', regionEnglish: 'REGION', reset: 'डिफ़ॉल्ट पुनर्स्थापित करें', externalTitle: 'अन्य अनुवाद उपकरण', externalEnglish: 'OTHER TOOLS' },
+  bn: { primaryTitle: 'প্রধান পাঠের ভাষা', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: 'চীনা প্রধান, ইংরেজি সহায়ক', primaryEnDescription: 'ইংরেজি প্রধান, চীনা সহায়ক', targetTitle: 'ডিভাইসের অনুবাদ লক্ষ্য', targetEnglish: 'TRANSLATION TARGET', targetNote: 'অনুবাদ লক্ষ্য শুধু ডিভাইসের Translator API আউটপুট নির্ধারণ করে। প্রধান পাঠের ভাষা শুধু বিদ্যমান চীনা ও ইংরেজি স্তরের ক্রম নির্ধারণ করে।', regionTitle: 'অঞ্চল পছন্দ', regionEnglish: 'REGION', reset: 'ডিফল্ট পুনরুদ্ধার', externalTitle: 'অন্যান্য অনুবাদ সরঞ্জাম', externalEnglish: 'OTHER TOOLS' },
+  fr: { primaryTitle: 'Langue principale de lecture', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: 'Chinois principal, anglais secondaire', primaryEnDescription: 'Anglais principal, chinois secondaire', targetTitle: 'Cible de traduction sur l’appareil', targetEnglish: 'TRANSLATION TARGET', targetNote: 'La cible détermine uniquement la sortie du Translator API sur l’appareil. La langue principale détermine seulement l’ordre des couches chinoise et anglaise existantes.', regionTitle: 'Préférence régionale', regionEnglish: 'REGION', reset: 'Rétablir les valeurs par défaut', externalTitle: 'Autres outils de traduction', externalEnglish: 'OTHER TOOLS' },
+  de: { primaryTitle: 'Primäre Lesesprache', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: 'Chinesisch zuerst, Englisch ergänzend', primaryEnDescription: 'Englisch zuerst, Chinesisch ergänzend', targetTitle: 'Übersetzungsziel auf dem Gerät', targetEnglish: 'TRANSLATION TARGET', targetNote: 'Das Übersetzungsziel bestimmt nur die Ausgabe der Translator API auf dem Gerät. Die primäre Lesesprache bestimmt nur die Reihenfolge der vorhandenen chinesischen und englischen Ebenen.', regionTitle: 'Regionale Präferenz', regionEnglish: 'REGION', reset: 'Standard wiederherstellen', externalTitle: 'Weitere Übersetzungstools', externalEnglish: 'OTHER TOOLS' },
+  es: { primaryTitle: 'Idioma principal de lectura', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: 'Chino principal, inglés secundario', primaryEnDescription: 'Inglés principal, chino secundario', targetTitle: 'Destino de traducción en el dispositivo', targetEnglish: 'TRANSLATION TARGET', targetNote: 'El destino solo controla la salida de Translator API en el dispositivo. El idioma principal solo controla el orden de las capas existentes en chino e inglés.', regionTitle: 'Preferencia regional', regionEnglish: 'REGION', reset: 'Restablecer valores predeterminados', externalTitle: 'Otras herramientas de traducción', externalEnglish: 'OTHER TOOLS' },
+  pt: { primaryTitle: 'Idioma principal de leitura', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: 'Chinês principal, inglês complementar', primaryEnDescription: 'Inglês principal, chinês complementar', targetTitle: 'Destino de tradução no dispositivo', targetEnglish: 'TRANSLATION TARGET', targetNote: 'O destino define apenas a saída do Translator API no dispositivo. O idioma principal define apenas a ordem das camadas existentes em chinês e inglês.', regionTitle: 'Preferência regional', regionEnglish: 'REGION', reset: 'Restaurar padrão', externalTitle: 'Outras ferramentas de tradução', externalEnglish: 'OTHER TOOLS' },
+  ru: { primaryTitle: 'Основной язык чтения', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: 'Китайский основной, английский дополнительный', primaryEnDescription: 'Английский основной, китайский дополнительный', targetTitle: 'Цель перевода на устройстве', targetEnglish: 'TRANSLATION TARGET', targetNote: 'Цель перевода определяет только вывод Translator API на устройстве. Основной язык чтения определяет только порядок существующих китайского и английского слоёв.', regionTitle: 'Региональная настройка', regionEnglish: 'REGION', reset: 'Восстановить по умолчанию', externalTitle: 'Другие инструменты перевода', externalEnglish: 'OTHER TOOLS' },
+  it: { primaryTitle: 'Lingua di lettura principale', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: 'Cinese principale, inglese secondario', primaryEnDescription: 'Inglese principale, cinese secondario', targetTitle: 'Destinazione traduzione sul dispositivo', targetEnglish: 'TRANSLATION TARGET', targetNote: 'La destinazione controlla solo l’output di Translator API sul dispositivo. La lingua principale controlla solo l’ordine dei livelli cinese e inglese esistenti.', regionTitle: 'Preferenza regionale', regionEnglish: 'REGION', reset: 'Ripristina predefiniti', externalTitle: 'Altri strumenti di traduzione', externalEnglish: 'OTHER TOOLS' },
+  nl: { primaryTitle: 'Primaire lees­taal', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: 'Chinees voorop, Engels aanvullend', primaryEnDescription: 'Engels voorop, Chinees aanvullend', targetTitle: 'Vertaaldoel op apparaat', targetEnglish: 'TRANSLATION TARGET', targetNote: 'Het vertaaldoel bepaalt alleen de uitvoer van Translator API op het apparaat. De primaire leestaal bepaalt alleen de volgorde van de bestaande Chinese en Engelse lagen.', regionTitle: 'Regionale voorkeur', regionEnglish: 'REGION', reset: 'Standaard herstellen', externalTitle: 'Andere vertaaltools', externalEnglish: 'OTHER TOOLS' },
+  pl: { primaryTitle: 'Główny język czytania', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: 'Chiński główny, angielski pomocniczy', primaryEnDescription: 'Angielski główny, chiński pomocniczy', targetTitle: 'Cel tłumaczenia na urządzeniu', targetEnglish: 'TRANSLATION TARGET', targetNote: 'Cel określa tylko wynik Translator API na urządzeniu. Główny język czytania określa jedynie kolejność istniejących warstw chińskiej i angielskiej.', regionTitle: 'Preferencja regionalna', regionEnglish: 'REGION', reset: 'Przywróć domyślne', externalTitle: 'Inne narzędzia tłumaczenia', externalEnglish: 'OTHER TOOLS' },
+  tr: { primaryTitle: 'Birincil okuma dili', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: 'Çince birincil, İngilizce ikincil', primaryEnDescription: 'İngilizce birincil, Çince ikincil', targetTitle: 'Cihaz içi çeviri hedefi', targetEnglish: 'TRANSLATION TARGET', targetNote: 'Çeviri hedefi yalnızca cihazdaki Translator API çıktısını belirler. Birincil okuma dili yalnızca mevcut Çince ve İngilizce katmanlarının sırasını belirler.', regionTitle: 'Bölge tercihi', regionEnglish: 'REGION', reset: 'Varsayılanları geri yükle', externalTitle: 'Diğer çeviri araçları', externalEnglish: 'OTHER TOOLS' },
+  uk: { primaryTitle: 'Основна мова читання', primaryEnglish: 'PRIMARY', primaryZh: '繁體中文', primaryZhDescription: 'Китайська основна, англійська додаткова', primaryEnDescription: 'Англійська основна, китайська додаткова', targetTitle: 'Ціль перекладу на пристрої', targetEnglish: 'TRANSLATION TARGET', targetNote: 'Ціль перекладу визначає лише результат Translator API на пристрої. Основна мова читання визначає лише порядок наявних китайського та англійського шарів.', regionTitle: 'Регіональна перевага', regionEnglish: 'REGION', reset: 'Відновити стандартні', externalTitle: 'Інші інструменти перекладу', externalEnglish: 'OTHER TOOLS' },
 };
 
 const COPY: Record<ReadingLanguage, DialogCopy> = {
@@ -211,9 +252,28 @@ function readStoredLocale(): ReadingLocale | null {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    const value = JSON.parse(raw) as Partial<ReadingLocale>;
-    if (!isReadingRegion(value.region) || !isReadingLanguage(value.language)) return null;
-    return { region: value.region, language: value.language };
+    const value = JSON.parse(raw) as Partial<ReadingLocale> & { language?: unknown };
+    if (!isReadingRegion(value.region)) return null;
+
+    if (isReadingLanguage(value.translationTarget) && (value.primaryLanguage === 'zh' || value.primaryLanguage === 'en')) {
+      return {
+        region: value.region,
+        primaryLanguage: value.primaryLanguage,
+        translationTarget: value.translationTarget,
+      };
+    }
+
+    // Migrate the previously shipped `{ region, language }` format without
+    // discarding a visitor's chosen translation target.
+    if (isReadingLanguage(value.language)) {
+      return {
+        region: value.region,
+        primaryLanguage: primaryLanguageForTranslationTarget(value.language),
+        translationTarget: value.language,
+      };
+    }
+
+    return null;
   } catch {
     return null;
   }
@@ -258,18 +318,16 @@ function LocaleDialog({
   onClose: () => void;
 }) {
   const [region, setRegion] = useState<ReadingRegion>(initialLocale.region);
-  const [language, setLanguage] = useState<ReadingLanguage>(initialLocale.language);
+  const [primaryLanguage, setPrimaryLanguage] = useState<SiteLanguage>(initialLocale.primaryLanguage);
+  const [translationTarget, setTranslationTarget] = useState<ReadingLanguage>(initialLocale.translationTarget);
+  const interfaceLanguage: ReadingLanguage = panelLanguage === 'bilingual' ? 'zh-Hant' : panelLanguage;
+  const layerCopy = LAYER_COPY[interfaceLanguage] || LAYER_COPY.en;
 
   useEffect(() => {
     setRegion(initialLocale.region);
-    setLanguage(initialLocale.language);
+    setPrimaryLanguage(initialLocale.primaryLanguage);
+    setTranslationTarget(initialLocale.translationTarget);
   }, [initialLocale]);
-
-  const updateRegion = (nextRegion: ReadingRegion) => {
-    setRegion(nextRegion);
-    const defaultLanguage = READING_REGIONS.find(item => item.code === nextRegion)?.defaultLanguage;
-    if (defaultLanguage) setLanguage(defaultLanguage);
-  };
 
   const text = (selector: (copy: DialogCopy) => string) => (
     <DialogText language={panelLanguage} localized={selector} fallback={selector} />
@@ -277,41 +335,74 @@ function LocaleDialog({
 
   return (
     <div className="reading-locale-overlay" role="presentation">
-      <section className="reading-locale-dialog" role="dialog" aria-modal="true" aria-labelledby="reading-locale-title">
+      <section className="reading-locale-dialog reading-locale-dialog--layers" role="dialog" aria-modal="true" aria-labelledby="reading-locale-title">
         <div className="reading-locale-dialog-head">
-          <span className="reading-locale-kicker">INN LOCAL READING</span>
-          {!forced && (
-            <button type="button" className="reading-locale-close" onClick={onClose} aria-label="Close reading-language settings">×</button>
+          <span className="reading-locale-kicker">// LANGUAGE LAYERS</span>
+          {!forced ? (
+            <div className="reading-locale-dialog-actions">
+              <button type="button" className="reading-locale-reset" onClick={() => {
+                setRegion(DEFAULT_READING_LOCALE.region);
+                setPrimaryLanguage(DEFAULT_READING_LOCALE.primaryLanguage);
+                setTranslationTarget(DEFAULT_READING_LOCALE.translationTarget);
+              }}>{layerCopy.reset}</button>
+              <button type="button" className="reading-locale-close" onClick={onClose} aria-label="Close reading-language settings">×</button>
+            </div>
+          ) : (
+            <button type="button" className="reading-locale-reset" onClick={() => {
+              setRegion(DEFAULT_READING_LOCALE.region);
+              setPrimaryLanguage(DEFAULT_READING_LOCALE.primaryLanguage);
+              setTranslationTarget(DEFAULT_READING_LOCALE.translationTarget);
+            }}>{layerCopy.reset}</button>
           )}
         </div>
-        <h2 id="reading-locale-title">{text(copy => copy.title)}</h2>
-        <p>{text(copy => copy.description)}</p>
+        <h2 id="reading-locale-title" className="sr-only">{text(copy => copy.title)}</h2>
         <p className="reading-locale-detection" aria-live="polite">
           {text(copy => detected ? copy.automaticHint : copy.manualHint)}
         </p>
 
-        <label className="reading-locale-field">
-          <span>{text(copy => copy.regionLabel)}</span>
-          <select value={region} onChange={event => updateRegion(event.target.value as ReadingRegion)}>
-            {READING_REGIONS.map(item => <option key={item.code} value={item.code}>{item.en} · {item.zh}</option>)}
-          </select>
-        </label>
+        <section className="reading-locale-layer-section" aria-labelledby="primary-reading-language">
+          <div className="reading-locale-layer-heading">
+            <h3 id="primary-reading-language">{layerCopy.primaryTitle}</h3><span>{layerCopy.primaryEnglish}</span>
+          </div>
+          <div className="reading-locale-primary-grid">
+            <button type="button" className={`reading-locale-primary-card${primaryLanguage === 'zh' ? ' is-selected' : ''}`} onClick={() => setPrimaryLanguage('zh')} aria-pressed={primaryLanguage === 'zh'}>
+              <strong>{layerCopy.primaryZh}</strong><span>{layerCopy.primaryZhDescription}</span>
+            </button>
+            <button type="button" className={`reading-locale-primary-card${primaryLanguage === 'en' ? ' is-selected' : ''}`} onClick={() => setPrimaryLanguage('en')} aria-pressed={primaryLanguage === 'en'}>
+              <strong>English</strong><span>{layerCopy.primaryEnDescription}</span>
+            </button>
+          </div>
+        </section>
 
-        <label className="reading-locale-field">
-          <span>{text(copy => copy.languageLabel)}</span>
-          <select value={language} onChange={event => setLanguage(event.target.value as ReadingLanguage)}>
-            {READING_LANGUAGES.map(item => <option key={item.code} value={item.code}>{item.native} · {item.en}</option>)}
-          </select>
-        </label>
+        <section className="reading-locale-layer-section" aria-labelledby="translation-target-language">
+          <div className="reading-locale-layer-heading">
+            <h3 id="translation-target-language">{layerCopy.targetTitle}</h3><span>{layerCopy.targetEnglish}</span>
+          </div>
+          <div className="reading-locale-target-grid">
+            {READING_LANGUAGES.map(item => (
+              <button key={item.code} type="button" className={`reading-locale-target-card${translationTarget === item.code ? ' is-selected' : ''}`} onClick={() => setTranslationTarget(item.code)} aria-pressed={translationTarget === item.code}>
+                <strong>{item.native}</strong><span>{item.en}</span>
+              </button>
+            ))}
+          </div>
+          <p className="reading-locale-layer-note">{layerCopy.targetNote}</p>
+        </section>
 
-        <div className="reading-locale-privacy-note">
-          <strong>{readingLanguageNativeName(language)} · {readingLanguageLabel(language, 'en')}</strong>
-          <span>{text(copy => copy.modelNotice)}</span>
-        </div>
+        <details className="reading-locale-details">
+          <summary>{layerCopy.regionTitle}<span>{layerCopy.regionEnglish}</span></summary>
+          <label className="reading-locale-field">
+            <select value={region} onChange={event => setRegion(event.target.value as ReadingRegion)}>
+              {READING_REGIONS.map(item => <option key={item.code} value={item.code}>{item.en} · {item.zh}</option>)}
+            </select>
+          </label>
+        </details>
 
-        <ExternalTranslatorOptions language={language} panelLanguage={panelLanguage} />
+        <details className="reading-locale-details">
+          <summary>{layerCopy.externalTitle}<span>{layerCopy.externalEnglish}</span></summary>
+          <ExternalTranslatorOptions language={translationTarget} panelLanguage={panelLanguage} />
+        </details>
 
-        <button type="button" className="reading-locale-save" onClick={() => onSave({ region, language })}>
+        <button type="button" className="reading-locale-save" onClick={() => onSave({ region, primaryLanguage, translationTarget })}>
           {text(copy => copy.save)}
         </button>
         <p className="reading-locale-footnote">{text(copy => copy.settingsNote)}</p>
@@ -332,18 +423,22 @@ export function ReadingLocaleProvider({ children }: { children: ReactNode }) {
     if (stored) {
       setLocaleState(stored);
       setConfigured(true);
-      setPanelLanguage(stored.language);
-      document.documentElement.dataset.readingLanguage = stored.language;
+      setPanelLanguage(stored.translationTarget);
+      document.documentElement.dataset.language = stored.primaryLanguage;
+      document.documentElement.dataset.readingLanguage = stored.translationTarget;
     } else {
       let active = true;
       const browserLanguage = readingLanguageFromBrowser(navigator.languages);
+      const translationTarget = browserLanguage || DEFAULT_READING_LOCALE.translationTarget;
+      const primaryLanguage: SiteLanguage = browserLanguage === 'en' ? 'en' : 'zh';
       readCloudflareCountryCode()
         .then(countryCode => {
           if (!active) return;
           const regionalSuggestion = readingLocaleFromCountry(countryCode);
           const suggested: ReadingLocale = {
             region: regionalSuggestion?.region || DEFAULT_READING_LOCALE.region,
-            language: browserLanguage || regionalSuggestion?.language || DEFAULT_READING_LOCALE.language,
+            primaryLanguage,
+            translationTarget: browserLanguage || regionalSuggestion?.language || translationTarget,
           };
           setLocaleState(suggested);
           setPanelLanguage(browserLanguage || 'bilingual');
@@ -354,7 +449,8 @@ export function ReadingLocaleProvider({ children }: { children: ReactNode }) {
           if (!active) return;
           const suggested: ReadingLocale = {
             region: DEFAULT_READING_LOCALE.region,
-            language: browserLanguage || DEFAULT_READING_LOCALE.language,
+            primaryLanguage,
+            translationTarget,
           };
           setLocaleState(suggested);
           setPanelLanguage(browserLanguage || 'bilingual');
@@ -371,10 +467,12 @@ export function ReadingLocaleProvider({ children }: { children: ReactNode }) {
 
   const setLocale = (nextLocale: ReadingLocale) => {
     setLocaleState(nextLocale);
-    setPanelLanguage(nextLocale.language);
+    setPanelLanguage(nextLocale.translationTarget);
     setConfigured(true);
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextLocale));
-    document.documentElement.dataset.readingLanguage = nextLocale.language;
+    document.documentElement.dataset.language = nextLocale.primaryLanguage;
+    document.documentElement.dataset.readingLanguage = nextLocale.translationTarget;
+    window.dispatchEvent(new Event('inn-language-change'));
     window.dispatchEvent(new Event('inn-reading-locale-change'));
   };
 
@@ -409,17 +507,31 @@ export function useReadingLocale() {
 
 export function ReadingLocaleSettingsButton({ compact = false }: { compact?: boolean }) {
   const { locale, openSettings } = useReadingLocale();
+  const languageName = readingLanguageNativeName(locale.translationTarget);
 
   return (
-    <button
-      type="button"
-      className={`reading-locale-settings${compact ? ' reading-locale-settings--compact' : ''}`}
-      onClick={openSettings}
-      aria-label="Set region and reading language"
-      title="Region and reading language"
-    >
-      <span className="reading-locale-settings-label">閱讀語言</span>
-      <strong>{readingLanguageNativeName(locale.language)}</strong>
-    </button>
+    <div className={`reading-locale-control${compact ? ' reading-locale-control--compact' : ''}`}>
+      <button
+        type="button"
+        className="reading-locale-settings"
+        onClick={openSettings}
+        aria-label={`Change reading language. Current language: ${languageName}`}
+        title="Change reading language"
+      >
+        <strong>{languageName}</strong>
+        <svg className="reading-locale-chevron" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="m3.2 5.7 4.8 4.8 4.8-4.8" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        className="reading-locale-settings-quick"
+        onClick={openSettings}
+        aria-label="Open reading language settings"
+        title="Open reading language settings"
+      >
+        <span aria-hidden="true">↗</span>
+      </button>
+    </div>
   );
 }

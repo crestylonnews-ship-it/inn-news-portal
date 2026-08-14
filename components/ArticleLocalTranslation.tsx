@@ -33,7 +33,7 @@ export default function ArticleLocalTranslation({
   const [engine, setEngine] = useState<TranslationEngine>(null);
   const [deviceMemory, setDeviceMemory] = useState<number | null>(null);
 
-  const targetLanguage = locale.language;
+  const targetLanguage = locale.translationTarget;
   const requiresLocalTranslation = configured && targetLanguage !== 'zh-Hant' && targetLanguage !== 'en';
   const canTryChrome = nativeAvailability === 'available' || nativeAvailability === 'downloadable' || nativeAvailability === 'downloading';
 

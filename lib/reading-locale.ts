@@ -1,4 +1,5 @@
 import type { ReadingLanguage } from '@/lib/local-translation';
+import type { SiteLanguage } from '@/components/BilingualText';
 
 export type ReadingRegion =
   | 'taiwan'
@@ -15,7 +16,10 @@ export type ReadingRegion =
 
 export type ReadingLocale = {
   region: ReadingRegion;
-  language: ReadingLanguage;
+  /** Controls which existing bilingual layer leads throughout the site. */
+  primaryLanguage: SiteLanguage;
+  /** Controls the optional on-device translation language on article pages. */
+  translationTarget: ReadingLanguage;
 };
 
 export type PanelLanguage = ReadingLanguage | 'bilingual';
@@ -69,9 +73,13 @@ export const READING_REGIONS: Array<{
 ];
 
 /** Used only before a visitor saves a preference. The setting dialog itself is bilingual in this case. */
-export const DEFAULT_READING_LOCALE: ReadingLocale = { region: 'global', language: 'en' };
+export const DEFAULT_READING_LOCALE: ReadingLocale = {
+  region: 'global',
+  primaryLanguage: 'zh',
+  translationTarget: 'zh-Hant',
+};
 
-const COUNTRY_LOCALE_GROUPS: Array<{ countries: string[]; locale: ReadingLocale }> = [
+const COUNTRY_LOCALE_GROUPS: Array<{ countries: string[]; locale: { region: ReadingRegion; language: ReadingLanguage } }> = [
   { countries: ['TW', 'HK', 'MO'], locale: { region: 'taiwan', language: 'zh-Hant' } },
   { countries: ['CN'], locale: { region: 'east-asia', language: 'zh-Hant' } },
   { countries: ['JP'], locale: { region: 'east-asia', language: 'ja' } },
@@ -105,11 +113,15 @@ const COUNTRY_LOCALE_GROUPS: Array<{ countries: string[]; locale: ReadingLocale 
   { countries: ['ZA', 'NG', 'KE', 'GH', 'TZ', 'UG', 'ZW', 'ZM', 'MW', 'BW', 'NA', 'LS', 'SZ', 'LR', 'SL', 'GM', 'MU'], locale: { region: 'africa', language: 'en' } },
 ];
 
-export function readingLocaleFromCountry(countryCode: string | null | undefined): ReadingLocale | null {
+export function readingLocaleFromCountry(countryCode: string | null | undefined): { region: ReadingRegion; language: ReadingLanguage } | null {
   const normalized = countryCode?.trim().toUpperCase();
   if (!normalized || !/^[A-Z]{2}$/.test(normalized)) return null;
   const match = COUNTRY_LOCALE_GROUPS.find(group => group.countries.includes(normalized));
   return match ? { ...match.locale } : { region: 'global', language: 'en' };
+}
+
+export function primaryLanguageForTranslationTarget(language: ReadingLanguage): SiteLanguage {
+  return language === 'en' ? 'en' : 'zh';
 }
 
 export function readingLanguageLabel(language: ReadingLanguage, displayLanguage: 'zh' | 'en' = 'zh'): string {

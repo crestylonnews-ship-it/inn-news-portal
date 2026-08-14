@@ -5699,8 +5699,7 @@ html[data-language='zh'] .prime-headline-title .bilingual-language-en {
 
 .reading-locale-save,
 .local-translation-primary,
-.local-translation-secondary,
-.reading-locale-settings {
+.local-translation-secondary {
   min-height: 2.45rem;
   border-radius: 0.65rem;
   font-family: 'Noto Sans TC', sans-serif;
@@ -5724,7 +5723,8 @@ html[data-language='zh'] .prime-headline-title .bilingual-language-en {
 .reading-locale-save:active,
 .local-translation-primary:active,
 .local-translation-secondary:active,
-.reading-locale-settings:active {
+.reading-locale-settings:active,
+.reading-locale-settings-quick:active {
   transform: scale(0.97);
 }
 
@@ -5733,34 +5733,88 @@ html[data-language='zh'] .prime-headline-title .bilingual-language-en {
   text-align: center;
 }
 
+.reading-locale-control {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.42rem;
+  min-width: 0;
+}
+
+.reading-locale-settings,
+.reading-locale-settings-quick {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, rgba(29, 28, 25, 0.98), rgba(20, 19, 17, 0.98));
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.04), 0 0.38rem 0.9rem rgba(0, 0, 0, 0.2);
+  color: #f4f1e9;
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
 .reading-locale-settings {
   display: inline-flex;
-  min-width: 0;
+  min-width: 8.6rem;
+  height: 2.45rem;
   align-items: center;
-  gap: 0.32rem;
-  border: 1px solid rgba(167, 139, 250, 0.42);
-  padding: 0.38rem 0.52rem;
-  background: rgba(76, 29, 149, 0.18);
-  color: #ede9fe;
-  font-size: 0.64rem;
-  line-height: 1.2;
+  gap: 0.62rem;
+  border-radius: 999px;
+  padding: 0 0.72rem 0 1rem;
+  line-height: 1;
   white-space: nowrap;
 }
 
 .reading-locale-settings strong {
-  max-width: 5.5rem;
+  min-width: 0;
   overflow: hidden;
-  color: #c4b5fd;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.58rem;
-  font-weight: 600;
+  color: #f4f1e9;
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 650;
+  letter-spacing: 0.015em;
+  text-align: left;
   text-overflow: ellipsis;
 }
 
+.reading-locale-chevron {
+  width: 0.92rem;
+  height: 0.92rem;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: rgba(244, 241, 233, 0.76);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.75;
+}
+
+.reading-locale-settings-quick {
+  display: grid;
+  width: 2.45rem;
+  height: 2.45rem;
+  flex: 0 0 2.45rem;
+  place-items: center;
+  border-radius: 999px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.reading-locale-settings-quick span {
+  display: block;
+  transform: translateY(-0.04rem);
+}
+
 .reading-locale-settings:hover,
-.reading-locale-settings:focus-visible {
-  border-color: rgba(196, 181, 253, 0.88);
-  background: rgba(109, 40, 217, 0.28);
+.reading-locale-settings:focus-visible,
+.reading-locale-settings-quick:hover,
+.reading-locale-settings-quick:focus-visible {
+  border-color: rgba(244, 241, 233, 0.38);
+  background: linear-gradient(180deg, rgba(43, 41, 35, 0.98), rgba(27, 26, 23, 0.98));
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.08), 0 0.45rem 1.1rem rgba(0, 0, 0, 0.3);
+  outline: none;
+}
+
+.reading-locale-settings:focus-visible,
+.reading-locale-settings-quick:focus-visible {
+  box-shadow: 0 0 0 2px rgba(165, 243, 252, 0.34), inset 0 1px rgba(255, 255, 255, 0.08);
 }
 
 .local-translation-wrap {
@@ -5877,12 +5931,24 @@ html[data-language='zh'] .prime-headline-title .bilingual-language-en {
     border-radius: 1rem;
   }
 
-  .reading-locale-settings-label {
-    display: none;
+  .reading-locale-control { gap: 0.32rem; }
+
+  .reading-locale-settings {
+    min-width: 0;
+    max-width: 8.6rem;
+    height: 2.3rem;
+    padding-inline: 0.82rem 0.64rem;
   }
 
   .reading-locale-settings strong {
-    max-width: 4.7rem;
+    max-width: 5.6rem;
+    font-size: 0.76rem;
+  }
+
+  .reading-locale-settings-quick {
+    width: 2.3rem;
+    height: 2.3rem;
+    flex-basis: 2.3rem;
   }
 
   .local-translation-panel {
@@ -6058,4 +6124,235 @@ html[data-language='zh'] .prime-headline-title .bilingual-language-en {
     grid-template-columns: minmax(5.4rem, 0.65fr) minmax(0, 1fr);
     align-items: center;
   }
+}
+
+/* Two-layer reading language settings */
+.reading-locale-dialog--layers {
+  width: min(100%, 52rem);
+  border-color: rgba(148, 163, 184, 0.34);
+  border-radius: 1.15rem;
+  background:
+    radial-gradient(circle at 18% -8%, rgba(96, 165, 250, 0.12), transparent 33%),
+    linear-gradient(145deg, rgba(17, 24, 39, 0.99), rgba(7, 11, 22, 0.99));
+}
+
+.reading-locale-dialog--layers .reading-locale-dialog-head {
+  align-items: flex-start;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.24);
+  padding-bottom: 1rem;
+}
+
+.reading-locale-dialog-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.reading-locale-reset {
+  min-height: 2.25rem;
+  border: 1px solid rgba(244, 180, 210, 0.58);
+  border-radius: 0.65rem;
+  padding: 0.42rem 0.7rem;
+  background: rgba(236, 72, 153, 0.07);
+  color: #fce7f3;
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 0.74rem;
+  font-weight: 700;
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), background 160ms ease, border-color 160ms ease;
+}
+
+.reading-locale-reset:hover,
+.reading-locale-reset:focus-visible {
+  border-color: rgba(251, 207, 232, 0.9);
+  background: rgba(236, 72, 153, 0.16);
+  outline: none;
+}
+
+.reading-locale-reset:active { transform: scale(0.97); }
+
+.reading-locale-dialog--layers .reading-locale-detection {
+  margin: 0.72rem 0 1.1rem;
+  border-left: 2px solid rgba(165, 243, 252, 0.7);
+  padding: 0.42rem 0 0.42rem 0.75rem;
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.08), transparent);
+  color: rgba(226, 232, 240, 0.76);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.reading-locale-layer-section {
+  margin-top: 1.35rem;
+}
+
+.reading-locale-layer-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.72rem;
+  margin-bottom: 0.72rem;
+}
+
+.reading-locale-layer-heading h3 {
+  margin: 0;
+  color: #f8fafc;
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: clamp(0.98rem, 2vw, 1.16rem);
+  font-weight: 800;
+  letter-spacing: 0.015em;
+}
+
+.reading-locale-layer-heading > span,
+.reading-locale-details summary > span {
+  color: #a5d8ff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+
+.reading-locale-primary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.72rem;
+}
+
+.reading-locale-primary-card,
+.reading-locale-target-card {
+  min-width: 0;
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  border-radius: 0.8rem;
+  background: rgba(2, 6, 23, 0.28);
+  color: #f8fafc;
+  text-align: left;
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.reading-locale-primary-card {
+  display: grid;
+  min-height: 6.3rem;
+  align-content: center;
+  gap: 0.45rem;
+  padding: 1rem 1.1rem;
+}
+
+.reading-locale-primary-card strong {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 1.12rem;
+  line-height: 1.2;
+}
+
+.reading-locale-primary-card span {
+  color: rgba(203, 213, 225, 0.72);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 0.77rem;
+  line-height: 1.4;
+}
+
+.reading-locale-target-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.58rem;
+}
+
+.reading-locale-target-card {
+  display: grid;
+  min-height: 5.05rem;
+  align-content: center;
+  gap: 0.3rem;
+  padding: 0.76rem 0.85rem;
+}
+
+.reading-locale-target-card strong {
+  overflow: hidden;
+  color: #f8fafc;
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: clamp(0.88rem, 1.65vw, 1.05rem);
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reading-locale-target-card span {
+  overflow: hidden;
+  color: rgba(203, 213, 225, 0.76);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reading-locale-primary-card:hover,
+.reading-locale-primary-card:focus-visible,
+.reading-locale-target-card:hover,
+.reading-locale-target-card:focus-visible {
+  border-color: rgba(186, 230, 253, 0.7);
+  background: rgba(30, 41, 59, 0.58);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.reading-locale-primary-card.is-selected,
+.reading-locale-target-card.is-selected {
+  border-color: rgba(186, 230, 253, 0.94);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.24), rgba(196, 181, 253, 0.18));
+  box-shadow: inset 0 0 0 1px rgba(244, 180, 210, 0.58), 0 0 1.1rem rgba(96, 165, 250, 0.16);
+}
+
+.reading-locale-primary-card.is-selected { border-color: rgba(251, 207, 232, 0.9); }
+
+.reading-locale-layer-note {
+  margin: 0.82rem 0 0;
+  border-left: 3px solid rgba(165, 243, 252, 0.86);
+  padding: 0.6rem 0.82rem;
+  background: rgba(30, 41, 59, 0.54);
+  color: rgba(226, 232, 240, 0.8);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 0.77rem;
+  line-height: 1.55;
+}
+
+.reading-locale-details {
+  margin-top: 0.85rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 0.72rem;
+  background: rgba(2, 6, 23, 0.22);
+}
+
+.reading-locale-details summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  min-height: 2.7rem;
+  cursor: pointer;
+  padding: 0.55rem 0.78rem;
+  color: rgba(226, 232, 240, 0.9);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  list-style: none;
+}
+
+.reading-locale-details summary::-webkit-details-marker { display: none; }
+.reading-locale-details[open] summary { border-bottom: 1px solid rgba(148, 163, 184, 0.16); }
+.reading-locale-details .reading-locale-field { margin: 0; padding: 0.75rem; }
+.reading-locale-details .reading-locale-external-tools { margin: 0; padding: 0.85rem; }
+.reading-locale-details .reading-locale-external-tools h3 { display: none; }
+
+.reading-locale-dialog--layers .reading-locale-save { margin-top: 1.15rem; }
+
+@media (max-width: 640px) {
+  .reading-locale-dialog--layers { padding: 1rem; }
+  .reading-locale-dialog--layers .reading-locale-dialog-head { padding-bottom: 0.78rem; }
+  .reading-locale-reset { min-height: 2.05rem; padding-inline: 0.56rem; font-size: 0.66rem; }
+  .reading-locale-close { width: 2.05rem; height: 2.05rem; font-size: 1.18rem; }
+  .reading-locale-primary-grid { gap: 0.5rem; }
+  .reading-locale-primary-card { min-height: 5.2rem; padding: 0.75rem; }
+  .reading-locale-primary-card strong { font-size: 0.95rem; }
+  .reading-locale-primary-card span { font-size: 0.68rem; }
+  .reading-locale-target-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.46rem; }
+  .reading-locale-target-card { min-height: 4.55rem; padding: 0.62rem 0.7rem; }
+  .reading-locale-target-card strong { font-size: 0.86rem; }
+  .reading-locale-target-card span { font-size: 0.61rem; }
+  .reading-locale-layer-note { font-size: 0.69rem; }
 }

@@ -210,7 +210,7 @@ export default function AcknowledgementsPage() {
             <p className="eyebrow-label">RETURN TO THE OBSERVATION STATION</p>
             <h2><BilingualText zh="感謝每一道讓訊號持續前行的力量。" en="Thank you for every force that keeps the signal moving." /></h2>
           </div>
-          <Link href="/" className="portal-card acknowledgements-return-link"><BilingualText zh="返回地圖首頁" en="RETURN TO MAP HOME" /> <span aria-hidden="true">→</span></Link>
+          <Link href="/" className="portal-card acknowledgements-return-link"><BilingualText zh="返回新聞首頁" en="RETURN TO NEWS HOME" /> <span aria-hidden="true">→</span></Link>
         </section>
       </main>
       <Footer />

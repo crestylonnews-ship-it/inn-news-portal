@@ -484,7 +484,7 @@ export default function NewsMapExplorer({ articles, compact = false, home = fals
         <>
           <div className="flex flex-col gap-4 border-b border-cyan-400/20 pb-5 sm:flex-row sm:items-end sm:justify-between">
             <div className="space-y-2">
-              <p className="map-eyebrow"><BilingualText zh={compact ? '首頁探索空間 // 近七日地理新聞' : '完整地圖空間 // 近七日地理新聞索引'} en={compact ? 'HOME EXPLORATION SPACE // LAST 7 DAYS' : 'FULL MAP SPACE // LAST 7 DAYS INDEX'} /></p>
+              <p className="map-eyebrow"><BilingualText zh={compact ? '地圖測試空間 // 近七日地理新聞' : '地圖實驗空間 // 近七日地理新聞索引'} en={compact ? 'MAP TEST SPACE // LAST 7 DAYS' : 'MAP LAB // LAST 7 DAYS INDEX'} /></p>
               <h2 id="map-explorer-title" className="font-orbitron text-2xl font-black tracking-tight text-white sm:text-3xl"><BilingualText zh="你決定看什麼，地圖只呈現訊號" en="YOU CHOOSE THE SIGNAL. THE MAP SHOWS THE FIELD." /></h2>
               <p className="max-w-2xl text-sm leading-relaxed text-slate-400"><BilingualText zh="地圖只顯示最近 7 天的新聞；拖曳、縮放或選擇區域，依自己的方向探索。地區新聞越多，節點越大；不同分類使用不同顏色。點擊節點後，頁面會滑到下方顯示該區域的相關新聞。" en="Only the last 7 days are shown. Pan, zoom or choose a region to explore on your own terms. More reports create larger nodes, categories use distinct colors, and a node click reveals the regional stories below." block /></p>
             </div>

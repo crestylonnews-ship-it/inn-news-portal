@@ -17,12 +17,12 @@ export default async function MapTestPage() {
         <header className="page-hero mb-8 space-y-4 sm:mb-10">
           <p className="page-kicker">EXPLORATION SPACE // GEO NEWS INDEX</p>
           <h1 className="page-title font-orbitron text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
-            <BilingualText zh="地圖空間：由你選擇訊號" en="MAP SPACE: YOU CHOOSE THE SIGNAL" />
+            <BilingualText zh="地圖測試空間：由你選擇訊號" en="MAP LAB: YOU CHOOSE THE SIGNAL" />
           </h1>
           <p className="max-w-3xl text-sm leading-7 text-slate-400 sm:text-base">
             <BilingualText
-              zh="這是首頁旁的完整探索空間，不替你預設唯一的新聞路徑。拖曳、縮放、選擇地區或分類，從自己的方向理解近七日時事。"
-              en="This is the full exploration space beside the classic homepage. Pan, zoom and choose a region or category to understand the last 7 days of current affairs on your own terms."
+              zh="這是仍在測試中的地圖探索功能，不替你預設唯一的新聞路徑。拖曳、縮放、選擇地區或分類，從自己的方向理解近七日時事。"
+              en="This is an experimental map exploration feature. Pan, zoom and choose a region or category to understand the last 7 days of current affairs on your own terms."
               block
             />
           </p>

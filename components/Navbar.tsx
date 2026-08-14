@@ -5,8 +5,8 @@ import { useState } from 'react';
 import { LanguageToggle, useLanguage } from '@/components/BilingualText';
 
 const navItems = [
-  { href: '/', zh: '地圖首頁', en: 'MAP HOME' },
-  { href: '/classic-home', zh: '傳統首頁', en: 'CLASSIC HOME' },
+  { href: '/', zh: '新聞首頁', en: 'NEWS HOME' },
+  { href: '/map-test', zh: '地圖測試', en: 'MAP LAB' },
   { href: '/tags', zh: '主題索引', en: 'TOPIC INDEX' },
   { href: '/timeline', zh: '時事時間線', en: 'CURRENT TIMELINE' },
   { href: '/opinion', zh: '社論與評論', en: 'OPINION' },

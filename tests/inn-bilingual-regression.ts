@@ -51,10 +51,10 @@ async function testLegacyArchiveContentIsExtractedIntoSeparateLanguageLayers() {
   const raw = await readFile(join(process.cwd(), 'content', 'articles', LEGACY_ARCHIVE_ARTICLE), 'utf8');
   const article = parseArticle(LEGACY_ARCHIVE_ARTICLE, raw);
   assert.match(article.content, /巴基斯坦政府最近批準了一項國家住房政策/);
-  assert.doesNotMatch(article.content, /Global Archive\s*\/\s*英文存檔/i);
+  assert.doesNotMatch(article.content, /Global Archive\s*\/\s*英文存檔|Stellar Archive|Global federation observation/i);
   assert.match(article.contentEn, /The Pakistani government has recently approved a national housing policy/);
   assert.doesNotMatch(article.contentEn, /繁體中文深度報導|巴基斯坦政府最近批準了一項國家住房政策/);
-  assert.doesNotMatch(article.contentEn, /<details>|<summary>|<div/i);
+  assert.doesNotMatch(article.contentEn, /<details>|<summary>|<div|^\*\*Pakistan approves/m);
   console.log('inn_legacy_archive_layers_are_separated=ok');
 }
 

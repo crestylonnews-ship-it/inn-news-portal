@@ -44,43 +44,51 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       <Navbar />
       <main className="article-page-main flex-grow w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 lg:py-10">
         <div className="mx-auto max-w-3xl space-y-8 sm:space-y-10">
-          <nav aria-label="麵包屑" className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-gray-400">
-            <Link href="/" className="hover:text-cyan-400 transition-colors"><BilingualText zh="首頁" en="HOME" /></Link>
-            <span aria-hidden="true">/</span>
-            <Link href="/tags" className="hover:text-cyan-400 transition-colors"><BilingualText zh="標籤分類" en="TAG ARCHIVE" /></Link>
-            <span aria-hidden="true">/</span>
-            <span className="text-cyan-400"><BilingualText zh={categoryLabel} en={categoryLabelEn[article.category] || 'NEWS REPORT'} /></span>
+          <nav aria-label="麵包屑" className="article-breadcrumb">
+            <div className="article-breadcrumb-language article-breadcrumb-zh" lang="zh-Hant">
+              <Link href="/">首頁</Link><span aria-hidden="true">/</span><Link href="/tags">標籤分類</Link>
+            </div>
+            <div className="article-breadcrumb-language article-breadcrumb-en" lang="en">
+              <Link href="/">HOME</Link><span aria-hidden="true">/</span><Link href="/tags">TAG ARCHIVE</Link>
+            </div>
           </nav>
 
-          <header className="space-y-5 sm:space-y-6 border-b border-cyan-500/20 pb-8 sm:pb-10">
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="inline-flex px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold tracking-wider uppercase">
-                <BilingualText zh={categoryLabel} en={categoryLabelEn[article.category] || 'NEWS REPORT'} />
-              </span>
-              <span className="text-xs text-gray-500 font-mono">STAR-DATE · {article.date}</span>
+          <header className="article-header">
+            <div className="article-header-context">
+              <div className="article-category-pair" aria-label="文章分類">
+                <span className="article-category-language article-category-zh" lang="zh-Hant">{categoryLabel}</span>
+                <span className="article-category-language article-category-en" lang="en">{categoryLabelEn[article.category] || 'NEWS REPORT'}</span>
+              </div>
+              <time dateTime={article.date} className="article-date">
+                <span className="article-date-label">
+                  <span className="article-date-zh" lang="zh-Hant">發布日期</span>
+                  <span className="article-date-en" lang="en">STAR DATE</span>
+                </span>
+                <strong>{article.date}</strong>
+              </time>
             </div>
-            
-            <h1 className="article-title text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold font-orbitron tracking-tight text-white leading-[1.18]">
-              <BilingualText zh={article.title} en={article.titleEn} className="article-bilingual-pair" block />
+
+            <h1 className="article-title">
+              <span className="article-title-zh" lang="zh-Hant">{article.title}</span>
+              <span className="article-title-en" lang="en">{article.titleEn}</span>
             </h1>
 
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-400 font-mono">
-              <span><BilingualText zh={`發布日期：${article.date}`} en={`PUBLISHED: ${article.date}`} /></span>
-              <span className="hidden sm:inline" aria-hidden="true">•</span>
-              <span className="text-cyan-400"><BilingualText zh={`特派記者：${article.author}`} en={`CORRESPONDENT: ${article.authorEn || article.author}`} /></span>
+            <div className="article-author-pair" aria-label="文章作者">
+              <span className="article-author-language article-author-zh" lang="zh-Hant"><i>特派記者</i><b>{article.author}</b></span>
+              <span className="article-author-language article-author-en" lang="en"><i>CORRESPONDENT</i><b>{article.authorEn || article.author}</b></span>
             </div>
 
-            <div className="flex flex-wrap gap-2 pt-1" aria-label="文章標籤">
+            {article.tags.length > 0 && <div className="article-tag-list" aria-label="文章標籤">
               {article.tags.map(tag => (
                 <Link
                   key={tag}
                   href={`/tags?tag=${encodeURIComponent(tag)}`}
-                  className="text-xs px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400 transition-all font-mono"
+                  className="article-tag-link"
                 >
                   <BilingualText zh={`#${tag}`} en={`#${tagToEnglish(tag)}`} />
                 </Link>
               ))}
-            </div>
+            </div>}
           </header>
 
           <article className="article-shell rounded-2xl border border-cyan-500/20 bg-[#121520]/80 backdrop-blur-xl px-5 py-7 sm:px-8 sm:py-10 lg:px-12 lg:py-12 shadow-[0_0_30px_rgba(0,191,255,0.05)]">

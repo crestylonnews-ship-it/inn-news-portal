@@ -29,7 +29,7 @@ type NativeTranslatorApi = {
 };
 
 const SOURCE_LANGUAGE = 'zh-Hant';
-const CACHE_PREFIX = 'inn-native-translation:v1';
+const CACHE_PREFIX = 'inn-native-translation:v2';
 const PREFERRED_CHUNK_LENGTH = 520;
 const sessionCache = new Map<string, string>();
 
@@ -80,6 +80,14 @@ function splitForTranslation(text: string): string[] {
   }
   if (remaining) chunks.push(remaining);
   return chunks;
+}
+
+function normalizedText(text: string): string {
+  return text.replace(/\s+/g, ' ').trim();
+}
+
+function isMeaningfulChineseText(text: string): boolean {
+  return normalizedText(text).length >= 12 && /[\u3400-\u9fff]/.test(text);
 }
 
 function hashText(text: string): string {
@@ -184,14 +192,15 @@ export async function translateChineseHtmlWithNativeApi(
   const translatorApi = getTranslatorApi();
   if (!translatorApi) throw new Error('此瀏覽器不支援 Chrome 原生翻譯，將改用本機模型或保留原始中英內容。');
 
-  report(listener, { phase: 'availability', message: '正在檢查 Chrome 本機翻譯語言包…' });
-  const availability = await getNativeTranslationAvailability(targetLanguage);
-  if (availability === 'unavailable' || availability === null) {
-    throw new Error('Chrome 原生翻譯暫不支援這個語言組合。');
-  }
-
-  report(listener, { phase: availability === 'available' ? 'prepare' : 'download', message: availability === 'available' ? 'Chrome 本機翻譯語言包已就緒。' : 'Chrome 正在下載本機翻譯語言包…' });
-  const translator = await translatorApi.create({
+  /*
+   * Translator.create() must be invoked while the click that requested a
+   * translation is still active. An `await availability()` before `create()`
+   * loses that user activation, causing Chrome to reject every downloadable
+   * language pack with NotAllowedError. Keep this call synchronous; it is the
+   * key difference between a visible button and an actually usable translator.
+   */
+  report(listener, { phase: 'prepare', message: '正在啟動 Chrome 本機翻譯；如尚未安裝，Chrome 將下載語言包…' });
+  const translatorPromise = translatorApi.create({
     sourceLanguage: SOURCE_LANGUAGE,
     targetLanguage,
     monitor(monitor) {
@@ -207,12 +216,28 @@ export async function translateChineseHtmlWithNativeApi(
     },
   });
 
+  let translator: NativeTranslator;
+  try {
+    translator = await translatorPromise;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Chrome 無法準備此語言的本機翻譯。';
+    throw new Error(`Chrome 原生翻譯無法啟動：${message}`);
+  }
+
   try {
     const documentFragment = new DOMParser().parseFromString(html, 'text/html');
     const nodes = textNodesForTranslation(documentFragment);
+    let meaningfulNodes = 0;
+    let changedNodes = 0;
+
     for (let index = 0; index < nodes.length; index += 1) {
       const source = nodes[index].textContent || '';
-      nodes[index].textContent = await translateText(source, targetLanguage, translator);
+      const translated = await translateText(source, targetLanguage, translator);
+      if (isMeaningfulChineseText(source)) {
+        meaningfulNodes += 1;
+        if (normalizedText(source) !== normalizedText(translated)) changedNodes += 1;
+      }
+      nodes[index].textContent = translated;
       report(listener, {
         phase: 'translate',
         message: `正在透過 Chrome 本機翻譯文章 ${index + 1}/${nodes.length}…`,
@@ -220,7 +245,24 @@ export async function translateChineseHtmlWithNativeApi(
         totalAssets: nodes.length,
       });
     }
-    report(listener, { phase: 'complete', message: 'Chrome 本機翻譯完成。' });
+
+    /*
+     * A successful API promise alone is not enough: experimental language
+     * packs can occasionally echo their input. Never replace the bilingual
+     * article with a mostly unchanged result. Throwing here activates the
+     * ONNX browser fallback and preserves the original article if it cannot
+     * provide a complete result either.
+     */
+    if (meaningfulNodes >= 2 && changedNodes / meaningfulNodes < 0.45) {
+      throw new Error(`Chrome 原生翻譯只完成 ${changedNodes}/${meaningfulNodes} 段正文，未達完整度門檻。`);
+    }
+
+    report(listener, {
+      phase: 'complete',
+      message: `Chrome 本機翻譯完成：已轉換 ${changedNodes}/${meaningfulNodes || nodes.length} 段主要正文。`,
+      completedAssets: changedNodes,
+      totalAssets: meaningfulNodes || nodes.length,
+    });
     return sanitizeTranslatedHtml(documentFragment.body.innerHTML);
   } finally {
     await translator.destroy?.();

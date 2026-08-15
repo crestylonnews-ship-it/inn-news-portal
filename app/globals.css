@@ -5778,3 +5778,58 @@ html[data-language='zh'] .prime-headline-title .bilingual-language-en {
     padding-top: 6rem !important;
   }
 }
+
+/* Article body bilingual rhythm: Chinese paragraph followed immediately by its English counterpart. */
+.bilingual-markup--interleaved .bilingual-block {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.62rem !important;
+  margin: 0 0 1.75rem !important;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+.bilingual-markup--interleaved .bilingual-block > .bilingual-language-zh,
+.bilingual-markup--interleaved .bilingual-block > .bilingual-language-en {
+  display: block !important;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  order: initial !important;
+}
+
+.bilingual-markup--interleaved .bilingual-block > .bilingual-language-zh {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  color: rgb(241 245 249) !important;
+  font-size: 1em !important;
+  line-height: 1.92 !important;
+}
+
+.bilingual-markup--interleaved .bilingual-block > .bilingual-language-en {
+  margin: 0 !important;
+  padding: 0 0 0 0.95rem !important;
+  border: 0 !important;
+  border-left: 2px solid rgb(34 211 238 / 0.28) !important;
+  color: rgb(148 163 184 / 0.94) !important;
+  font-size: 0.82em !important;
+  line-height: 1.78 !important;
+  letter-spacing: normal !important;
+}
+
+@media (max-width: 767px) {
+  .bilingual-markup--interleaved .bilingual-block {
+    gap: 0.5rem !important;
+    margin-bottom: 1.45rem !important;
+  }
+
+  .bilingual-markup--interleaved .bilingual-block > .bilingual-language-zh {
+    line-height: 1.82 !important;
+  }
+
+  .bilingual-markup--interleaved .bilingual-block > .bilingual-language-en {
+    padding-left: 0.72rem !important;
+    font-size: 0.8em !important;
+    line-height: 1.7 !important;
+  }
+}

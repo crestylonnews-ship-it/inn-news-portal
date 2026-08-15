@@ -116,7 +116,7 @@ export function BilingualMarkup({ zhHtml, enHtml, className = '' }: { zhHtml: st
   const blocks = alignMarkupBlocks(zhHtml, enHtml);
 
   return (
-    <div className={`bilingual-text bilingual-markup ${className}`}>
+    <div className={`bilingual-text bilingual-markup bilingual-markup--interleaved ${className}`} data-bilingual-order="zh-en">
       {blocks.map((block, index) => {
         return (
           <section className={`bilingual-block bilingual-block--${block.kind}`} key={`bilingual-block-${index}`}>

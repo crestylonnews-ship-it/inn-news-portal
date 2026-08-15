@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { alignMarkupBlocks, splitMarkupBlocks } from '../components/BilingualText';
-import { normalizeReadableContent, parseArticle } from '../lib/posts';
+import { articlePublishedAtMs, normalizeReadableContent, parseArticle, sortArticlesNewestFirst } from '../lib/posts';
 import { renderMarkdown } from '../lib/markdown';
 
 const ARTICLES = [
@@ -47,6 +47,27 @@ function testReaderPreservesPublisherParagraphBoundary() {
   console.log('inn_bilingual_reader_preserves_publisher_boundaries=ok');
 }
 
+function testHomepageSortsSameDayArticlesByPublishedTimestamp() {
+  const older = {
+    slug: '2026-08-15-article-20260815120000',
+    date: '2026-08-15',
+    publishedAt: undefined,
+  } as unknown as import('../lib/types').Article;
+  const newer = {
+    slug: '2026-08-15-article-20260815123541',
+    date: '2026-08-15',
+    publishedAt: undefined,
+  } as unknown as import('../lib/types').Article;
+  const explicit = {
+    slug: 'legacy-same-day-item',
+    date: '2026-08-15',
+    publishedAt: '2026-08-15T12:40:00+00:00',
+  } as unknown as import('../lib/types').Article;
+  assert.ok(articlePublishedAtMs(newer) > articlePublishedAtMs(older));
+  assert.deepEqual(sortArticlesNewestFirst([older, explicit, newer]).map(article => article.slug), [explicit.slug, newer.slug, older.slug]);
+  console.log('inn_homepage_same_day_articles_sort_by_publish_time=ok');
+}
+
 async function testLegacyArchiveContentIsExtractedIntoSeparateLanguageLayers() {
   const raw = await readFile(join(process.cwd(), 'content', 'articles', LEGACY_ARCHIVE_ARTICLE), 'utf8');
   const article = parseArticle(LEGACY_ARCHIVE_ARTICLE, raw);
@@ -61,6 +82,7 @@ async function testLegacyArchiveContentIsExtractedIntoSeparateLanguageLayers() {
 async function main() {
   testMismatchedBlocksRemainVisible();
   testReaderPreservesPublisherParagraphBoundary();
+  testHomepageSortsSameDayArticlesByPublishedTimestamp();
   await testLegacyArchiveContentIsExtractedIntoSeparateLanguageLayers();
   for (const filename of ARTICLES) await testActualArticleParagraphPairs(filename);
 }

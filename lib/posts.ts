@@ -200,6 +200,36 @@ export function parseArticle(filename: string, fileContents: string): Article {
   };
 }
 
+export function articlePublishedAtMs(article: Pick<Article, 'slug' | 'date' | 'publishedAt'>): number {
+  const explicit = Date.parse(String(article.publishedAt || ''));
+  if (Number.isFinite(explicit)) return explicit;
+
+  // Current automated INN articles use ...-article-YYYYMMDDHHMMSS.md. The
+  // publisher only stores a calendar date in Frontmatter, so retain the file
+  // timestamp as the deterministic same-day ordering fallback.
+  const embeddedTimestamp = String(article.slug || '').match(/(?:^|-)article-(\d{8})(\d{6})$/);
+  if (embeddedTimestamp) {
+    const [, ymd, hms] = embeddedTimestamp;
+    const year = Number(ymd.slice(0, 4));
+    const month = Number(ymd.slice(4, 6)) - 1;
+    const day = Number(ymd.slice(6, 8));
+    const hour = Number(hms.slice(0, 2));
+    const minute = Number(hms.slice(2, 4));
+    const second = Number(hms.slice(4, 6));
+    return Date.UTC(year, month, day, hour, minute, second);
+  }
+
+  const calendarDate = Date.parse(`${String(article.date || '')}T00:00:00Z`);
+  return Number.isFinite(calendarDate) ? calendarDate : 0;
+}
+
+export function sortArticlesNewestFirst(articles: Article[]): Article[] {
+  return [...articles].sort((a, b) => {
+    const timestampDifference = articlePublishedAtMs(b) - articlePublishedAtMs(a);
+    return timestampDifference || b.slug.localeCompare(a.slug);
+  });
+}
+
 export async function getAllArticles(): Promise<Article[]> {
   try {
     const entries = await readdir(ARTICLES_DIRECTORY, { withFileTypes: true });
@@ -215,9 +245,7 @@ export async function getAllArticles(): Promise<Article[]> {
         return null;
       }
     }));
-    return parsedArticles
-      .filter((article): article is Article => article !== null)
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return sortArticlesNewestFirst(parsedArticles.filter((article): article is Article => article !== null));
   } catch (error) {
     console.error('Error reading local article content:', error);
     return [];

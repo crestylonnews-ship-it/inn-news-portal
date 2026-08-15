@@ -5756,3 +5756,25 @@ html[data-language='zh'] .prime-headline-title .bilingual-language-en {
   .nav-controls { grid-template-columns: minmax(12.25rem, 1fr) auto auto; }
   .nav-search { min-width: 12.25rem; }
 }
+
+/* Balanced prime headline composition: keep the lead content closer to the visual centre. */
+.prime-headline-panel {
+  justify-content: center !important;
+}
+
+.prime-headline-content {
+  padding-top: clamp(2rem, 5vw, 4.5rem) !important;
+  padding-bottom: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+@media (min-width: 761px) {
+  .primary-layout .prime-headline-content {
+    max-width: 96%;
+  }
+}
+
+@media (max-width: 760px) {
+  .prime-headline-panel {
+    padding-top: 6rem !important;
+  }
+}

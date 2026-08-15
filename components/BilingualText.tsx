@@ -69,9 +69,16 @@ function isTag(block: string, tag: string): boolean {
 }
 
 function isSourceHeading(block: string): boolean {
-  return isTag(block, 'h1') || isTag(block, 'h2') || isTag(block, 'h3') || isTag(block, 'h4')
-    ? /來源整理|資料來源|sources?|citations?/i.test(block.replace(/<[^>]+>/g, ' '))
-    : false;
+  if (!(isTag(block, 'h1') || isTag(block, 'h2') || isTag(block, 'h3') || isTag(block, 'h4'))) return false;
+
+  const headingText = block
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  // Match standalone source-section headings only. A broad substring match
+  // would incorrectly classify English headlines containing "resources".
+  return /^(?:來源整理|資料來源(?:與引用)?|sources?(?:\s+(?:compilation|summary)|\s+(?:&|and)\s+citations?)?|citations?)[:：]?$/i.test(headingText);
 }
 
 function splitSourceSection(blocks: string[]): { content: string[]; sources: string[] } {

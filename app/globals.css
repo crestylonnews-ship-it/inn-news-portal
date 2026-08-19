@@ -5833,3 +5833,148 @@ html[data-language='zh'] .prime-headline-title .bilingual-language-en {
     line-height: 1.7 !important;
   }
 }
+
+
+/* --------------------------------------------------------------------------
+   Cross-browser reading baseline and Prime Headline summary composition
+   -------------------------------------------------------------------------- */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  min-width: 0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.bilingual-text,
+.bilingual-pair,
+.bilingual-language-zh,
+.bilingual-language-en,
+.prime-headline-content,
+.prime-headline-title,
+.prime-headline-excerpt {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.bilingual-language-zh,
+.bilingual-language-en,
+.prime-headline-title,
+.prime-headline-excerpt {
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: manual;
+}
+
+.prime-headline-content {
+  width: 100%;
+  padding-inline: clamp(0rem, 1.5vw, 1rem);
+}
+
+.prime-headline-excerpt {
+  display: block;
+  margin-top: clamp(0.8rem, 1.8vw, 1.35rem);
+  color: rgb(226 232 240 / 0.92);
+  font-family: 'Source Serif 4', 'Noto Serif TC', 'PingFang TC', 'Microsoft JhengHei', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(0.96rem, 1.45vw, 1.18rem);
+  line-height: 1.65;
+  letter-spacing: 0.005em;
+}
+
+.prime-headline-excerpt .bilingual-pair {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: clamp(0.48rem, 1vw, 0.78rem);
+  width: 100%;
+}
+
+.prime-headline-excerpt .bilingual-language-zh,
+.prime-headline-excerpt .bilingual-language-en {
+  display: block !important;
+  width: 100%;
+  max-width: 100%;
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+}
+
+.prime-headline-excerpt .bilingual-language-zh {
+  color: inherit;
+  font-size: 1em;
+  line-height: 1.65;
+}
+
+.prime-headline-excerpt .bilingual-language-en {
+  padding-left: 0.78rem;
+  border-left: 2px solid rgb(34 211 238 / 0.32);
+  color: rgb(165 180 198 / 0.9);
+  font-size: 0.76em;
+  line-height: 1.58;
+  letter-spacing: normal;
+}
+
+/* Avoid relying on text-wrap: pretty, which is not implemented consistently. */
+@supports not (text-wrap: pretty) {
+  .prime-headline-title {
+    text-wrap: wrap;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1439px) {
+  .prime-headline-panel {
+    min-height: clamp(24rem, 58vw, 34rem) !important;
+  }
+
+  .prime-headline-content {
+    padding-inline: clamp(0rem, 2.4vw, 1.25rem);
+  }
+}
+
+@media (max-width: 760px) {
+  .prime-headline-content {
+    padding-inline: 0;
+  }
+
+  .prime-headline-excerpt {
+    margin-top: 0.72rem;
+    font-size: clamp(0.9rem, 4.2vw, 1rem);
+    line-height: 1.58;
+  }
+
+  .prime-headline-excerpt .bilingual-pair {
+    gap: 0.48rem;
+  }
+
+  .prime-headline-excerpt .bilingual-language-en {
+    padding-left: 0.62rem;
+    font-size: 0.78em;
+    line-height: 1.52;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prime-headline-panel,
+  .prime-headline-title,
+  .ticker-item {
+    transition: none !important;
+  }
+}
